@@ -20,6 +20,15 @@
 				"Engine",
 				"CoreUObject"
 			]
+		},
+		{
+			"Name": "GameFarm",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject"
+			]
 		}
 	],
 	"Plugins": [

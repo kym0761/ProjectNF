@@ -12,5 +12,6 @@ public class ProjectNFEditorTarget : TargetRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
 		ExtraModuleNames.Add("ProjectNF");
         ExtraModuleNames.Add("GamePuzzle");
+        ExtraModuleNames.Add("GameFarm");
     }
 }
