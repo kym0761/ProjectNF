@@ -18,12 +18,12 @@ AFireBowl::AFireBowl()
 	bFireOn = false;
 }
 
-void AFireBowl::Combust_Implementation()
+void AFireBowl::Combust()
 {
 	TurnOn();
 }
 
-void AFireBowl::Extinguish_Implementation()
+void AFireBowl::Extinguish()
 {
 	TurnOff();
 }
@@ -84,9 +84,12 @@ void AFireBowl::OverlapCombust()
 
 	for (AActor* i : overlapActors)
 	{
-		if (i->GetClass()->ImplementsInterface(UCombustible::StaticClass()))
+		auto combustible = Cast<ICombustible>(i);
+
+		if (combustible)
 		{
-			ICombustible::Execute_Combust(i);
+			combustible->Combust();
 		}
+
 	}
 }

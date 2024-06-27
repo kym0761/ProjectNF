@@ -17,17 +17,16 @@ public:
 
 protected:
 
-	//이 actor가 트리거 동작이 되고 있는가?
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trigger", Meta = (AllowPrivateAccess = "true"))
-	bool bTriggerActive;
-
 	//World에서 트리거하기를 원하는 액터를 선택해서 넣어야함.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger")
 	TArray<TObjectPtr<APuzzleActorBase>> TriggerTargets;
 
-	//누가 이 액터를 Trigger하는지는 ToTrigger에 있는 액터가 BeginPlay()에서 추가됨.
+private:
+
+	//TriggerTargets들이 이 액터를 트리거를 해줬는지 확인하기 위한 TMap
+	//key : ActorName, Value : bool
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trigger", Meta = (AllowPrivateAccess = "true"))
-	TArray<TObjectPtr<APuzzleActorBase>> WhoTriggerThis;
+	TMap<FString, bool> TriggerMap;
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,10 +39,12 @@ public:
 protected:
 
 	//WhoTriggerThis를 Init함.
-	void InitWhoTriggerThis();
+	void InitTriggerMap();
 
 public:
 
-	bool GetTriggerActive() const;
+	void SendTriggerParams(TObjectPtr<APuzzleActorBase> TriggerActor, bool Val);
+
+	bool CheckTriggersHaveActivated() const;
 
 };

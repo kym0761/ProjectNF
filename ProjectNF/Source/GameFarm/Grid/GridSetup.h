@@ -30,6 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
 	float CellSize = 100.0f;
 
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))

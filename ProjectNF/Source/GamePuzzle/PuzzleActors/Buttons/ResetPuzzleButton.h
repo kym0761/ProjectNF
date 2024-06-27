@@ -28,6 +28,6 @@ public:
 
 	virtual void ButtonUp() override;
 
-	virtual void Trigger_Implementation() override;
+	virtual void Trigger() override;
 
 };

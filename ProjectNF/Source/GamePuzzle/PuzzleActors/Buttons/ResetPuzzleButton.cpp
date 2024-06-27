@@ -25,7 +25,7 @@ void AResetPuzzleButton::Tick(float DeltaTime)
 	//Tick()도 BeginPlay()와 비슷한 이유로 AActor::Tick()을 동작하게 함.
 	Super::Super::Super::Tick(DeltaTime);
 
-	if (bTriggerActive)
+	if (bButtonActive)
 	{
 		FVector lerpVal = FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonDownPos, DeltaTime * 10);
 
@@ -44,16 +44,19 @@ void AResetPuzzleButton::Tick(float DeltaTime)
 
 void AResetPuzzleButton::ButtonUp()
 {
-	bTriggerActive = false;
+	bButtonActive = false;
+	//reset puzzle은 who trigger me? 에 포함되지 않으므로 trigger를 다시 부를 필요 없음.
 }
 
-void AResetPuzzleButton::Trigger_Implementation()
+void AResetPuzzleButton::Trigger()
 {
 	for (auto i : TriggerTargets)
 	{
-		if (i->GetClass()->ImplementsInterface(UResetable::StaticClass()))
+		auto resetable = Cast<IResetable>(i);
+
+		if (resetable)
 		{
-			IResetable::Execute_Reset(i);
+			resetable->Reset();
 		}
 	}
 }

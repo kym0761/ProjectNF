@@ -9,8 +9,8 @@
 /*
 ITriggerable : Trigger 동작 인터페이스
 IBeTriggerable : Trigger를 당했을 때의 동작 인터페이스
-IResetable : 리셋이 가능한 대상일 때 필요한 인터페이스. ex) ResetButtonTrigger
-ICombustible : 불 붙는게 가능한 대상일 때 필요한 인터페이스. ex)FireTorch, FireStand
+IResetable : 리셋이 가능한 대상일 때 필요한 인터페이스. ex) ResetButton
+ICombustible : 불 붙는게 가능한 대상일 때 필요한 인터페이스. ex)FireBowl, FireStand
 */
 
 //Interface Class Base. Don't Use.
@@ -27,8 +27,8 @@ class ITriggerable
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Trigger")
-	void Trigger();
+	//UFUNCTION(BlueprintNativeEvent)
+	virtual void Trigger() = 0;
 
 };
 
@@ -45,9 +45,9 @@ class IBeTriggerable
 	GENERATED_BODY()
 
 public:
+	//UFUNCTION(BlueprintNativeEvent)
+	virtual void BeTriggered(TObjectPtr<class APuzzleActorBase> TriggerActor, bool TriggerValue) = 0;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Trigger")
-	void BeTriggered();
 
 };
 
@@ -65,8 +65,8 @@ class IResetable
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "reset")
-	void Reset();
+	//UFUNCTION(BlueprintNativeEvent)
+	virtual void Reset() = 0;
 
 };
 
@@ -84,11 +84,11 @@ class ICombustible
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Combust")
-	void Combust();
+	//UFUNCTION(BlueprintNativeEvent)
+	virtual void Combust() = 0;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Combust")
-	void Extinguish();
+	//UFUNCTION(BlueprintNativeEvent)
+	virtual void Extinguish() = 0;
 
 	virtual void TurnOn() = 0;
 	virtual void TurnOff() = 0;

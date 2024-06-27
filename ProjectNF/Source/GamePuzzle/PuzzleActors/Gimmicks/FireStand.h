@@ -32,12 +32,21 @@ public:
 	//TObjectPtr<UWidgetComponent> Widget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UNiagaraComponent> FireEffect;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UBoxComponent> FireOverlap;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Effect")
+	TObjectPtr<UNiagaraComponent> FireEffect;
+
+	//화로대는 bPuzzleActive보다 bFireOn의 우선순위가 높음.
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Variable")
+	bool bFireOn;
+
+protected:
+
 	FTimerHandle CombustTimer;
+
+	const float FireInterval = 0.33f;
+	float fireCount = 0.0f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,15 +58,15 @@ public:
 
 public:
 
-	virtual void Trigger_Implementation();
+	virtual void Trigger() override;
 	
-	virtual void BeTriggered_Implementation();
+	virtual void BeTriggered(TObjectPtr<class APuzzleActorBase> TriggerActor, bool TriggerValue) override;
 
-	virtual void Reset_Implementation();
+	virtual void Reset() override;
 
-	virtual void Combust_Implementation();
+	virtual void Combust() override;
 
-	virtual void Extinguish_Implementation();
+	virtual void Extinguish() override;
 
 	UFUNCTION()
 	void OverlapCombust();

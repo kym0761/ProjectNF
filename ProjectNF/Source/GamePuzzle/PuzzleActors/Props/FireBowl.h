@@ -20,22 +20,22 @@ class GAMEPUZZLE_API AFireBowl : public APuzzlePhysicsProp, public ICombustible
 public:
 	AFireBowl();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Effect")
 	TObjectPtr<UBoxComponent> FireOverlap;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Effect")
 	TObjectPtr<UNiagaraComponent> FireEffect;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effect")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Variable")
 	bool bFireOn;
 
 	FTimerHandle CombustTimer;
 
 public:
 
-	virtual void Combust_Implementation();
+	virtual void Combust() override;
 
-	virtual void Extinguish_Implementation();
+	virtual void Extinguish() override;
 
 	virtual void TurnOn() override;
 	virtual void TurnOff() override;

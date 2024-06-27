@@ -31,13 +31,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> ButtonMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button|Variable")
 	FVector ButtonUpPos;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button|Variable")
 	FVector ButtonDownPos;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button|Variable")
+	bool bButtonActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Button|IntervalSettings")
 	float TriggerInterval;
 
 	float TriggerTimer = 0.0f;
@@ -60,6 +63,6 @@ public:
 	virtual void ButtonUp(); // virtual for ResetButton. See ResetButtonTrigger.h
 	void ButtonDown();
 
-	virtual void Trigger_Implementation();
+	virtual void Trigger() override;
 
 };

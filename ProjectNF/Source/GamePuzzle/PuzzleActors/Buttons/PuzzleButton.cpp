@@ -27,6 +27,7 @@ APuzzleButton::APuzzleButton()
 	ButtonDownPos = FVector(0, 0, -10.0f);
 	TriggerInterval = 0.25f;
 
+	bButtonActive = false;
 }
 
 void APuzzleButton::BeginPlay()
@@ -42,7 +43,7 @@ void APuzzleButton::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	if (bTriggerActive)
+	if (bButtonActive)
 	{
 		FVector lerpVal= FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonDownPos, DeltaTime*10);
 
@@ -58,17 +59,15 @@ void APuzzleButton::Tick(float DeltaTime)
 		ButtonMesh->SetRelativeLocation(lerpVal);
 	}
 
-	if (bTriggerActive)
+	if (bButtonActive)
 	{
 		TriggerTimer += DeltaTime;
 	}
 
 	//버튼을 밟고 있는 동안, Trigger()를 계속 호출하여 버튼 누른 뒤에 시간제한이 있는 PuzzleActor를 다시 Trigger한다.
-	if (bTriggerActive && (TriggerTimer >= TriggerInterval))
+	if (bButtonActive && (TriggerTimer >= TriggerInterval))
 	{
-		ITriggerable::Execute_Trigger(this);
-		//Execute_Trigger();
-
+		Trigger();
 		TriggerTimer = 0.0f;
 	}
 
@@ -116,7 +115,7 @@ void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent,
 		UCharacterMovementComponent* characterMovement = owner->FindComponentByClass<UCharacterMovementComponent>();
 
 		//캐릭터가 밟고 있거나, Physic 물체가 아직 버튼 위에 있을 때 temp를 true로 세팅하고 빠져나온다.
-		if (IsValid(characterMovement) || (IsValid(i) && i->IsSimulatingPhysics()))
+		if (IsValid(characterMovement) || i->IsSimulatingPhysics())
 		{
 			temp = true;
 			break;
@@ -134,31 +133,28 @@ void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent,
 void APuzzleButton::ButtonUp()
 {
 	//false이면 buttonUp 무시
-	if (bTriggerActive == false)
+	if (bButtonActive == false)
 	{
 		return;
 	}
 
-	bTriggerActive = false;
-	ITriggerable::Execute_Trigger(this);
-	//Execute_Trigger();
+	bButtonActive = false;
+	Trigger();//deactivate 알림
 }
 
 void APuzzleButton::ButtonDown()
 {
 	//true면 buttonDown 무시
-	if (bTriggerActive == true)
+	if (bButtonActive == true)
 	{
 		return;
 	}
 
-	bTriggerActive = true;
-	//Trigger();
-	//Execute_Trigger();
-	ITriggerable::Execute_Trigger(this);
+	bButtonActive = true;
+	Trigger(); // activate 알림
 }
 
-void APuzzleButton::Trigger_Implementation()
+void APuzzleButton::Trigger()
 {
 	if (GEngine)
 	{
@@ -168,9 +164,11 @@ void APuzzleButton::Trigger_Implementation()
 
 	for (auto i : TriggerTargets)
 	{
-		if (i->GetClass()->ImplementsInterface(UBeTriggerable::StaticClass()))
+		auto beTriggerable = Cast<IBeTriggerable>(i);
+
+		if (beTriggerable)
 		{
-			IBeTriggerable::Execute_BeTriggered(i);
+			beTriggerable->BeTriggered(this, bButtonActive);
 		}
 	}
 
