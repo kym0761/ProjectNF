@@ -24,7 +24,7 @@ class GAMEITEM_API UItem : public UObject
 UENUM(BlueprintType)
 enum class  EItemType : uint8
 {
-	None = 0 UMETA(DisplayName = "Consumable"),
+	None = 0 UMETA(DisplayName = "None"),
 
 	/*일반 아이템 분류*/
 	Consumable UMETA(DisplayName = "Consumable"),

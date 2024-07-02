@@ -6,6 +6,27 @@
 #include "GameFramework/Actor.h"
 #include "FarmlandTile.generated.h"
 
+
+USTRUCT(BlueprintType)
+struct GAMEFARM_API FCropData
+{
+	GENERATED_BODY()
+
+public:
+
+	//FarmTile에 들어갈 Crop 정보 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	FName CropName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	int32 CurrentGrowth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	int32 MaxGrowth;
+
+};
+
 class UStaticMeshComponent;
 class UBoxComponent;
 /*
