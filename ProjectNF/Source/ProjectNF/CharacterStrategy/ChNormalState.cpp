@@ -2,6 +2,7 @@
 
 
 #include "ChNormalState.h"
+#include "BaseCharacter.h"
 
 UChNormalState::UChNormalState()
 {
@@ -10,9 +11,13 @@ UChNormalState::UChNormalState()
 
 void UChNormalState::StateAction()
 {
+	Super::StateAction();
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Emerald,
 			TEXT("NORMAL State Action"));
 	}
+
+	CharacterRef->DoWhat();
 }

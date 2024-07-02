@@ -2,6 +2,7 @@
 
 
 #include "ChFarmingState.h"
+#include "BaseCharacter.h"
 
 UChFarmingState::UChFarmingState()
 {
@@ -10,9 +11,14 @@ UChFarmingState::UChFarmingState()
 
 void UChFarmingState::StateAction()
 {
+	Super::StateAction();
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Emerald,
 			TEXT("FARMING State Action"));
 	}
+
+	CharacterRef->UseFarmTool();
+
 }

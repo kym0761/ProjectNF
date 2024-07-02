@@ -93,4 +93,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+
+	/*State 테스트용도, 추후 진짜 기능이 될 수도*/
+	void Attack();
+
+	void UseFarmTool();
+
+	void DoWhat();
+
 };

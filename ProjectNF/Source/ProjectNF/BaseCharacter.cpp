@@ -153,3 +153,30 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ABaseCharacter::Attack()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("Attack"));
+	}
+}
+
+void ABaseCharacter::UseFarmTool()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("UseFarmTool"));
+	}
+}
+
+void ABaseCharacter::DoWhat()
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("DoWhat"));
+	}
+}
+
