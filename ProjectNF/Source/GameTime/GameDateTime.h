@@ -3,19 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "IngameDateTime.Generated.h"
+#include "GameDateTime.Generated.h"
 
 /**
- * 
+ * 게임 안에서 사용할 년 월 일 시간
  */
 
 
 USTRUCT(BlueprintType)
-struct GAMEDATETIME_API FIngameDateTime
+struct GAMETIME_API FGameDateTime
 {
 	GENERATED_BODY()
 
 public:
+
+	//! uint32는 언리얼 에디터에서 사용할 수 없기 때문에 int32를 사용한다.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Year;
@@ -35,34 +37,35 @@ public:
 #pragma region ConstTimeValue 
 	/*이 부분은 되도록이면 건드리지 말 것*/
 
-	//최대 천만년?
-	const static int32 MAX_YEAR = 10000000;
+	//연도 상한치는 int32 최대값(2^31-1) -> 정상적인 플레이에서는 사실상 도달은 불가능함.
+	const static int32 MAX_YEAR = TNumericLimits<int32>::Max();
 	const static int32 MAX_MONTH = 12;
-	const static TArray<int32> MAXDAY_OF_MONTH; // initialized in cpp.
 	const static int32 MAX_HOUR = 24;
 	const static int32 MAX_MINUTE = 60;
 	const static int32 MAX_WEEK = 7;
 
-	const static FIngameDateTime MORNING;
-	const static FIngameDateTime NOON;
-	const static FIngameDateTime EVENING;
+	// cpp에서 알맞는 값으로 초기화한다.
+	const static TArray<int32> MAXDAY_OF_MONTH;
+	const static FGameDateTime MORNING;
+	const static FGameDateTime NOON;
+	const static FGameDateTime EVENING;
 #pragma endregion
 
-	FIngameDateTime(int32 InYear = 0, int32 InMonth = 0, int32 InDay = 0, int32 InHour = 0, int32 InMinute = 0);
+	FGameDateTime(int32 InYear = 0, int32 InMonth = 0, int32 InDay = 0, int32 InHour = 0, int32 InMinute = 0);
 
-	FIngameDateTime operator+(const FIngameDateTime& rValue);
-	FIngameDateTime& operator+=(const FIngameDateTime& rValue);
+	FGameDateTime operator+(const FGameDateTime& rValue);
+	FGameDateTime& operator+=(const FGameDateTime& rValue);
 
-	FIngameDateTime operator-(const FIngameDateTime& rValue);
-	FIngameDateTime& operator-=(const FIngameDateTime& rValue);
+	FGameDateTime operator-(const FGameDateTime& rValue);
+	FGameDateTime& operator-=(const FGameDateTime& rValue);
 
-	FString ToString();
+	FString ToString() const;
 
 };
 
 //월의 명칭을 관리할 데이터 테이블
 USTRUCT(BlueprintType)
-struct FMonthRow : public FTableRowBase
+struct GAMETIME_API FMonthRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -74,7 +77,7 @@ public:
 
 //계절 명칭을 관리할 데이터 테이블
 USTRUCT(BlueprintType)
-struct FSeasonRow : public FTableRowBase
+struct GAMETIME_API FSeasonRow : public FTableRowBase
 {
 	GENERATED_BODY()
 

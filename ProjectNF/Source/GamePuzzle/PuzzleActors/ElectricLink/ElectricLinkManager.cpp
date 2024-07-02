@@ -12,6 +12,10 @@ UElectricLinkManager::UElectricLinkManager()
 
 void UElectricLinkManager::SearchAllLinks()
 {
+	//맵에 존재하는 모든 Electric Link Component 들을 검색한다.
+	//게임 실행 시 최초 1번만 실행될 것이다.
+	//게임 중간에 Link를 보유한 Actor가 추가된다면 이를 다시 실행해야 할 수도 있다.
+
 	if (!GetWorld())
 	{
 		return;
@@ -44,7 +48,7 @@ void UElectricLinkManager::SearchAllLinks()
 
 void UElectricLinkManager::LinkTest()
 {
-	//close set 안에 들어온 것들은 전부 activate 상태가 된다
+	//closeSet 안에 들어온 것들은 전부 activate 상태가 된다
 	TSet<TObjectPtr<UElectricLinkComponent>> closedSet;
 
 	for (auto root : RootLinks)
@@ -78,17 +82,16 @@ void UElectricLinkManager::LinkTest()
 	}
 
 	//closedSet 안에 있는 모든 것들을 Activate한다.
-	//closedSet안에 없는 것들은 모두 Deactivate한다.
-
+	//closedSet 안에 없는 것들은 모두 Deactivate한다.
 	for (auto i : ElectricLinks)
 	{
 		if (closedSet.Contains(i))
 		{
-			i->Activate();
+			i->ElectricLinkActivate();
 		}
 		else
 		{
-			i->Deactivate();
+			i->ElectricLinkDeactivate();
 		}
 	}
 

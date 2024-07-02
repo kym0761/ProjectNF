@@ -5,6 +5,8 @@
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "ElectricLinkComponent.h"
 
 UElectricLinkComponent::UElectricLinkComponent()
 {
@@ -15,30 +17,18 @@ UElectricLinkComponent::UElectricLinkComponent()
 	//TODO : linkcollision이 따로 필요할 것..
 
 	bRootLink = false;
-	bLinkActivated = false;
+	bLinkActive = false;
 
-	InitSphereRadius(750.0f);
-
-	ShapeColor = FColor::Blue;
 }
 
 void UElectricLinkComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (bRootLink)
-	{
-		bLinkActivated = true;
-		
-		//TODO : LinkTrigger의 Owner의 triggeractive = true함?
-	}
-
-	OnComponentBeginOverlap.AddDynamic(this, &UElectricLinkComponent::OnBeginOverlap);
-	OnComponentEndOverlap.AddDynamic(this, &UElectricLinkComponent::OnEndOverlap);
 
 	if (GetWorld())
 	{
-		GetWorld()->GetTimerManager().SetTimer(LinkJobTimer, this, &UElectricLinkComponent::LinkJob, 0.5f, true);
+		GetWorld()->GetTimerManager().SetTimer(LinkJobTimer, this, &UElectricLinkComponent::LinkJob, LinkJobInterval, true);
 	}
 
 }
@@ -47,22 +37,59 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//?
+	//tick에서 주기적으로 전기 연결 이펙트 생성
+
+	ElectricEffectCounter += DeltaTime;
+
+	if (ElectricEffectCounter >= ElectricEffectInterval)
+	{
+		if (bLinkActive)
+		{
+			for (auto i : AdjacentLinkComps)
+			{
+				//TODO : 양방향으로 전기 이펙트를 생성하여 난잡해보임
+				//양쪽간에 전기 이펙트를 1개만 그리도록 해야함.
+				// 아이디어 ? --> edge로 가정하여 start와 end가 같은 전기 이펙트를 생성하지 않게 방지?
+
+				auto niagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+					ElectricNiagaraBP,
+					this,
+					FName("NONE"),
+					FVector(0, 0, 0),
+					FRotator::ZeroRotator,
+					EAttachLocation::KeepRelativeOffset,
+					true);// 시간이 지나면 이펙트가 알아서 Destroy될 것.
+
+				if (!IsValid(niagaraComp))
+				{
+					continue;
+				}
+
+				niagaraComp->SetVariableVec3(TEXT("StartPos"), GetComponentLocation());
+				niagaraComp->SetVariableVec3(TEXT("EndPos"), i->GetComponentLocation());
+			}
+		}
+
+		ElectricEffectCounter = 0.0f;
+	}
+
 }
 
 void UElectricLinkComponent::LinkJob()
 {
-	//주기적으로 LinkComp를 찾는다.
+	//주기적으로 자신 근처에 있는 LinkComp를 찾는다.
 
-	if (!bLinkActivated)
+	if (!bLinkActive)
 	{
 		return;
 	}
 
-	TArray<AActor*> overlapActors;
-	GetOverlappingActors(overlapActors);
+	//TODO : Manager에 SearchAllLinks를 받아와 GetAllActorsOfClass를 하지 않도록 만들어야함
+	// Manager를 싱글톤으로 관리하고 있는 정보를 받아오도록 만들어야할 듯
+	TArray<AActor*> outActor;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), outActor);
 
-	for (auto i : overlapActors)
+	for (auto i : outActor)
 	{
 		auto otherLinkComp = i->FindComponentByClass<UElectricLinkComponent>();
 
@@ -71,7 +98,20 @@ void UElectricLinkComponent::LinkJob()
 			continue;
 		}
 
-		AdjacentLinkComps.Add(otherLinkComp);
+		float distance = FVector::Distance(this->GetComponentLocation(), otherLinkComp->GetComponentLocation());
+
+		//AdjacentLinkComps는 TSet이라서 Unique함이 보장됨.
+		//두 거리가 너무 멀면 전기 연결 대상이 아님.
+		if (distance > ElectricityDistance)
+		{
+			AdjacentLinkComps.Remove(otherLinkComp);
+		}
+		else
+		{
+			//인접 link에 저장함. 전기 연결 판단은 LinkManager에게 맡긴다.
+			AdjacentLinkComps.Add(otherLinkComp);
+		}
+		
 	}
 
 	//자신은 제외함
@@ -79,93 +119,49 @@ void UElectricLinkComponent::LinkJob()
 
 }
 
-void UElectricLinkComponent::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// overlap Begin되면 감지할 UElectricLinkComponent 를 추가하려고 했는데
-	// 어차피 Timer로 주기적으로 감지하게 되어 BeginOverlap에서 아무 것도 안함
-	// 혹시 필요할 일이 있을지도 모르니 냅둠.
-
-	if (!IsValid(OtherActor))
-	{
-		return;
-	}
-
-	auto linkComp = OtherActor->FindComponentByClass<UElectricLinkComponent>();
-
-	if (!IsValid(linkComp))
-	{
-		return;
-	}
-
-	//범위에 들어온 LinkComp를 인접 LinkComp에 추가함.
-	AdjacentLinkComps.Add(linkComp);
-
-}
-
-void UElectricLinkComponent::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	//다른 LinkComp가 Overlap을 벗어나면 인접 LinkComp에서 제외함.
-
-	if (!IsValid(OtherActor))
-	{
-		return;
-	}
-
-	auto linkComp = OtherActor->FindComponentByClass<UElectricLinkComponent>();
-
-	if (!IsValid(linkComp))
-	{
-		return;
-	}
-	
-	//벗어난 linkComp 제거
-	if (AdjacentLinkComps.Contains(linkComp))
-	{
-		AdjacentLinkComps.Remove(linkComp);
-	}
-
-}
-
 void UElectricLinkComponent::ElectricLinkActivate()
 {
-	if (bRootLink)
+	//LinkComponent를 최초 Active한다.
+
+	if (bRootLink) // root는 상시 활성화라 스킵
 	{
 		return;
 	}
 
-	if (bLinkActivated)
+	if (bLinkActive)// 이미 활성화 상태면 스킵
 	{
 		return;
 	}
 
-	bLinkActivated = true;
-
-	//TODO : 인접한 Link에 전기 연결 이펙트 생성
-
-	//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld() );
-
-	for (auto i : AdjacentLinkComps)
-	{
-		auto niagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(ElectricNiagaraBP, this, FName("NONE"), FVector(0, 0, 0), FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset, false);
-		niagaraComp->SetNiagaraVariableVec3(TEXT("EndPos"), GetComponentLocation());
-	}
-
+	bLinkActive = true;
+	OnLinkActivatedChanged.Broadcast(bLinkActive);
 	
 }
 
 void UElectricLinkComponent::ElectricLinkDeactivate()
 {
-	if (bRootLink)
+	//Link Component를 비활성화한다.
+
+	if (bRootLink) // root는 상시 활성화라 스킵
 	{
 		return;
 	}
 
-	if (!bLinkActivated)
+	if (!bLinkActive) //이미 비활성화 상태면 스킵
 	{
 		return;
 	}
 
-	bLinkActivated = false;
+	bLinkActive = false;
+	OnLinkActivatedChanged.Broadcast(bLinkActive);
 
-	//TODO : 인접한 Link와 연결되었던 전기 연결 이펙트 제거
+}
+
+void UElectricLinkComponent::SetAsRootLink()
+{
+	//PuzzleDevice의 값에 따라 BeginPlay()에서 Root세팅이 될 것이다.
+
+	bRootLink = true;
+	bLinkActive = true;
+	OnLinkActivatedChanged.Broadcast(bLinkActive);
 }

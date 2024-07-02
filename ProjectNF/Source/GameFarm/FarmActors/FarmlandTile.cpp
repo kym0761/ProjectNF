@@ -11,13 +11,8 @@ AFarmlandTile::AFarmlandTile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	SetRootComponent(Box);
-
-
-	//Box->SetCollisionProfileName(TEXT("InteractiveCollision"));
-	//Box->bDynamicObstacle = true;
 	Box->SetCanEverAffectNavigation(false);
 
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));

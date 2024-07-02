@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Grid.h"
+#include "Grid.h" // TMap의 키로 쓰는 이상, 뺄 수 없음.
 #include "GridSetup.generated.h"
 
 class UGridVisualComponent;
-
 
 UCLASS()
 class GAMEFARM_API AGridSetup : public AActor
@@ -21,21 +20,18 @@ public:
 
 public:
 
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
-	int32 X_Length = 10;
-
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
-	int32 Y_Length = 10;
-
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")//, Meta = (AllowPrivateAccess = true))
 	float CellSize = 100.0f;
 
 
 protected:
 
+	//Grid 표시할 InstancedMesh
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UGridVisualComponent> GridVisual;
 
+	//Grid에 어떤 Actor가 점유하고 있는지 체크하는 Map
+	//맵 모든 지역을 Grid로 만들지 않고 필요한 정보만 보관한다.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
 	TMap<FGrid, TObjectPtr< AActor>> Occupy;
 

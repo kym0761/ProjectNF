@@ -8,7 +8,10 @@
 
 class UStaticMeshComponent;
 class UBoxComponent;
-
+/*
+* Grid를 점유하고 작물을 키울 땅 타일
+* 작물의 정보와 성장 정도에 따라 땅 Mesh 위에 작물 Mesh가 나타날 것
+*/
 UCLASS()
 class GAMEFARM_API AFarmlandTile : public AActor
 {

@@ -35,4 +35,5 @@ public:
 	bool IsInvalidGrid() const;
 };
 
+//hash : TSet, TMap..
 uint32 GetTypeHash(const FGrid& Grid);

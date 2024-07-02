@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "IngameDateTime.h"
+#include "GameDateTime.h"
 
-//[0] 번째는 사용하지 않는다.
-const TArray<int> FIngameDateTime::MAXDAY_OF_MONTH = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+//[0]번째는 편의상 사용하지 않는다.
+const TArray<int> FGameDateTime::MAXDAY_OF_MONTH = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
-const FIngameDateTime FIngameDateTime::MORNING = FIngameDateTime(0, 0, 0, 6, 0);
-const FIngameDateTime FIngameDateTime::NOON = FIngameDateTime(0, 0, 0, 12, 0);
-const FIngameDateTime FIngameDateTime::EVENING = FIngameDateTime(0, 0, 0, 18, 0);
+const FGameDateTime FGameDateTime::MORNING = FGameDateTime(0, 0, 0, 6, 0);
+const FGameDateTime FGameDateTime::NOON = FGameDateTime(0, 0, 0, 12, 0);
+const FGameDateTime FGameDateTime::EVENING = FGameDateTime(0, 0, 0, 18, 0);
 
-FIngameDateTime::FIngameDateTime(int32 InYear, int32 InMonth, int32 InDay, int32 InHour, int32 InMinute)
+FGameDateTime::FGameDateTime(int32 InYear, int32 InMonth, int32 InDay, int32 InHour, int32 InMinute)
 {
 	Year = FMath::Clamp(InYear, 0, MAX_YEAR);
 	Month = FMath::Clamp(InMonth, 0, MAX_MONTH);
@@ -19,7 +19,7 @@ FIngameDateTime::FIngameDateTime(int32 InYear, int32 InMonth, int32 InDay, int32
 	Minute = FMath::Clamp(InMinute, 0, MAX_MINUTE - 1);
 }
 
-FIngameDateTime FIngameDateTime::operator+(const FIngameDateTime& rValue)
+FGameDateTime FGameDateTime::operator+(const FGameDateTime& rValue)
 {
 	int32 year = this->Year + rValue.Year;
 	int32 month = this->Month + rValue.Month;
@@ -37,7 +37,7 @@ FIngameDateTime FIngameDateTime::operator+(const FIngameDateTime& rValue)
 	/*
 	* 시, 분은 >= 조건 : 0 허용
 	* 월, 일은 > 조건 : 0 비허용
-	* 연은....그때까지 플레이하는 것이 현실적으로 불가능..
+	* 연도도 최대 상한치가 있지만, 그때까지 플레이하는 것이 현실적으로 불가능할 것.
 	*/
 
 	if (minute >= MAX_MINUTE)
@@ -70,17 +70,17 @@ FIngameDateTime FIngameDateTime::operator+(const FIngameDateTime& rValue)
 		year = FMath::Clamp(year, 0, MAX_YEAR);
 	}
 
-	return FIngameDateTime(year, month, day, hour, minute);
+	return FGameDateTime(year, month, day, hour, minute);
 }
 
-FIngameDateTime& FIngameDateTime::operator+=(const FIngameDateTime& rValue)
+FGameDateTime& FGameDateTime::operator+=(const FGameDateTime& rValue)
 {
 	*this = *this + rValue;
 
 	return *this;
 }
 
-FIngameDateTime FIngameDateTime::operator-(const FIngameDateTime& rValue)
+FGameDateTime FGameDateTime::operator-(const FGameDateTime& rValue)
 {
 	int32 year = this->Year - rValue.Year;
 	int32 month = this->Month - rValue.Month;
@@ -118,17 +118,17 @@ FIngameDateTime FIngameDateTime::operator-(const FIngameDateTime& rValue)
 		year = FMath::Clamp(year, 0, MAX_YEAR);
 	}
 
-	return FIngameDateTime(year, month, day, hour, minute);
+	return FGameDateTime(year, month, day, hour, minute);
 }
 
-FIngameDateTime& FIngameDateTime::operator-=(const FIngameDateTime& rValue)
+FGameDateTime& FGameDateTime::operator-=(const FGameDateTime& rValue)
 {
 	*this = *this - rValue;
 
 	return *this;
 }
 
-FString FIngameDateTime::ToString()
+FString FGameDateTime::ToString() const
 {
 	return FString::Printf(TEXT("| Year : %d -- Month : %d -- Day : %d -- Hour : %d -- Minute : %d |"), Year, Month, Day, Hour, Minute);
 }

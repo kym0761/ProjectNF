@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class GameDateTime : ModuleRules
+public class GameTime : ModuleRules
 {
-	public GameDateTime(ReadOnlyTargetRules Target) : base(Target)
+	public GameTime(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
@@ -20,6 +20,6 @@ public class GameDateTime : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
-        PrivateIncludePaths.AddRange(new string[] { "GameDateTime" });
+        PrivateIncludePaths.AddRange(new string[] { "GameTime" });
     }
 }

@@ -2,7 +2,6 @@
 
 
 #include "GridSetup.h"
-#include "Grid.h"
 #include "GridVisualComponent.h"
 
 // Sets default values

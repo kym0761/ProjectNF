@@ -14,6 +14,6 @@ public class ProjectNFEditorTarget : TargetRules
         ExtraModuleNames.Add("GamePuzzle");
         ExtraModuleNames.Add("GameFarm");
         ExtraModuleNames.Add("GameItem");
-        ExtraModuleNames.Add("GameDateTime");
+        ExtraModuleNames.Add("GameTime");
     }
 }

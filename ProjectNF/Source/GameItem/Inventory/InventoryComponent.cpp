@@ -154,6 +154,7 @@ int32 UInventoryComponent::AddItemToInventory(const FItemSlotData& InData)
 	//Warning 2 : 보상을 얻으려 했는데, 보상이 초과되서 남음 or 인벤토리 공간이 없어서 보상을 아예 얻지 못함.
 	OnInventoryItemsChanged.Broadcast();
 	return leftover.Quantity;
+
 }
 
 bool UInventoryComponent::UseItemInInventory(const int32 ItemIndex)
@@ -327,9 +328,6 @@ bool UInventoryComponent::SwapItemBetweenInventory(TObjectPtr<UInventoryComponen
 
 	FItemSlotData i1 = From->Items[FromSlotIndex];
 	FItemSlotData i2 = To->Items[ToSlotIndex];
-
-
-	auto pp = NewObject<FItemSlotData>(From);
 
 	//TODO : 아이템 정보를 확인하는 로직이 필요함.
 	FItemBaseData itemBaseData;

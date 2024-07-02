@@ -32,14 +32,25 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+#if WITH_EDITORONLY_DATA
+
+	UPROPERTY()
+	TArray<TObjectPtr<APuzzleActorBase>> PrevTriggerTargets;
+
+#endif //WITH_EDITORONLY_DATA
+
+#if WITH_EDITOR
+protected:
+
+	//TriggerTargets를 에디터에서 변경하면 Target이 되는 퍼즐 액터의 TriggerMap이 변하도록 반영하기 위한 에디터용 함수 2개
+	virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+#endif // WITH_EDITOR
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-protected:
-
-	//WhoTriggerThis를 Init함.
-	void InitTriggerMap();
 
 public:
 
@@ -47,4 +58,9 @@ public:
 
 	bool CheckTriggersHaveActivated() const;
 
+#if WITH_EDITOR
+	//에디터에서 TriggerMap 액터 추가 및 제거 기능
+	void AddToTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToAdd);
+	void RemoveFromTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToRemove);
+#endif // WITH_EDITOR
 };

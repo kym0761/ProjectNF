@@ -21,5 +21,9 @@ public class ProjectNF : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
         PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
+
+        //Add Custom Modules in Source Folder.
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime" });
+        PrivateIncludePaths.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime" });
     }
 }
