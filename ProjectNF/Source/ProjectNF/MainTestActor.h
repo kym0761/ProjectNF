@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Grid/Grid.h"
 #include "GameDateTime.h"
 #include "MainTestActor.generated.h"
 
@@ -18,6 +19,10 @@ class PROJECTNF_API AMainTestActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMainTestActor();
+
+	//Key : Actor BP, Value : FGrid,FGrid...
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
+	
 
 protected:
 	// Called when the game starts or when spawned

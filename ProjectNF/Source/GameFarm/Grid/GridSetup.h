@@ -30,10 +30,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UGridVisualComponent> GridVisual;
 
-	//Grid에 어떤 Actor가 점유하고 있는지 체크하는 Map
-	//맵 모든 지역을 Grid로 만들지 않고 필요한 정보만 보관한다.
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
-	TMap<FGrid, TObjectPtr< AActor>> Occupy;
+	////Grid에 어떤 Actor가 점유하고 있는지 체크하는 Map
+	////맵 모든 지역을 Grid로 만들지 않고 필요한 정보만 보관한다.
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
+	//TMap<FGrid, TObjectPtr< AActor>> Occupy;
 
 protected:
 	// Called when the game starts or when spawned

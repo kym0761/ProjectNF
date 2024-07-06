@@ -32,8 +32,8 @@ FGrid AGridSetup::WorldToGrid(const FVector& WorldLocation) const
 {
 	FGrid grid;
 
-	grid.X = FMath::CeilToInt32(WorldLocation.X / CellSize);
-	grid.Y = FMath::CeilToInt32(WorldLocation.Y / CellSize);
+	//grid.X = FMath::CeilToInt32(WorldLocation.X / CellSize);
+	//grid.Y = FMath::CeilToInt32(WorldLocation.Y / CellSize);
 
 	return grid;
 }
@@ -41,8 +41,8 @@ FGrid AGridSetup::WorldToGrid(const FVector& WorldLocation) const
 FVector AGridSetup::GridToWorld(const FGrid& Grid) const
 {
 	FVector worldLocation = FVector::ZeroVector;
-	worldLocation.X += Grid.X * CellSize - CellSize / 2;
-	worldLocation.Y += Grid.Y * CellSize - CellSize / 2;
+	//worldLocation.X += Grid.X * CellSize - CellSize / 2;
+	//worldLocation.Y += Grid.Y * CellSize - CellSize / 2;
 
 	return worldLocation;
 }

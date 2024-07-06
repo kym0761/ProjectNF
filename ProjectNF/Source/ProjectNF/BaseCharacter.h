@@ -25,9 +25,9 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
-
 #pragma region Component
 
+protected:
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -36,10 +36,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
+	//Farm 작업할 때 어느 지점에서 행동하게 할 것인지에 대한 Scene Component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USceneComponent> FarmPos;
+
 #pragma endregion
 
 #pragma region Input
 
+protected:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
@@ -81,6 +86,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category ="State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UBaseCharacterState> CurrentCharacterState;
+
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Farming", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AFarmlandTile> FarmlandTile_BP;
 
 protected:
 	// Called when the game starts or when spawned

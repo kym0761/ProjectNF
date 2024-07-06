@@ -6,10 +6,10 @@
 #include "Grid.generated.h"
 
 /**
- * 
+ *  구조체 _API 명시 안하고 사용하면 메인 모듈에서 사용시 버그 발생함.
  */
 USTRUCT(BlueprintType, Blueprintable)
-struct FGrid
+struct GAMEFARM_API FGrid
 {
 	GENERATED_BODY()
 
@@ -35,5 +35,6 @@ public:
 	bool IsInvalidGrid() const;
 };
 
+//외부 모듈에서 이 Hash가 적용되려면 GAMEFARM_API가 함수 앞에 붙어야하는 것으로 보임.
 //hash : TSet, TMap..
-uint32 GetTypeHash(const FGrid& Grid);
+GAMEFARM_API uint32 GetTypeHash(const FGrid& Grid);

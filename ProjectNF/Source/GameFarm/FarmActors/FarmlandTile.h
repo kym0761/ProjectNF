@@ -7,14 +7,13 @@
 #include "FarmlandTile.generated.h"
 
 
+//FarmlandTile에 들어갈 Crop 정보 
 USTRUCT(BlueprintType)
 struct GAMEFARM_API FCropData
 {
 	GENERATED_BODY()
 
 public:
-
-	//FarmTile에 들어갈 Crop 정보 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
 	FName CropName;

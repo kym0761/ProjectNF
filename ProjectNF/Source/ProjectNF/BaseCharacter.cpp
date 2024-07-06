@@ -10,9 +10,20 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
+
 #include "CharacterStrategy/ChBattleState.h"
 #include "CharacterStrategy/ChFarmingState.h"
 #include "CharacterStrategy/ChNormalState.h"
+
+#include "FarmActors/FarmlandTile.h"
+
+#include "Grid/Grid.h"
+#include "Grid/GridManager.h"
+#include "NFGameModeBase.h"
+
+#include "BaseAnimInstance.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -45,6 +56,9 @@ ABaseCharacter::ABaseCharacter()
 	// Camera does not rotate relative to arm
 	FollowCamera->bUsePawnControlRotation = false;
 
+	FarmPos = CreateDefaultSubobject<USceneComponent>(TEXT("FarmPos"));
+	FarmPos->SetupAttachment(GetRootComponent());
+	FarmPos->SetRelativeLocation(FVector(100.0f,0.0f,50.0f));
 
 	{
 		auto battleState = CreateDefaultSubobject<UChBattleState>(TEXT("BATTLESTATE"));
@@ -155,24 +169,101 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Attack()
 {
+	//근접 공격?
+
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
 			TEXT("Attack"));
 	}
+
+	auto animInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
+
+	if (!IsValid(animInstance))
+	{
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("AnimInstance Invalid."));
+
+		return;
+	}
+
+	animInstance->PlayAttackMontage();
+
 }
 
 void ABaseCharacter::UseFarmTool()
 {
-	if (GEngine)
+	//일단, 지금 farmtool은 땅을 경작하는 기능을 하는걸로 한다.
+	//명칭 UseHoe로 변경해야할 듯
+
+	if (!IsValid(FarmlandTile_BP))
 	{
+		//farmlandtile bp not set
 		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("UseFarmTool"));
+			TEXT("FarmlandTile BP is not set"));
+		return;
 	}
+
+	FHitResult hit;
+
+	//farmPos에서 아래로 2000 내려가는 지점으로 trace
+	FVector start = FarmPos->GetComponentLocation();
+	FVector end = start + FVector::DownVector * 2000.0f;
+
+	//일단 WorldStatic이면 farmTile을 설치한다.
+	//추후에 땅의 Physical Material? 을 통해 흙부분에서만 Farmtile을 설치하게 만들 수도 있음.
+	bool traceResult
+		= GetWorld()->LineTraceSingleByChannel(
+			hit,
+			start,
+			end,
+			ECollisionChannel::ECC_WorldStatic);
+
+	if (!traceResult)
+	{
+		//trace failed
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("trace failed"));
+		
+		return;
+	}
+
+	UGridManager* gridManager = ANFGameModeBase::GetGridManager();
+	if (!IsValid(gridManager))
+	{
+		//gridmanager nullptr
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("gridManager nullptr"));
+
+		return;
+	}
+
+	FGrid grid = gridManager->WorldToGrid(hit.Location);
+
+	bool bExistOnGrid = gridManager->IsSomethingExistOnGrid(grid);
+	if (bExistOnGrid)
+	{
+		//누가 점유중이라 못함
+		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
+			TEXT("already occupying"));
+
+		return;
+	}
+
+	FActorSpawnParameters spawnPram;
+	spawnPram.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	//farmlandtile 설치 후 gridmanager에게 occupy 시킴
+	auto farmlandTile = GetWorld()->SpawnActor<AFarmlandTile>(
+		FarmlandTile_BP, gridManager->GridToWorld(grid), FRotator::ZeroRotator, spawnPram);
 }
 
 void ABaseCharacter::DoWhat()
 {
+	//뭐할지 안정해짐
+
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
