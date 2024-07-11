@@ -14,4 +14,29 @@ class PROJECTNF_API UNFGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UNFGameInstance();
+
+protected:
+
+	//player ¿Ã∏ß
+	UPROPERTY()
+	FString PlayerName;
+	
+	//?
+	UPROPERTY()
+	int32 PlayerNumber;
+
+#pragma region SaveGameFunction
+
+public:
+
+	UFUNCTION()
+	void Save();
+
+	UFUNCTION()
+	void Load();
+#pragma endregion
+
+
 };

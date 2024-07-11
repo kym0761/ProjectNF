@@ -2,6 +2,7 @@
 
 
 #include "GridManager.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UGridManager::UGridManager()
 {
@@ -40,6 +41,9 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		outer = outer->GetOuter();
 	}*/
 
+	/*
+	* GameMode가 outer라 Getworld()는 성립된다.
+	*/
 
 	if (GetWorld())
 	{
@@ -48,15 +52,24 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		FVector end = gridToWorld + FVector::DownVector * 10000;
 
 		FHitResult hit;
-		bool hitResult = GetWorld()->LineTraceSingleByChannel(
-			hit,
+
+		TArray<AActor*> ignores;
+
+		bool hitResult = UKismetSystemLibrary::SphereTraceSingle(
+			GetWorld(),
 			start,
 			end,
-			ECollisionChannel::ECC_GameTraceChannel1
-			);
-
-		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 5.0f, 0, 1.0f);
-		DrawDebugPoint(GetWorld(), hit.Location, 5.0f, FColor::Blue, false, 5.0f, 0);
+			CellSize / 3, //gridsize의 1/2~1/3으로 세팅하는 것이 좋다.
+			UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1), //프로젝트 세팅의 trace채널 1
+			false,
+			ignores,
+			EDrawDebugTrace::ForDuration,
+			hit,
+			true,
+			FLinearColor::Red,
+			FLinearColor::Green,
+			3.0f
+		);
 
 		if (hitResult)
 		{

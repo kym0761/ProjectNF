@@ -21,7 +21,7 @@
 
 #include "Grid/Grid.h"
 #include "Grid/GridManager.h"
-#include "NFGameModeBase.h"
+#include "System/NFGameModeBase.h"
 
 #include "BaseAnimInstance.h"
 

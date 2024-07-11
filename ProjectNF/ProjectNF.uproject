@@ -50,6 +50,15 @@
 				"Engine",
 				"CoreUObject"
 			]
+		},
+		{
+			"Name": "GameObjectPool",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject"
+			]
 		}
 	],
 	"Plugins": [

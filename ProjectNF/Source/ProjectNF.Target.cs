@@ -15,5 +15,6 @@ public class ProjectNFTarget : TargetRules
         ExtraModuleNames.Add("GameFarm");
         ExtraModuleNames.Add("GameItem");
         ExtraModuleNames.Add("GameTime");
+        ExtraModuleNames.Add("GameObjectPool");
     }
 }

@@ -6,12 +6,14 @@
 #include "Grid.generated.h"
 
 /**
- *  구조체 _API 명시 안하고 사용하면 메인 모듈에서 사용시 버그 발생함.
+ * FVector로 표현된 위치를 int , int 형식의 그리드로 표현하는 정보 구조체
  */
 USTRUCT(BlueprintType, Blueprintable)
 struct GAMEFARM_API FGrid
 {
 	GENERATED_BODY()
+
+	//구조체 _API 명시 안하고 사용하면 메인 모듈에서 사용시 버그 발생함.
 
 public:
 

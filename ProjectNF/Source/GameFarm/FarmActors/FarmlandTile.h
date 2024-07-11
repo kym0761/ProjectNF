@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Grid/Grid.h"
 #include "FarmlandTile.generated.h"
 
 
@@ -23,6 +24,35 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
 	int32 MaxGrowth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	bool bWatered;
+
+};
+
+//SaveGame에 사용할 세이브용 구조체
+//Grid 위치값을 저장하여 load하고 farm맵에서 Grid위치에 맞게 배치할 용도
+USTRUCT(BlueprintType)
+struct GAMEFARM_API FFarmlandTimeSaveData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	FName CropName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	int32 CurrentGrowth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	int32 MaxGrowth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	bool bWatered;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	FGrid Grid;
 
 };
 
