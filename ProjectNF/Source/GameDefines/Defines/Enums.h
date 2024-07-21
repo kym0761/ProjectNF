@@ -64,20 +64,20 @@ enum class  EItemSubType : uint8
 
 };
 
-//ComsumableItem의 효과 분류
-//bitmask => 0(ignored), 1, 2, 4, 8, ..., 256(X)
-UENUM(BlueprintType, Meta = (BitFlags, UseEnumValuesAsMaskValuesInEditor = "true"))
-enum class  EConsumableItemType : uint8
-{
-	None = 0 UMETA(Hidden),
-
-	Heal = 1 UMETA(DisplayName = "Heal"),
-	Cure = 2 UMETA(DisplayName = "Cure"),
-	Buff = 4 UMETA(DisplayName = "Buff"),
-	Debuff = 8 UMETA(DisplayName = "Debuff"),
-
-	X = 255 UMETA(Hidden)
-};
+////ComsumableItem의 효과 분류
+////bitmask => 0(ignored), 1, 2, 4, 8, ..., 256(X)
+//UENUM(BlueprintType, Meta = (BitFlags, UseEnumValuesAsMaskValuesInEditor = "true"))
+//enum class  EConsumableItemType : uint8
+//{
+//	None = 0 UMETA(Hidden),
+//
+//	Heal = 1 UMETA(DisplayName = "Heal"),
+//	Cure = 2 UMETA(DisplayName = "Cure"),
+//	Buff = 4 UMETA(DisplayName = "Buff"),
+//	Debuff = 8 UMETA(DisplayName = "Debuff"),
+//
+//	X = 255 UMETA(Hidden)
+//};
 
 
 UENUM(BlueprintType)

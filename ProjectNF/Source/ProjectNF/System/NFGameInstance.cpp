@@ -224,3 +224,13 @@ TObjectPtr<UElectricLinkManager> UNFGameInstance::GetElectricLinkManager()
 {
 	return GElectricLinkManager;
 }
+
+TObjectPtr<UObjectPoolManager> UNFGameInstance::GetObjectPoolManager()
+{
+	return GObjectPoolManager;
+}
+
+TObjectPtr<UInventoryManager> UNFGameInstance::GetInventoryManager()
+{
+	return GInventoryManager;
+}

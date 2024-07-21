@@ -12,6 +12,7 @@
 
 class UStaticMeshComponent;
 class UBoxComponent;
+class AItemPickup;
 /*
 * Grid를 점유하고 작물을 키울 땅 타일
 * 작물의 정보와 성장 정도에 따라 땅 Mesh 위에 작물 Mesh가 나타날 것
@@ -37,6 +38,10 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Crop")
 	FCropData CropData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="Crop", Meta=(AllowPrivateAccess = true))
+	TSubclassOf<AItemPickup> ItemPickup_BP;
+
 
 protected:
 	// Called when the game starts or when spawned

@@ -24,10 +24,10 @@ class GAMEDEFINES_API IObjectPoolable
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void PoolBeginPlay();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void PoolEndPlay();
 
 };
@@ -144,7 +144,7 @@ class IInteractive
 
 public:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Interactive")
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent, Category = "Interactive")
 	void Interact(APawn* InteractCauser);
 
 };

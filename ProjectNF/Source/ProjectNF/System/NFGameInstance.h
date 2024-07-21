@@ -108,15 +108,17 @@ private:
 	static TObjectPtr<UElectricLinkManager> GElectricLinkManager;
 	static TObjectPtr<UObjectPoolManager> GObjectPoolManager;
 	static TObjectPtr<UInventoryManager> GInventoryManager;
-#pragma endregion
-
-public:
-
-	void InitManagers();
 
 public:
 
 	static 	TObjectPtr<UGridManager> GetGridManager();
 	static 	TObjectPtr<UElectricLinkManager> GetElectricLinkManager();
+	static 	TObjectPtr<UObjectPoolManager> GetObjectPoolManager();
+	static 	TObjectPtr<UInventoryManager> GetInventoryManager();
+
+	void InitManagers();
+#pragma endregion
+
+public:
 
 };

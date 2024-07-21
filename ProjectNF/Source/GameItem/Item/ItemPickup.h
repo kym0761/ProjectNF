@@ -12,7 +12,7 @@ class USphereComponent;
 class UStaticMeshComponent;
 
 UCLASS()
-class GAMEITEM_API AItemPickup : public AActor, public IInteractive
+class GAMEITEM_API AItemPickup : public AActor, public IInteractive, public IObjectPoolable
 {
 	GENERATED_BODY()
 	

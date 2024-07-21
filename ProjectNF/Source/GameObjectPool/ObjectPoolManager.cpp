@@ -97,6 +97,9 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 	PoolableActor->SetActorLocationAndRotation(FVector(-10000, -10000, 1000000), FRotator::ZeroRotator); //닿지 않을 만한 위치로 이동
 
 	IObjectPoolable::Execute_PoolEndPlay(PoolableActor);
+
+	Debug::Print(DEBUG_TEXT("ObjectPoolable Actor Despawned."));
+
 }
 
 void UObjectPoolManager::ClearObjectPooling()
