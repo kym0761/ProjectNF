@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Item/Item.h"
+#include "Defines/Data.h"
 #include "UObject/NoExportTypes.h"
 #include "InventoryObject.generated.h"
 

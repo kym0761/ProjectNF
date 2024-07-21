@@ -6,24 +6,16 @@
 #include "Defines/Enums.h"
 #include "Engine/DataTable.h"
 #include "UObject/NoExportTypes.h"
-#include "Item.generated.h"
+#include "Data.Generated.h"
 
 /**
- * 
+ * 혹시 언리얼 소스의 무언가와 충돌되면 GameData라고 명칭 바꿀 것 ㅇㅅㅇ;
  */
 
- /*언리얼 에디터에서 접근하기 위한 클래스로 실제로는 사용하고 있지 않음.*/
-UCLASS()
-class GAMEITEM_API UItem : public UObject
-{
-	GENERATED_BODY()
-	
-	UItem();
-};
-
+#pragma region ItemData
 
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FItemBaseData : public FTableRowBase
+struct GAMEDEFINES_API FItemBaseData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -86,7 +78,7 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FItemSlotData
+struct GAMEDEFINES_API FItemSlotData
 {
 	GENERATED_BODY()
 
@@ -121,7 +113,7 @@ public:
 
 //ItemShop에서 사용할 구조체
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FShopItemData
+struct GAMEDEFINES_API FShopItemData
 {
 	GENERATED_BODY()
 
@@ -144,7 +136,7 @@ public:
 
 //Consumable 아이템 정보
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FConsumableItemData : public FTableRowBase
+struct GAMEDEFINES_API FConsumableItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -171,7 +163,7 @@ public:
 
 //장비 아이템의 정보
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FEquipmentItemData : public FTableRowBase
+struct GAMEDEFINES_API FEquipmentItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -202,7 +194,7 @@ public:
 
 //제작 정보
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FItemCraftData : public FTableRowBase
+struct GAMEDEFINES_API FItemCraftData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -226,3 +218,5 @@ public:
 	// 개선 아이디어 : 제작 start 시간을 등록한 뒤, 제작 completed 시간이 지나면 아이템을 얻을 수 있게 하면 될 듯?
 
 };
+
+#pragma endregion

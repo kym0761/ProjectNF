@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Item/Item.h"
+#include "Defines/Data.h"
 #include "NFGameInstance.generated.h"
 
 class UInventoryObject;
