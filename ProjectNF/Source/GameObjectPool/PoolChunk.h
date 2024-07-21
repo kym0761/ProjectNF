@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Interfaces.h"
+#include "Defines/Interfaces.h"
 #include "PoolChunk.generated.h"
 
 /**

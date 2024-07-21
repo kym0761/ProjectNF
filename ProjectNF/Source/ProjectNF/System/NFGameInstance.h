@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Item.h" //GameItem Module.
+#include "Item/Item.h"
 #include "NFGameInstance.generated.h"
 
 class UInventoryObject;
@@ -104,9 +104,6 @@ private:
 public:
 
 	void InitManagers();
-
-	UFUNCTION(BlueprintCallable)
-	void Test();
 
 public:
 

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Grid.h"
-#include "interfaces.h"
+#include "Defines/interfaces.h"
 #include "GridManager.generated.h"
 
 /**

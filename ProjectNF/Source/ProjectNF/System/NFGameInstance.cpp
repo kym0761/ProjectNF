@@ -22,11 +22,6 @@ UNFGameInstance::UNFGameInstance()
 	PlayerName = TEXT("TempName");
 	PlayerNumber = 1;
 
-
-	GridManager = CreateDefaultSubobject<UGridManager>(TEXT("GridManager"));
-	ElectricLinkManager = CreateDefaultSubobject<UElectricLinkManager>(TEXT("ElectricLinkManager"));
-	ObjectPoolManager = CreateDefaultSubobject<UObjectPoolManager>(TEXT("ObjectPoolManager"));
-	InventoryManager = CreateDefaultSubobject<UInventoryManager>(TEXT("InventoryManager"));
 }
 
 void UNFGameInstance::Save()
@@ -145,44 +140,39 @@ void UNFGameInstance::InitManagers()
 {
 	Debug::Print(DEBUG_TEXT("InitManagers Called."));
 
+	//매니저 최초 생성 및 초기화
+	{
+		if (!IsValid(GridManager))
+		{
+			GridManager = NewObject<UGridManager>(this);
+			GGridManager = GridManager;
+		}
+
+		if (!IsValid(ElectricLinkManager))
+		{
+			ElectricLinkManager = NewObject<UElectricLinkManager>(this);
+			GElectricLinkManager = ElectricLinkManager;
+		}
+
+		if (!IsValid(ObjectPoolManager))
+		{
+			ObjectPoolManager = NewObject<UObjectPoolManager>(this);
+			GObjectPoolManager = ObjectPoolManager;
+		}
+
+		if (!IsValid(InventoryManager))
+		{
+			InventoryManager = NewObject<UInventoryManager>(this);
+			GInventoryManager = InventoryManager;
+		}
+	}
+	
+
 	GridManager->ManagerInit();
 	ElectricLinkManager->ManagerInit();
 	ObjectPoolManager->ManagerInit();
 	InventoryManager->ManagerInit();
 
-	GGridManager = GridManager;
-	GElectricLinkManager = ElectricLinkManager;
-	GObjectPoolManager = ObjectPoolManager;
-	GInventoryManager = InventoryManager;
-}
-
-void UNFGameInstance::Test()
-{
-	if (GEngine)
-	{
-		auto world = GEngine->GetCurrentPlayWorld();
-
-		if (IsValid(world))
-		{
-			Debug::Print(DEBUG_TEXT("World valid."));
-
-			UObject* outer = world;
-			while (IsValid(outer))
-			{
-				Debug::Print(FString::Printf(TEXT(" outer : %s"), *outer->GetName()));
-				outer = outer->GetOuter();
-			}
-		}
-		else
-		{
-			Debug::Print(DEBUG_TEXT("World invalid."));
-		}
-	}
-	else
-	{
-		Debug::Print(DEBUG_TEXT("GEngine invalid."));
-	}
-	
 }
 
 TObjectPtr<UGridManager> UNFGameInstance::GetGridManager()

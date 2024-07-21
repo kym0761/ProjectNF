@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Enums.h"
+#include "Defines/Enums.h"
 #include "Engine/DataTable.h"
 #include "UObject/NoExportTypes.h"
 #include "Item.generated.h"

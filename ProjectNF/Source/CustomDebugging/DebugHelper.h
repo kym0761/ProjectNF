@@ -29,8 +29,16 @@
  */
 namespace Debug
 {
+	//이 값을 false로 바꾸면 모든 파일의 디버그를 비활성화할 수 있음.
+	static bool bDebugPlay = true;
+
 	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)
 	{
+		if (!bDebugPlay)
+		{
+			return;
+		}
+
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(InKey, 3.0f, Color, Msg);

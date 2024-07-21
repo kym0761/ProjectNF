@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interfaces.h"
+#include "Defines/Interfaces.h"
 #include "PuzzleActors/PuzzleActorBase.h"
 #include "FireStand.generated.h"
 

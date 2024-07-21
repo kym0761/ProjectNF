@@ -35,10 +35,11 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 	{
 		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
 	}
-
+	
+	//GetCurrentPlayWorld()는 Outer와 상관없이 현재 게임의 World를 얻을 수 있다.
 	auto world = GEngine->GetCurrentPlayWorld();
 
-	if (world)
+	if (IsValid(world))
 	{
 		FVector gridToWorld = GridToWorld(Grid);
 		FVector start = gridToWorld + FVector::UpVector * 10000;
@@ -68,7 +69,6 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		{
 			Debug::Print(FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
 			return true;
-			
 		}
 
 	}

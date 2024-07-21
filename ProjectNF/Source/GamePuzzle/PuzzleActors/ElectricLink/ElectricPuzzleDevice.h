@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PuzzleActors/PuzzleActorBase.h"
-#include "Interfaces.h"
+#include "Defines/Interfaces.h"
 #include "ElectricPuzzleDevice.generated.h"
 
 class UElectricLinkComponent;
