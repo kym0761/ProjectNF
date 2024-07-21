@@ -113,4 +113,6 @@ public:
 
 	void DoWhat();
 
+	void DoPlanting();
+
 };

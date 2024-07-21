@@ -4,7 +4,8 @@
 #include "FarmlandTile.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "System/NFGameInstance.h"
+#include "DebugHelper.h"
 // Sets default values
 AFarmlandTile::AFarmlandTile()
 {
@@ -18,6 +19,10 @@ AFarmlandTile::AFarmlandTile()
 	TileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TileMesh"));
 	TileMesh->SetupAttachment(RootComponent);
 	TileMesh->SetCanEverAffectNavigation(false);
+
+	CropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CropMesh"));
+	CropMesh->SetupAttachment(RootComponent);
+	CropMesh->SetCanEverAffectNavigation(false);
 
 }
 
@@ -33,5 +38,51 @@ void AFarmlandTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AFarmlandTile::SetInfo(FCropData InCropData)
+{
+	CropData = InCropData;
+
+	//CropData.CropName;
+	//CropData.bWatered;
+	//CropData.CurrentGrowth;
+
+	auto gameinstance = UNFGameInstance::GetNFGameInstance();
+
+	if (!IsValid(gameinstance))
+	{
+		Debug::Print(DEBUG_TEXT("gameinstance invalid."));
+		return;
+	}
+
+	FCropSheetData cropsheetData;
+	gameinstance->GetCropDataFromSheet(InCropData.CropName, cropsheetData);
+
+	int32 growthInterval = cropsheetData.MaxGrowth / 3;
+	int32 growthLevel = CropData.CurrentGrowth / growthInterval;
+	
+	switch (growthLevel)
+	{
+	case 0:
+		CropMesh->SetStaticMesh(cropsheetData.Mesh0);
+		break;
+	case 1:
+		CropMesh->SetStaticMesh(cropsheetData.Mesh1);
+		break;
+	case 2:
+		CropMesh->SetStaticMesh(cropsheetData.Mesh2);
+		break;
+	case 3:
+		CropMesh->SetStaticMesh(cropsheetData.Mesh3);
+		break;
+	}
+
+
+}
+
+void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
+{
+	//다 자란 작물을 뽑기?
 }
 

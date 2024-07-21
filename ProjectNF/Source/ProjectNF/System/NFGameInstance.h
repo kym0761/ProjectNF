@@ -35,6 +35,10 @@ protected:
 	UPROPERTY()
 	int32 PlayerNumber;
 
+public:
+
+	static UNFGameInstance* GetNFGameInstance();
+
 #pragma region SaveGameFunction
 
 public:
@@ -53,10 +57,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDataTable> ItemDataTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDataTable> CropSheetTable;
+
 public:
 
-	bool GetItemDataFromDataTable(const FName& ItemID, FItemBaseData& Out);
+	bool GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out);
 	bool IsValidItem(const FName& ItemID) const;
+
+	bool GetCropDataFromSheet(const FName& CropID, FCropSheetData& Out);
 
 #pragma endregion
 

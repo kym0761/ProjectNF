@@ -24,6 +24,17 @@ UNFGameInstance::UNFGameInstance()
 
 }
 
+UNFGameInstance* UNFGameInstance::GetNFGameInstance()
+{
+	if (!GEngine)
+	{
+		return nullptr;
+	}
+	auto gameinst= Cast<UNFGameInstance>(UGameplayStatics::GetGameInstance(GEngine->GetCurrentPlayWorld()));
+	
+	return gameinst;
+}
+
 void UNFGameInstance::Save()
 {
 	TObjectPtr<UNFSaveGame> saveGame = 
@@ -63,7 +74,7 @@ void UNFGameInstance::Load()
 
 }
 
-bool UNFGameInstance::GetItemDataFromDataTable(const FName& ItemID, FItemBaseData& Out)
+bool UNFGameInstance::GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out)
 {
 
 	//빈 아이템 ID
@@ -82,10 +93,10 @@ bool UNFGameInstance::GetItemDataFromDataTable(const FName& ItemID, FItemBaseDat
 
 
 	//존재하는 아이템이면 결과 도출 및 true
-	FItemBaseData* itemBaseData = ItemDataTable->FindRow<FItemBaseData>(ItemID, "");
-	if (itemBaseData != nullptr)
+	FItemSheetData* itemSheetData = ItemDataTable->FindRow<FItemSheetData>(ItemID, "");
+	if (itemSheetData != nullptr)
 	{
-		Out = *itemBaseData;
+		Out = *itemSheetData;
 		return true;
 	}
 
@@ -104,13 +115,42 @@ bool UNFGameInstance::IsValidItem(const FName& ItemID) const
 
 
 	//존재하는 아이템이면 true
-	FItemBaseData* itemBaseData = ItemDataTable->FindRow<FItemBaseData>(ItemID, "");
-	if (itemBaseData != nullptr)
+	FItemSheetData* itemSheetData = ItemDataTable->FindRow<FItemSheetData>(ItemID, "");
+	if (itemSheetData != nullptr)
 	{
 		return true;
 	}
 
 	//존재하지 않는 아이템
+	return false;
+}
+
+bool UNFGameInstance::GetCropDataFromSheet(const FName& CropID, FCropSheetData& Out)
+{
+	//빈 Crop ID
+	if (CropID.IsNone())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Empty CropID"));
+		return false;
+	}
+
+	//Data Table이 아직 없음
+	if (!IsValid(CropSheetTable))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Crop Sheet Table Not Set"));
+		return false;
+	}
+
+
+	//존재하는 아이템이면 결과 도출 및 true
+	FCropSheetData* cropSheetData = CropSheetTable->FindRow<FCropSheetData>(CropID, "");
+	if (cropSheetData != nullptr)
+	{
+		Out = *cropSheetData;
+		return true;
+	}
+
+	//존재하지 않는 아이템 정보
 	return false;
 }
 

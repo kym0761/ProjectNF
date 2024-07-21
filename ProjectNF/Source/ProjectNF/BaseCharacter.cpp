@@ -18,6 +18,7 @@
 #include "CharacterStrategy/ChBattleState.h"
 #include "CharacterStrategy/ChFarmingState.h"
 #include "CharacterStrategy/ChNormalState.h"
+#include "CharacterStrategy/chPlantingState.h"
 
 #include "FarmActors/FarmlandTile.h"
 
@@ -67,11 +68,16 @@ ABaseCharacter::ABaseCharacter()
 		auto farmingState = CreateDefaultSubobject<UChFarmingState>(TEXT("FARMINGSTATE"));
 		auto normalState = CreateDefaultSubobject<UChNormalState>(TEXT("NORMALSTATE"));
 
+		auto plantingState = CreateDefaultSubobject<UchPlantingState>(TEXT("PlantingSTATE"));
+
 		CharacterStateMap.Add(FString("Battle"), battleState);
 		CharacterStateMap.Add(FString("Farming"), farmingState);
 		CharacterStateMap.Add(FString("Normal"), normalState);
+		CharacterStateMap.Add(FString("Planting"), plantingState);
 
 		CurrentCharacterState = CharacterStateMap[FString("Normal")];
+
+		//!! 블루프린트에서 사용함.
 	}
 }
 
@@ -252,10 +258,61 @@ void ABaseCharacter::DoWhat()
 {
 	//뭐할지 안정해짐
 
+	Debug::Print(DEBUG_TEXT("DoWhat"));
 
-	if (GEngine)
+}
+
+void ABaseCharacter::DoPlanting()
+{
+
+
+	FHitResult hit;
+
+	//farmPos에서 아래로 2000 내려가는 지점으로 trace
+	FVector start = FarmPos->GetComponentLocation();
+	FVector end = start + FVector::DownVector * 2000.0f;
+
+	//일단 WorldStatic이면 farmTile을 설치한다.
+	//추후에 땅의 Physical Material? 을 통해 흙부분에서만 Farmtile을 설치하게 만들 수도 있음.
+	bool traceResult
+		= GetWorld()->LineTraceSingleByChannel(
+			hit,
+			start,
+			end,
+			ECollisionChannel::ECC_WorldStatic);
+
+	if (!traceResult)
 	{
-		Debug::Print(DEBUG_TEXT("DoWhat"));
+		//trace failed
+		Debug::Print(DEBUG_TEXT("trace failed"));
+		return;
 	}
+
+	UGridManager* gridManager = UNFGameInstance::GetGridManager();
+	if (!IsValid(gridManager))
+	{
+		//gridmanager nullptr
+		Debug::Print(DEBUG_TEXT("gridManager nullptr"));
+		return;
+	}
+
+	FGrid grid = gridManager->WorldToGrid(hit.Location);
+
+	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());
+
+	if (IsValid(farmtile))
+	{
+		//farmtile의 정보를 set해준다.
+
+		auto cropData = FCropData();
+		cropData.bWatered = false;
+		cropData.CropName = "Crop01";
+		cropData.CurrentGrowth = 0;
+
+		farmtile->SetInfo(cropData);
+
+		Debug::Print(DEBUG_TEXT("Crop Planting OK"));
+	}
+
 }
 

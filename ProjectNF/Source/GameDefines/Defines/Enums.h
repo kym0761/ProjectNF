@@ -117,6 +117,24 @@ enum class EItemStar : uint8
 
 #pragma endregion
 
+#pragma region State
+
+//Cast하지 않고 캐릭터 State가 무엇인지 알아내기 위한 Enum
+//State를 추가한다면 꼭 추가한 뒤 CharacterStateType을 올바른 값으로 Set할 것
+
+UENUM(BlueprintType)
+enum class  ECharacterStateType : uint8
+{
+	NONE = 0 UMETA(DisplayName = "NONE"),
+
+	/*일반 아이템 분류*/
+	NORMAL UMETA(DisplayName = "NORMAL"),
+	BATTLE UMETA(DisplayName = "BATTLE"),
+	FARMING UMETA(DisplayName = "FARMING"),
+	PLANTING UMETA(DisplayName = "PLANTING")
+};
+
+#pragma endregion
 
 UENUM(BlueprintType)
 enum class ELanguage : uint8
