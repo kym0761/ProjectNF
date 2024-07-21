@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Grid/Grid.h"
+#include "Defines/Data.h"
 #include "FarmlandTile.generated.h"
 
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Grid.h" // TMap의 키로 쓰는 이상, 뺄 수 없음.
+#include "Defines/Data.h"// TMap의 키로 쓰는 이상, 뺄 수 없음.
 #include "GridSetup.generated.h"
 
 class UGridVisualComponent;

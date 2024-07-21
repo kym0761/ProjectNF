@@ -2,7 +2,7 @@
 
 
 #include "GridVisualComponent.h"
-#include "Grid.h"
+#include "Defines/Data.h"
 
 UGridVisualComponent::UGridVisualComponent()
 {

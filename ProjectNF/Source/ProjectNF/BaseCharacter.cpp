@@ -21,7 +21,7 @@
 
 #include "FarmActors/FarmlandTile.h"
 
-#include "Grid/Grid.h"
+#include "Defines/Data.h"
 #include "Grid/GridManager.h"
 #include "System/NFGameInstance.h"
 
