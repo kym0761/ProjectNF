@@ -23,7 +23,7 @@
 
 #include "Grid/Grid.h"
 #include "Grid/GridManager.h"
-#include "System/NFGameModeBase.h"
+#include "System/NFGameInstance.h"
 
 #include "BaseAnimInstance.h"
 
@@ -222,7 +222,7 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
-	UGridManager* gridManager = ANFGameModeBase::GetGridManager();
+	UGridManager* gridManager = UNFGameInstance::GetGridManager();
 	if (!IsValid(gridManager))
 	{
 		//gridmanager nullptr

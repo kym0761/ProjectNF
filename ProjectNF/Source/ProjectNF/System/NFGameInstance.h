@@ -9,6 +9,11 @@
 
 class UInventoryObject;
 
+class UGridManager;
+class UElectricLinkManager;
+class UObjectPoolManager;
+class UInventoryManager;
+
 /**
  * 
  */
@@ -72,22 +77,40 @@ public:
 #pragma endregion
 
 
-#pragma region GameInventory
+#pragma region Managers
 
 protected:
 
-	//key : 인벤토리 소유자 , value : 인벤토리
-	UPROPERTY()
-	TMap<FString, TObjectPtr<UInventoryObject>> InventoryMap;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UGridManager> GridManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UElectricLinkManager> ElectricLinkManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UObjectPoolManager> ObjectPoolManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryManager> InventoryManager;
+
+private:
+
+	static TObjectPtr<UGridManager> GGridManager;
+	static TObjectPtr<UElectricLinkManager> GElectricLinkManager;
+	static TObjectPtr<UObjectPoolManager> GObjectPoolManager;
+	static TObjectPtr<UInventoryManager> GInventoryManager;
+#pragma endregion
 
 public:
 
-	TObjectPtr<UInventoryObject> GetInventory(FString InventoryOwner);
-
-#pragma endregion
-
+	void InitManagers();
 
 	UFUNCTION(BlueprintCallable)
 	void Test();
+
+public:
+
+	static 	TObjectPtr<UGridManager> GetGridManager();
+	static 	TObjectPtr<UElectricLinkManager> GetElectricLinkManager();
 
 };

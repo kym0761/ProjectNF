@@ -10,6 +10,11 @@ UObjectPoolManager::UObjectPoolManager()
 {
 }
 
+void UObjectPoolManager::ManagerInit()
+{
+	ObjectPoolMap.Empty();
+}
+
 void UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, FVector Location, FRotator Rotation)
 {
 	//ObjectPoolable 인터페이스 체크

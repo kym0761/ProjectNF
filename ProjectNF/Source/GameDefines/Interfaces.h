@@ -150,3 +150,26 @@ public:
 };
 
 #pragma endregion
+
+#pragma region Managerable
+
+//Interactive Interface Class Base. Don't Use.
+UINTERFACE(Blueprintable)
+class UManageable : public UInterface
+{
+	GENERATED_BODY()
+};
+
+//Actual Interactive Interface Class. You must Use This When you Inherit Interface.
+class IManageable
+{
+	GENERATED_BODY()
+
+public:
+
+
+	virtual void ManagerInit() = 0;
+
+};
+
+#pragma endregion

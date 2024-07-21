@@ -40,8 +40,4 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-
-	static 	TObjectPtr<UGridManager> GetGridManager();
-	static 	TObjectPtr<UElectricLinkManager> GetElectricLinkManager();
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Interfaces.h"
 #include "ElectricLinkManager.generated.h"
 
 class UElectricLinkComponent;
@@ -12,7 +13,7 @@ class UElectricLinkComponent;
  * 
  */
 UCLASS(BlueprintType)
-class GAMEPUZZLE_API UElectricLinkManager : public UObject
+class GAMEPUZZLE_API UElectricLinkManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 	
@@ -29,10 +30,14 @@ public:
 	UPROPERTY()
 	TSet<TObjectPtr<UElectricLinkComponent>> RootLinks;
 
+	FTimerHandle ElectricLinkTimer;
+
 	UFUNCTION(BlueprintCallable)
 	void SearchAllLinks();
 
 	UFUNCTION(BlueprintCallable)
 	void LinkTest();
+
+	virtual void ManagerInit() override;
 
 };

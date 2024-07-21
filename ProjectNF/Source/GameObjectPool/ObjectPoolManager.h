@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Interfaces.h"
 #include "ObjectPoolManager.generated.h"
 
 class UPoolChunk;
@@ -14,7 +15,7 @@ class UPoolChunk;
  * 언리얼 액터들은 Level이 바뀌면 전부 사라지기 때문에 싱글톤이나 GameInstance를 사용해 ObjectPool을 하기 곤란함.
  */
 UCLASS()
-class GAMEOBJECTPOOL_API UObjectPoolManager : public UObject
+class GAMEOBJECTPOOL_API UObjectPoolManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 
@@ -30,6 +31,8 @@ protected:
 	TMap<UClass*, UPoolChunk*> ObjectPoolMap;
 
 public:
+
+	virtual void ManagerInit() override;
 
 	//풀에서 오브젝트를 얻어 spawn함
 	UFUNCTION(BlueprintCallable)

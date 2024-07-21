@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Grid.h"
+#include "interfaces.h"
 #include "GridManager.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GAMEFARM_API UGridManager : public UObject
+class GAMEFARM_API UGridManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 
@@ -32,4 +33,6 @@ public:
 	FVector GridToWorld(const FGrid& Grid) const;
 
 	bool IsSomethingExistOnGrid(const FGrid& Grid) const;
+
+	virtual void ManagerInit() override;
 };

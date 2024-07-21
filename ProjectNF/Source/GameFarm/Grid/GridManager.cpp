@@ -31,22 +31,14 @@ FVector UGridManager::GridToWorld(const FGrid& Grid) const
 
 bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 {
-	/*UObject* outer = GetOuter();
-
-	while (IsValid(outer))
+	if (!GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(
-			FMath::Rand(), 3.0f, FColor::Black,
-			FString::Printf(TEXT("outer : %s"), *outer->GetName()));
+		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+	}
 
-		outer = outer->GetOuter();
-	}*/
+	auto world = GEngine->GetCurrentPlayWorld();
 
-	/*
-	* GameMode가 outer라 Getworld()는 성립된다.
-	*/
-
-	if (GetWorld())
+	if (world)
 	{
 		FVector gridToWorld = GridToWorld(Grid);
 		FVector start = gridToWorld + FVector::UpVector * 10000;
@@ -57,7 +49,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		TArray<AActor*> ignores;
 
 		bool hitResult = UKismetSystemLibrary::SphereTraceSingle(
-			GetWorld(),
+			world,
 			start,
 			end,
 			CellSize / 3, //gridsize의 1/2~1/3으로 세팅하는 것이 좋다.
@@ -74,18 +66,21 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 
 		if (hitResult)
 		{
-			if (GEngine)
-			{
-				Debug::Print(FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
-				return true;
-			}
+			Debug::Print(FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
+			return true;
+			
 		}
 
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("Getworld is nullptr"));
+		Debug::Print(DEBUG_TEXT("world is nullptr"));
 	}
 
 	return false;
+}
+
+void UGridManager::ManagerInit()
+{
+	//?
 }

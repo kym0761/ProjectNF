@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "ElectricLinkComponent.h"
 
+#include "DebugHelper.h"
+
 UElectricLinkManager::UElectricLinkManager()
 {
 }
@@ -94,6 +96,31 @@ void UElectricLinkManager::LinkTest()
 			i->ElectricLinkDeactivate();
 		}
 	}
+
+
+}
+
+void UElectricLinkManager::ManagerInit()
+{
+	if (!GEngine)
+	{
+		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+	}
+
+	SearchAllLinks();
+
+
+	auto world = GEngine->GetCurrentPlayWorld();
+
+	world->GetTimerManager().SetTimer(
+		ElectricLinkTimer,
+		this,
+		&UElectricLinkManager::LinkTest,
+		1.0f,
+		true,
+		1.0f
+	);
+
 
 
 }

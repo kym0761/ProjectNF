@@ -4,14 +4,29 @@
 #include "NFGameInstance.h"
 #include "NFSaveGame.h"
 #include "Kismet/GameplayStatics.h"
-#include "Inventory/InventoryObject.h"
 #include "DebugHelper.h"
+
+#include "Grid/GridManager.h"
+#include "PuzzleActors/ElectricLink/ElectricLinkManager.h"
+#include "ObjectPoolManager.h"
+#include "Inventory/InventoryManager.h"
+
+//private manager
+TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
+TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
+TObjectPtr<UObjectPoolManager> UNFGameInstance::GObjectPoolManager = nullptr;
+TObjectPtr<UInventoryManager> UNFGameInstance::GInventoryManager = nullptr;
 
 UNFGameInstance::UNFGameInstance()
 {
 	PlayerName = TEXT("TempName");
 	PlayerNumber = 1;
 
+
+	GridManager = CreateDefaultSubobject<UGridManager>(TEXT("GridManager"));
+	ElectricLinkManager = CreateDefaultSubobject<UElectricLinkManager>(TEXT("ElectricLinkManager"));
+	ObjectPoolManager = CreateDefaultSubobject<UObjectPoolManager>(TEXT("ObjectPoolManager"));
+	InventoryManager = CreateDefaultSubobject<UInventoryManager>(TEXT("InventoryManager"));
 }
 
 void UNFGameInstance::Save()
@@ -125,26 +140,20 @@ bool UNFGameInstance::SpendMoney(int32 Pay)
 	return true;
 }
 
-TObjectPtr<UInventoryObject> UNFGameInstance::GetInventory(FString InventoryOwner)
+
+void UNFGameInstance::InitManagers()
 {
-	if (InventoryOwner.IsEmpty())
-	{
-		//잘못된 인벤토리 접근법
-		return nullptr;
-	}
+	Debug::Print(DEBUG_TEXT("InitManagers Called."));
 
-	//TODO : 인벤토리 Owner 자체가 존재하는지부터..
-	if (!InventoryMap.Contains(InventoryOwner))
-	{
-		//TODO : 인벤토리 생성시, 지정된 크기 등으로 초기화? 
-		UInventoryObject* inventory = NewObject<UInventoryObject>(this);
-		inventory->InitInventory();
+	GridManager->ManagerInit();
+	ElectricLinkManager->ManagerInit();
+	ObjectPoolManager->ManagerInit();
+	InventoryManager->ManagerInit();
 
-		InventoryMap[InventoryOwner] = inventory;
-	}
-
-
-	return InventoryMap[InventoryOwner];
+	GGridManager = GridManager;
+	GElectricLinkManager = ElectricLinkManager;
+	GObjectPoolManager = ObjectPoolManager;
+	GInventoryManager = InventoryManager;
 }
 
 void UNFGameInstance::Test()
@@ -174,4 +183,14 @@ void UNFGameInstance::Test()
 		Debug::Print(DEBUG_TEXT("GEngine invalid."));
 	}
 	
+}
+
+TObjectPtr<UGridManager> UNFGameInstance::GetGridManager()
+{
+	return GGridManager;
+}
+
+TObjectPtr<UElectricLinkManager> UNFGameInstance::GetElectricLinkManager()
+{
+	return GElectricLinkManager;
 }
