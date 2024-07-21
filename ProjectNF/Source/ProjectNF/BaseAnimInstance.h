@@ -33,6 +33,13 @@ protected:
 	bool bAttackPlayOK;
 	
 
+protected:
+
+	virtual void NativeInitializeAnimation() override;
+
+	UFUNCTION()
+	void OnCombatMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 private:
 
 	UFUNCTION()

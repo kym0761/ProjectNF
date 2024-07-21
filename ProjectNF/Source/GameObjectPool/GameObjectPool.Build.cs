@@ -21,5 +21,12 @@ public class GameObjectPool : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
         PrivateIncludePaths.AddRange(new string[] { "GameObjectPool" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
+        PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
+
     }
 }

@@ -8,6 +8,10 @@
 
 //Cast하지 않고 캐릭터 State가 무엇인지 알아내기 위한 Enum
 //State를 추가한다면 꼭 추가한 뒤 CharacterStateType을 올바른 값으로 Set할 것
+
+//파생 클래스들 ch 붙인 이유는 언리얼 엔진 어딘가에 이름이 같은 클래스가 존재함
+//ch = character임
+
 UENUM(BlueprintType)
 enum class  ECharacterStateType : uint8
 {

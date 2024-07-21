@@ -3,6 +3,8 @@
 
 #include "BaseCharacter.h"
 
+#include "DebugHelper.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -171,20 +173,13 @@ void ABaseCharacter::Attack()
 {
 	//근접 공격?
 
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("Attack"));
-	}
+	Debug::Print(DEBUG_TEXT("Attack"));
 
 	auto animInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
 	if (!IsValid(animInstance))
 	{
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("AnimInstance Invalid."));
-
+		Debug::Print(DEBUG_TEXT("AnimInstance Invalid."));
 		return;
 	}
 
@@ -200,8 +195,8 @@ void ABaseCharacter::UseFarmTool()
 	if (!IsValid(FarmlandTile_BP))
 	{
 		//farmlandtile bp not set
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("FarmlandTile BP is not set"));
+
+		Debug::Print(DEBUG_TEXT("FarmlandTile BP is not set"));
 		return;
 	}
 
@@ -223,9 +218,7 @@ void ABaseCharacter::UseFarmTool()
 	if (!traceResult)
 	{
 		//trace failed
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("trace failed"));
-		
+		Debug::Print(DEBUG_TEXT("trace failed"));		
 		return;
 	}
 
@@ -233,9 +226,7 @@ void ABaseCharacter::UseFarmTool()
 	if (!IsValid(gridManager))
 	{
 		//gridmanager nullptr
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("gridManager nullptr"));
-
+		Debug::Print(DEBUG_TEXT("gridManager nullptr"));
 		return;
 	}
 
@@ -245,9 +236,7 @@ void ABaseCharacter::UseFarmTool()
 	if (bExistOnGrid)
 	{
 		//누가 점유중이라 못함
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("already occupying"));
-
+		Debug::Print(DEBUG_TEXT("already occupying"));
 		return;
 	}
 
@@ -266,8 +255,7 @@ void ABaseCharacter::DoWhat()
 
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(FMath::Rand(), 3.0f, FColor::Magenta,
-			TEXT("DoWhat"));
+		Debug::Print(DEBUG_TEXT("DoWhat"));
 	}
 }
 

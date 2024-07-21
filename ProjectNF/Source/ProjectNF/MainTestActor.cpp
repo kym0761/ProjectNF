@@ -5,7 +5,7 @@
 #include "Inventory/InventoryComponent.h"
 #include "GameFarm/FarmActors/FarmlandTile.h"
 #include "UI/InventoryWidget.h"
-#include "Interfaces/PuzzleInterfaces.h"
+#include "Interfaces.h"
 
 // Sets default values
 AMainTestActor::AMainTestActor()

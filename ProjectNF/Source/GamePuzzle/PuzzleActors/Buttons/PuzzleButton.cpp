@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "DebugHelper.h"
 
 APuzzleButton::APuzzleButton()
 {
@@ -156,11 +157,7 @@ void APuzzleButton::ButtonDown()
 
 void APuzzleButton::Trigger()
 {
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-5, 5.0f, FColor::Black, TEXT("Trigger"));
-		UE_LOG(LogTemp, Warning, TEXT("Trigger"));
-	}
+	Debug::Print(DEBUG_TEXT("Trigger"));
 
 	for (auto i : TriggerTargets)
 	{

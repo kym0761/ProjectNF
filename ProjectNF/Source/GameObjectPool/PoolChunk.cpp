@@ -5,7 +5,5 @@
 
 TQueue<IObjectPoolable*>& UPoolChunk::GetPoolObjectQueue()
 {
-	// TODO: insert return statement here
 	return PoolObjects;
-
 }

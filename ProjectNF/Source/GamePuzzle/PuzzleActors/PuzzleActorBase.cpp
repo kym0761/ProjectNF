@@ -2,6 +2,7 @@
 
 
 #include "PuzzleActorBase.h"
+#include "DebugHelper.h"
 
 // Sets default values
 APuzzleActorBase::APuzzleActorBase()
@@ -31,8 +32,7 @@ void APuzzleActorBase::PreEditChange(FProperty* PropertyAboutToChange)
 	//triggerMap을 만들어준다.
 	if (PropertyAboutToChange->GetName() == GET_MEMBER_NAME_CHECKED(APuzzleActorBase, TriggerTargets))
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("You Revised TriggerTarget!"));
-
+		Debug::Print(DEBUG_TEXT("You Revised TriggerTarget!"));
 		PrevTriggerTargets = TriggerTargets;
 	}
 

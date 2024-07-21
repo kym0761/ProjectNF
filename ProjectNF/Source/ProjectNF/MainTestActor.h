@@ -19,9 +19,6 @@ class PROJECTNF_API AMainTestActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMainTestActor();
-
-	//Key : Actor BP, Value : FGrid,FGrid...
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
 	
 
 protected:

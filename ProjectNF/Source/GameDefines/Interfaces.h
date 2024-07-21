@@ -4,8 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "PuzzleInterfaces.generated.h"
+#include "Interfaces.generated.h"
 
+#pragma region ObjectPool
+ /**
+  * ObjectPool이 가능하려면 IObjectPoolable을 Actor에 적용해야함.
+  */
+
+UINTERFACE(Blueprintable)
+class GAMEDEFINES_API UObjectPoolable : public UInterface
+{
+	GENERATED_BODY()
+};
+
+//Actual Interface Class. You must Use This When you Inherit Interface.
+class GAMEDEFINES_API IObjectPoolable
+{
+	GENERATED_BODY()
+
+public:
+
+	UFUNCTION(BlueprintNativeEvent)
+	void PoolBeginPlay();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void PoolEndPlay();
+
+};
+
+
+#pragma endregion
+
+#pragma region Puzzle
 /*
 ITriggerable : Trigger 동작 인터페이스
 IBeTriggerable : Trigger를 당했을 때의 동작 인터페이스
@@ -15,13 +45,13 @@ ICombustible : 불 붙는게 가능한 대상일 때 필요한 인터페이스. ex)FireBowl, FireSt
 
 //Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UTriggerable : public UInterface
+class GAMEDEFINES_API UTriggerable : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //Actual Interface Class. You must Use This When you Inherit Interface.
-class ITriggerable
+class GAMEDEFINES_API ITriggerable
 {
 	GENERATED_BODY()
 
@@ -34,13 +64,13 @@ public:
 
 //Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UBeTriggerable : public UInterface
+class GAMEDEFINES_API UBeTriggerable : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //Actual Interface Class. You must Use This When you Inherit Interface.
-class IBeTriggerable
+class GAMEDEFINES_API IBeTriggerable
 {
 	GENERATED_BODY()
 
@@ -53,13 +83,13 @@ public:
 
 //Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UResetable : public UInterface
+class GAMEDEFINES_API UResetable : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //Actual Interface Class. You must Use This When you Inherit Interface.
-class IResetable
+class GAMEDEFINES_API IResetable
 {
 	GENERATED_BODY()
 
@@ -72,13 +102,13 @@ public:
 
 //Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UCombustible : public UInterface
+class GAMEDEFINES_API UCombustible : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //Actual Interface Class. You must Use This When you Inherit Interface.
-class ICombustible
+class GAMEDEFINES_API ICombustible
 {
 	GENERATED_BODY()
 
@@ -94,3 +124,29 @@ public:
 	virtual void TurnOff() = 0;
 
 };
+
+#pragma endregion
+
+
+#pragma region Interactive
+
+//Interactive Interface Class Base. Don't Use.
+UINTERFACE(Blueprintable)
+class UInteractive : public UInterface
+{
+	GENERATED_BODY()
+};
+
+//Actual Interactive Interface Class. You must Use This When you Inherit Interface.
+class IInteractive
+{
+	GENERATED_BODY()
+
+public:
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactive")
+	void Interact(APawn* InteractCauser);
+
+};
+
+#pragma endregion

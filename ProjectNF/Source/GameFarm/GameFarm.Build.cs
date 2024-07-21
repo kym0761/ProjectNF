@@ -21,5 +21,8 @@ public class GameFarm : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
         PrivateIncludePaths.AddRange(new string[] { "GameFarm" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
     }
 }

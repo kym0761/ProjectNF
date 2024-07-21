@@ -3,6 +3,7 @@
 
 #include "GridManager.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "DebugHelper.h"
 
 UGridManager::UGridManager()
 {
@@ -75,9 +76,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		{
 			if (GEngine)
 			{
-				GEngine->AddOnScreenDebugMessage(
-					FMath::Rand(), 3.0f, FColor::Black,
-					FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
+				Debug::Print(FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
 				return true;
 			}
 		}
@@ -85,9 +84,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(
-			FMath::Rand(), 3.0f, FColor::Black,
-			TEXT("Getworld is nullptr"));
+		Debug::Print(DEBUG_TEXT("Getworld is nullptr"));
 	}
 
 	return false;

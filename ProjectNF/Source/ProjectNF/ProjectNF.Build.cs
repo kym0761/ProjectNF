@@ -8,7 +8,7 @@ public class ProjectNF : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -23,7 +23,11 @@ public class ProjectNF : ModuleRules
         PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
 
         //Add Custom Modules in Source Folder.
-        PrivateDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool" });
-        PrivateIncludePaths.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool", "GameDefines" });
+        PrivateIncludePaths.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool", "GameDefines" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging"});
+        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
+
     }
 }

@@ -19,18 +19,10 @@ public:
 
 	UGridManager();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")//, Meta = (AllowPrivateAccess = true))
-		float CellSize = 100.0f;
+protected:
 
-	////Grid에 어떤 Actor가 점유하고 있는지 체크하는 Map
-	////맵 모든 지역을 Grid로 만들지 않고 필요한 정보만 보관한다.
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
-	//TMap<FGrid, TObjectPtr<AActor>> Occupy;
-
-	////유저가 설치한 건물류 액터?
-	////key : int , value : Grid,Grid,Grid,Grid..
-	////key 다른 값으로 교체될 수도 있음
-	//TMultiMap<int32, FGrid> UserStaticActors;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
+		float CellSize = 200.0f;
 
 public:
 

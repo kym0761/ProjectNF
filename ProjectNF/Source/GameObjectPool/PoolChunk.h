@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Interfaces/ObjectPoolInterface.h"
+#include "Interfaces.h"
 #include "PoolChunk.generated.h"
 
 /**
@@ -17,6 +17,7 @@ class GAMEOBJECTPOOL_API UPoolChunk : public UObject
 	
 protected:
 
+	//IObjectPoolable을 인터페이스로 상속받은 "Actor" Queue
 	TQueue<IObjectPoolable*> PoolObjects;
 
 public:

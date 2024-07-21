@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PuzzleActors/PuzzleActorBase.h"
-#include "Interfaces/PuzzleInterfaces.h"
+#include "Interfaces.h"
 #include "PuzzleButton.generated.h"
 
 class UStaticMeshComponent;

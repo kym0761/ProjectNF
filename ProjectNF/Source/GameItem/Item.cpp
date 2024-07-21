@@ -23,7 +23,7 @@ FItemBaseData::FItemBaseData()
 bool FItemBaseData::IsEmpty()
 {
 	//ItemBaseData의 이름의 빈 값은 아무 정보도 아닌 것으로 판정함.
-	return ItemName.IsEmpty();
+	return ItemNameID.IsEmpty();
 }
 
 

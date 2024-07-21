@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enums.h"
 #include "Engine/DataTable.h"
 #include "UObject/NoExportTypes.h"
 #include "Item.generated.h"
@@ -20,85 +21,6 @@ class GAMEITEM_API UItem : public UObject
 	UItem();
 };
 
-//아이템 분류
-UENUM(BlueprintType)
-enum class  EItemType : uint8
-{
-	None = 0 UMETA(DisplayName = "None"),
-
-	/*일반 아이템 분류*/
-	Consumable UMETA(DisplayName = "Consumable"),
-	Resource UMETA(DisplayName = "Resource"),
-	Harvest UMETA(DisplayName = "Harvest"),
-
-	/*장비 아이템 분류*/
-	Weapon UMETA(DisplayName = "Weapon"),
-	Shield UMETA(DisplayName = "Shield"),
-	Armor UMETA(DisplayName = "Armor"),
-	Accessory UMETA(DisplayName = "Accessory")
-
-};
-
-//ComsumableItem의 효과 분류
-//bitmask => 0(ignored), 1, 2, 4, 8, ..., 256(X)
-UENUM(BlueprintType, Meta = (BitFlags, UseEnumValuesAsMaskValuesInEditor = "true"))
-enum class  EConsumableItemType : uint8
-{
-	None = 0 UMETA(Hidden),
-
-	Heal = 1 UMETA(DisplayName = "Heal"),
-	Cure = 2 UMETA(DisplayName = "Cure"),
-	Buff = 4 UMETA(DisplayName = "Buff"),
-	Debuff = 8 UMETA(DisplayName = "Debuff"),
-
-	X = 255 UMETA(Hidden)
-};
-
-//아이템 장비 여부
-UENUM(BlueprintType)
-enum class EEquipmentType : uint8
-{
-	None UMETA(DisplayName = "None"),
-
-	Weapon UMETA(DisplayName = "Weapon"),
-	Shield UMETA(DisplayName = "Shield"),
-	Armor UMETA(DisplayName = "Armor"),
-	Accessory UMETA(DisplayName = "Accessory")
-};
-
-UENUM(BlueprintType)
-enum class  ECureType : uint8
-{
-	None UMETA(DisplayName = "None"),
-
-	Poison UMETA(DisplayName = "Poison"),
-	Stun UMETA(DisplayName = "Stun"),
-	Iced UMETA(DisplayName = "Iced"),
-	Burn UMETA(DisplayName = "Burn"),
-	Sleep UMETA(DisplayName = "Sleep"),
-	Blind UMETA(DisplayName = "Blind"),
-	Fear UMETA(DisplayName = "Fear"),
-
-	All UMETA(DisplayName = "All")
-};
-
-UENUM(BlueprintType)
-enum class EItemRarity : uint8
-{
-	Normal UMETA(DisplayName = "Normal"),
-	Rare UMETA(DisplayName = "Rare"),
-	Unique UMETA(DisplayName = "Unique"),
-	Epic UMETA(DisplayName = "Epic")
-};
-
-UENUM(BlueprintType)
-enum class EItemStar : uint8
-{
-	Zero UMETA(DisplayName = "0"),
-	One UMETA(DisplayName = "1"),
-	Two UMETA(DisplayName = "2"),
-	Three UMETA(DisplayName = "3")
-};
 
 USTRUCT(BlueprintType)
 struct GAMEITEM_API FItemBaseData : public FTableRowBase
@@ -109,16 +31,19 @@ public:
 
 	//데이터 테이블의 'Row Name'이 아이템의 "ItemID"로 취급
 
+	//ItemName값으로 Localize데이터 테이블을 검색해 Korean 언어라면 Kor 데이터를 가져온다..
+
+
 	//ItemBaseData의 ItemName은 FText로 추후 Localizing에 사용될 수도 있는 값이다.
 	// Item ID가 아님!
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FText ItemName;
+	FText ItemNameID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	FText DescriptionID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	UTexture2D* Thumbnail;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FText Description;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	bool bIsStackable;
@@ -148,12 +73,12 @@ public:
 
 	FORCEINLINE bool operator==(const FItemBaseData& Other)
 	{
-		return ItemName.EqualTo(Other.ItemName);
+		return ItemNameID.EqualTo(Other.ItemNameID);
 	}
 
 	FORCEINLINE bool operator!=(const FItemBaseData& Other)
 	{
-		return !(ItemName.EqualTo(Other.ItemName));
+		return !(ItemNameID.EqualTo(Other.ItemNameID));
 	}
 
 	bool IsEmpty();
@@ -244,9 +169,9 @@ public:
 
 };
 
-//무기 아이템의 정보
+//장비 아이템의 정보
 USTRUCT(BlueprintType)
-struct GAMEITEM_API FWeaponItemData : public FTableRowBase
+struct GAMEITEM_API FEquipmentItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -272,80 +197,7 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	//EGameElementType ElementType;
 
-};
-
-//방패 아이템의 정보
-USTRUCT(BlueprintType)
-struct GAMEITEM_API FShieldItemData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-
-	//'Row Name' Will Be "ItemID" in Data Table
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-	float CriticalHit;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-	//EGameGuardType GuardType;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shield")
-	//EGameElementType ElementType;
-
-};
-
-//갑옷 아이템의 아이템 정보
-USTRUCT(BlueprintType)
-struct GAMEITEM_API FArmorItemData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-
-	//'Row Name' Will Be "ItemID" in Data Table
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Armor")
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Armor")
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Armor")
-	float CriticalHit;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Armor")
-	//EGameElementType ElementType;
-
-};
-
-//악세서리 아이템 정보
-USTRUCT(BlueprintType)
-struct GAMEITEM_API FAccessoryItemData : public FTableRowBase
-{
-	GENERATED_BODY()
-
-public:
-
-	//'Row Name' Will Be "ItemID" in Data Table
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
-	float Attack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
-	float Defense;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
-	float CriticalHit;
-
-	//추가 정보가 필요할지도? --> 예시 : Buff 효과 뭐 쓸지라던지
-
+	//추가 정보가 필요할지도? --> 예시 : 장비 착용시 걸리는 Buff 효과
 };
 
 //제작 정보
@@ -370,7 +222,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	float LeadTime;
 
-	//제작 기능은 아마..
-	//제작 시작 시간을 등록한 뒤, 제작 완료 시간이 지나면 채집할 수 있게 하면 될 듯?
+	//제작 기능을 개선할 아이디어가 필요
+	// 개선 아이디어 : 제작 start 시간을 등록한 뒤, 제작 completed 시간이 지나면 아이템을 얻을 수 있게 하면 될 듯?
 
 };

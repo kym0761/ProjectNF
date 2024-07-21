@@ -11,10 +11,13 @@ public class ProjectNFEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
 		ExtraModuleNames.Add("ProjectNF");
+
         ExtraModuleNames.Add("GamePuzzle");
         ExtraModuleNames.Add("GameFarm");
         ExtraModuleNames.Add("GameItem");
         ExtraModuleNames.Add("GameTime");
         ExtraModuleNames.Add("GameObjectPool");
+        ExtraModuleNames.Add("GameDefines");
+        ExtraModuleNames.Add("CustomDebugging");
     }
 }

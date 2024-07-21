@@ -8,7 +8,7 @@ public class GameItem : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -21,5 +21,11 @@ public class GameItem : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
         PrivateIncludePaths.AddRange(new string[] { "GameItem" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
+        PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
     }
 }

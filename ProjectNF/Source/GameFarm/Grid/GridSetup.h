@@ -21,7 +21,7 @@ public:
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")//, Meta = (AllowPrivateAccess = true))
-	float CellSize = 100.0f;
+	float CellSize = 200.0f;
 
 
 protected:

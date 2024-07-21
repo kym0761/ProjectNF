@@ -10,6 +10,8 @@ class UInventoryComponent;
 class StaticMeshComponent;
 class USphereComponent;
 
+/*아이템 창고 역할을 하는 Actor*/
+
 UCLASS()
 class GAMEITEM_API AItemStorage : public AActor
 {

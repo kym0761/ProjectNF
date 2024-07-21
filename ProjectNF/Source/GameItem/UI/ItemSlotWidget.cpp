@@ -90,7 +90,7 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 	//dragDisplay->UpdateItemSlotWidget();
 
 	//drag drop operation
-	//? new object에 outer를 설정하지 않았으므로 
+	//?? : new object에 outer를 설정하지 않았으므로 
 	// 긴 시간동안 드래그를 진행하고 있으면 Garbage Collection되는 위험은 없을지?
 	//혹시 나중에 문제 생기면 여기 고치는 게 좋을지도 모름
 	TObjectPtr<UDragDropOperation> dragdropOper = NewObject<UDragDropOperation>(); // outer?
