@@ -66,11 +66,11 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 		return;
 	}
 
-	if (!InventoryComponentRef->GetAllItems().IsValidIndex(InventorySlotNumber))
-	{
-		//Slot Number가 올바르지않음
-		return;
-	}
+	//if (!InventoryComponentRef->GetAllItems().IsValidIndex(InventorySlotNumber))
+	//{
+	//	//Slot Number가 올바르지않음
+	//	return;
+	//}
 
 	//TODO : Item Database에서 item 정보를 가져와야함.
 	//이유 : Item Image 세팅 등에 필요함
@@ -122,15 +122,15 @@ bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropE
 
 	if (IsValid(dropped_InventoryComponent) && IsValid(InventoryComponentRef))
 	{
-		bool bSucceed = UInventoryComponent::SwapItemBetweenInventory(
-			dropped_InventoryComponent, dropped_SlotNumber,
-			InventoryComponentRef, InventorySlotNumber);
+		//bool bSucceed = UInventoryComponent::SwapItemBetweenInventory(
+		//	dropped_InventoryComponent, dropped_SlotNumber,
+		//	InventoryComponentRef, InventorySlotNumber);
 
-		if (bSucceed)
-		{
-			//TODO : 인벤토리 업데이트?
-			return true;
-		}
+		//if (bSucceed)
+		//{
+		//	//TODO : 인벤토리 업데이트?
+		//	return true;
+		//}
 	}
 
 	return false;

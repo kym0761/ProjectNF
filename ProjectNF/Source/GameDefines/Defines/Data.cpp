@@ -23,7 +23,7 @@ bool FItemSheetData::IsEmpty()
 
 
 
-FItemSlotData::FItemSlotData() :ItemName("None"), Quantity(0)
+FItemSlotData::FItemSlotData() :ItemName(""), Quantity(0)
 {
 
 }
@@ -35,7 +35,7 @@ bool FItemSlotData::IsSameItem(const FItemSlotData& Other) const
 
 bool FItemSlotData::IsEmpty() const
 {
-	return ItemName.IsNone() || Quantity == 0;
+	return ItemName.IsNone() || ItemName.GetStringLength() == 0 || Quantity == 0;
 }
 
 void FItemSlotData::SetEmpty()
