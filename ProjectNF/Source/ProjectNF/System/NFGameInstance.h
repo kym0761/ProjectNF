@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Defines/Data.h"
+#include "DebugHelper.h"
 #include "NFGameInstance.generated.h"
 
 class UInventoryObject;
@@ -57,15 +58,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDataTable> ItemDataTable;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
+	TMap<FName, FItemSheetData> ItemSheetDataMap;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UDataTable> CropSheetTable;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "DataTable", Meta = (AllowPrivateAccess = true))
+	TMap<FName, FCropSheetData> CropSheetDataMap;
 
 public:
 
 	bool GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out);
 	bool IsValidItem(const FName& ItemID) const;
 
-	bool GetCropDataFromSheet(const FName& CropID, FCropSheetData& Out);
+	UFUNCTION()
+	FCropSheetData GetCropDataFromSheet(const FName& CropID);
+
+	template <typename T>
+	void IncludeSheetDataToMap(TMap<FName, T>& DataMap, const UDataTable* SheetTable);
 
 #pragma endregion
 
@@ -121,4 +132,37 @@ public:
 
 public:
 
+	void Init();
+
 };
+
+template<typename T>
+void UNFGameInstance::IncludeSheetDataToMap(TMap<FName, T>& DataMap, const UDataTable* SheetTable)
+{
+	if (!IsValid(SheetTable))
+	{
+		Debug::Print(DEBUG_TEXT("SheetTable Not set"));
+		return;
+	}
+
+	auto rowNames = SheetTable->GetRowNames();
+
+	for (auto rowName : rowNames)
+	{
+		T* sheetData = SheetTable->FindRow<T>(rowName, "");
+		if (!sheetData)
+		{
+			Debug::Print(DEBUG_TEXT("Warning! : sheet Data nullptr"));
+			continue;
+		}
+
+		DataMap.Add(rowName, *sheetData);
+	}
+
+	for (auto i : DataMap)
+	{
+		FString str = FString::Printf(TEXT("key : %s"), *i.Key.ToString());
+
+		Debug::Print(DEBUG_STRING(str));
+	}
+}

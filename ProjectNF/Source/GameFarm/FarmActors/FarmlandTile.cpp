@@ -4,10 +4,8 @@
 #include "FarmlandTile.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "System/NFGameInstance.h"
-#include "DebugHelper.h"
 
-#include "ObjectPoolManager.h"
+#include "DebugHelper.h"
 #include "Item/ItemPickup.h"
 
 // Sets default values
@@ -46,22 +44,15 @@ void AFarmlandTile::Tick(float DeltaTime)
 
 void AFarmlandTile::SetInfo(FCropData InCropData)
 {
-	CropData = InCropData;
+	FCropSheetData cropsheetData;
 
-	//CropData.CropName;
-	//CropData.bWatered;
-	//CropData.CurrentGrowth;
-
-	auto gameinstance = UNFGameInstance::GetNFGameInstance();
-
-	if (!IsValid(gameinstance))
+	if (!OnRequestCropSheetData.IsBound())
 	{
-		Debug::Print(DEBUG_TEXT("gameinstance invalid."));
+		Debug::Print(DEBUG_TEXT("OnRequest is Not Bounded."));
 		return;
 	}
+	cropsheetData = OnRequestCropSheetData.Execute(InCropData.CropName);
 
-	FCropSheetData cropsheetData;
-	gameinstance->GetCropDataFromSheet(InCropData.CropName, cropsheetData);
 
 	int32 growthInterval = cropsheetData.MaxGrowth / 3;
 	int32 growthLevel = FMath::Clamp(CropData.CurrentGrowth / growthInterval, 0, 3);
@@ -82,47 +73,56 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 		break;
 	}
 
+	//정상 아이템이라 판단되면 CropData를 Set함.
+	CropData = InCropData;
 
 }
 
 void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 {
 	//다 자란 작물을 뽑기?
-
 	//level이 3이 되면 mesh를 삭제한다.
 
 	//TODO : 다작 작물이면 level을 2로 떨굴 수 있게 growthLevel을 떨궈야함.
 
-	auto gameinstance = UNFGameInstance::GetNFGameInstance();
-
-	if (!IsValid(gameinstance))
-	{
-		Debug::Print(DEBUG_TEXT("gameinstance invalid."));
-		return;
-	}
 
 	FCropSheetData cropsheetData;
-	gameinstance->GetCropDataFromSheet(CropData.CropName, cropsheetData);
+
+	if (!OnRequestCropSheetData.IsBound())
+	{
+		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
+		return;
+	}
+	cropsheetData = OnRequestCropSheetData.Execute(CropData.CropName);
+
+	if (cropsheetData.IsEmpty())
+	{
+		Debug::Print(DEBUG_TEXT("cropSheetData is empty"));
+		return;
+	}
 
 	int32 growthInterval = cropsheetData.MaxGrowth / 3;
 	int32 growthLevel = FMath::Clamp(CropData.CurrentGrowth / growthInterval, 0, 3);
 
 	if (growthLevel == 3)
 	{
+		//초기화
 		CropMesh->SetStaticMesh(nullptr);
 		CropData = FCropData();
 
-		//TODO : Item Drop
-		//GetWorld()->SpawnActor()
-		auto ObjectPoolManager = UNFGameInstance::GetObjectPoolManager();
-
-		if (!IsValid(ItemPickup_BP))
+		//Item Drop
+		if (!OnRequestSpawnItemPickup.IsBound())
 		{
-			Debug::Print(DEBUG_TEXT("ItemPickup_BP Not Set"));
+			Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 			return;
 		}
+		
+		OnRequestSpawnItemPickup.Execute(this, ItemPickup_BP, GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
 
-		ObjectPoolManager->SpawnInPool(this, ItemPickup_BP , GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
+	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("Crop Level is not 3."));
 	}
 
 }

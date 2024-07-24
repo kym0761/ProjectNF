@@ -13,7 +13,7 @@ class UInventoryObject;
  * 
  */
 UCLASS()
-class GAMEITEM_API UInventoryManager : public UObject, public IManageable
+class PROJECTNF_API UInventoryManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 	

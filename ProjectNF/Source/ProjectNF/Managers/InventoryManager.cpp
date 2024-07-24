@@ -2,7 +2,7 @@
 
 
 #include "InventoryManager.h"
-#include "InventoryObject.h"
+#include "Inventory/InventoryObject.h"
 
 UInventoryManager::UInventoryManager()
 {

@@ -8,11 +8,13 @@
 #include "Defines/Interfaces.h"
 #include "FarmlandTile.generated.h"
 
-
-
 class UStaticMeshComponent;
 class UBoxComponent;
 class AItemPickup;
+
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FCropSheetData, FOnRequestCropSheetData, const FName&, CropID);
+DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FOnRequestSpawnItemPickup, UObject*, WorldContext, TSubclassOf<AActor>, AItemPickup_BP, const FVector&, Location, const FRotator&, Rotator);
+
 /*
 * Grid를 점유하고 작물을 키울 땅 타일
 * 작물의 정보와 성장 정도에 따라 땅 Mesh 위에 작물 Mesh가 나타날 것
@@ -42,6 +44,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="Crop", Meta=(AllowPrivateAccess = true))
 	TSubclassOf<AItemPickup> ItemPickup_BP;
 
+public:
+
+	//CropSheetData를 얻는 것을 요청.
+	UPROPERTY()
+	FOnRequestCropSheetData OnRequestCropSheetData;
+
+	//ItemPickup을 Spawn하는 것을 요청.
+	UPROPERTY()
+	FOnRequestSpawnItemPickup OnRequestSpawnItemPickup;
 
 protected:
 	// Called when the game starts or when spawned

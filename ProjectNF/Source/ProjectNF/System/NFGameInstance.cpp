@@ -6,10 +6,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "DebugHelper.h"
 
-#include "Grid/GridManager.h"
-#include "PuzzleActors/ElectricLink/ElectricLinkManager.h"
-#include "ObjectPoolManager.h"
-#include "Inventory/InventoryManager.h"
+#include "Managers/GridManager.h"
+#include "Managers/ElectricLinkManager.h"
+#include "Managers/ObjectPoolManager.h"
+#include "Managers/InventoryManager.h"
 
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
@@ -76,69 +76,50 @@ void UNFGameInstance::Load()
 
 bool UNFGameInstance::GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out)
 {
-
 	//빈 아이템 ID
 	if (ItemID.IsNone())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Empty ItemID"));
+		Debug::Print(DEBUG_TEXT("Empty ItemID"));
 		return false;
 	}
 
-	//Data Table이 아직 없음
-	if (!IsValid(ItemDataTable))
+	//존재하지 않는 아이템 데이터
+	if (!ItemSheetDataMap.Contains(ItemID))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item Data Table Not Set"));
+		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
 		return false;
 	}
 
-
-	//존재하는 아이템이면 결과 도출 및 true
-	FItemSheetData* itemSheetData = ItemDataTable->FindRow<FItemSheetData>(ItemID, "");
-	if (itemSheetData != nullptr)
-	{
-		Out = *itemSheetData;
-		return true;
-	}
-
-	//존재하지 않는 아이템 정보
-	return false;
+	Out = ItemSheetDataMap[ItemID];
+	return true;
 }
 
 bool UNFGameInstance::IsValidItem(const FName& ItemID) const
 {
-	//Data Table이 아직 없음
-	if (!IsValid(ItemDataTable))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item Data Table Not Set"));
-		return false;
-	}
-
-
-	//존재하는 아이템이면 true
-	FItemSheetData* itemSheetData = ItemDataTable->FindRow<FItemSheetData>(ItemID, "");
-	if (itemSheetData != nullptr)
+	//Map에 존재하면 아이템 존재함
+	if (ItemSheetDataMap.Contains(ItemID))
 	{
 		return true;
 	}
 
-	//존재하지 않는 아이템
+	//존재하지 않음
 	return false;
 }
 
-bool UNFGameInstance::GetCropDataFromSheet(const FName& CropID, FCropSheetData& Out)
+FCropSheetData UNFGameInstance::GetCropDataFromSheet(const FName& CropID)
 {
 	//빈 Crop ID
 	if (CropID.IsNone())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Empty CropID"));
-		return false;
+		Debug::Print(DEBUG_TEXT("Empty CropID"));
+		return FCropSheetData();
 	}
 
 	//Data Table이 아직 없음
 	if (!IsValid(CropSheetTable))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Crop Sheet Table Not Set"));
-		return false;
+		Debug::Print(DEBUG_TEXT("Crop Sheet Table Not Set"));
+		return FCropSheetData();
 	}
 
 
@@ -146,12 +127,12 @@ bool UNFGameInstance::GetCropDataFromSheet(const FName& CropID, FCropSheetData& 
 	FCropSheetData* cropSheetData = CropSheetTable->FindRow<FCropSheetData>(CropID, "");
 	if (cropSheetData != nullptr)
 	{
-		Out = *cropSheetData;
-		return true;
+
+		return *cropSheetData;
 	}
 
 	//존재하지 않는 아이템 정보
-	return false;
+	return FCropSheetData();
 }
 
 int32 UNFGameInstance::GetMoney() const
@@ -212,6 +193,63 @@ void UNFGameInstance::InitManagers()
 	ElectricLinkManager->ManagerInit();
 	ObjectPoolManager->ManagerInit();
 	InventoryManager->ManagerInit();
+
+}
+
+void UNFGameInstance::Init()
+{
+	//if (!IsValid(ItemDataTable))
+	//{
+	//	Debug::Print(DEBUG_TEXT("Item Data Table Not set"));
+	//	return;
+	//}
+
+	//if (!IsValid(CropSheetTable))
+	//{
+	//	Debug::Print(DEBUG_TEXT("Crop Sheet Table Not set"));
+	//	return;
+	//}
+
+	IncludeSheetDataToMap<FItemSheetData>(ItemSheetDataMap, ItemDataTable);
+
+	IncludeSheetDataToMap<FCropSheetData>(CropSheetDataMap, CropSheetTable);
+
+	//{
+	//	auto rowNames = ItemDataTable->GetRowNames();
+	//	for (auto rowName : rowNames)
+	//	{
+	//		FItemSheetData* sheetData = ItemDataTable->FindRow<FItemSheetData>(rowName, "");
+	//		if (!sheetData)
+	//		{
+	//			Debug::Print(DEBUG_TEXT("Warning! : Item sheetData nullptr"));
+	//			continue;
+	//		}
+
+	//		ItemSheetDataMap.Add(rowName, *sheetData);
+	//	}
+
+	//	//for (auto i : ItemSheetDataMap)
+	//	//{
+	//	//	FString str = FString::Printf(TEXT("key : %s, Value : %s"), *i.Key.ToString(), *i.Value.ItemNameID.ToString());
+
+	//	//	Debug::Print(DEBUG_STRING(str));
+	//	//}
+	//}
+
+	//{
+	//	auto rowNames = CropSheetTable->GetRowNames();
+	//	for (auto rowName : rowNames)
+	//	{
+	//		FCropSheetData* sheetData = CropSheetTable->FindRow<FCropSheetData>(rowName, "");
+	//		if (!sheetData)
+	//		{
+	//			Debug::Print(DEBUG_TEXT("Warning! : Crop sheetData nullptr"));
+	//			continue;
+	//		}
+	//		CropSheetDataMap.Add(rowName, *sheetData);
+	//	}
+
+	//}
 
 }
 

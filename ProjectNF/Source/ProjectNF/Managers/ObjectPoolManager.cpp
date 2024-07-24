@@ -2,8 +2,7 @@
 
 
 #include "ObjectPoolManager.h"
-#include "Defines/Interfaces.h"
-#include "PoolChunk.h"
+#include "ObjectPooling/PoolChunk.h"
 #include "DebugHelper.h"
 
 UObjectPoolManager::UObjectPoolManager()
@@ -15,14 +14,14 @@ void UObjectPoolManager::ManagerInit()
 	ObjectPoolMap.Empty();
 }
 
-void UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, FVector Location, FRotator Rotation)
+AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, const FVector& Location, const FRotator& Rotation)
 {
 	//ObjectPoolable 인터페이스 체크
 	bool bCheckObjectPoolable = PoolableBP.GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
 		Debug::Print(DEBUG_TEXT("not ObjectPoolable"));
-		return;
+		return nullptr;
 	}
 
 	//블루프린트 타입을 포함한 Class가 무엇인지 확인
@@ -64,6 +63,8 @@ void UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> 
 	//pool 오브젝트의 beginplay를 대신한다.
 	//실제로 else 코드 쪽에서 꺼내 사용한 오브젝트는 beginplay가 동작안함.
 	IObjectPoolable::Execute_PoolBeginPlay(poolableActor);
+
+	return nullptr;
 }
 
 void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)

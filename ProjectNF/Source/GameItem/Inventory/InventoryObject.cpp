@@ -3,9 +3,6 @@
 
 #include "InventoryObject.h"
 #include "DebugHelper.h"
-#include "System/NFGameInstance.h"
-#include "Kismet/GameplayStatics.h"
-
 
 UInventoryObject::UInventoryObject()
 {
@@ -41,26 +38,18 @@ bool UInventoryObject::HasInventoryEmptySpace() const
 bool UInventoryObject::HasEnoughSpaceForItem(const FItemSlotData& InData) const
 {
 
+	if (!OnRequestItemSheetData.IsBound())
+	{
+		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
+		return false;
+	}
+
 	// 데이터 테이블에서 올바른 아이템 정보를 가져와야함.
-	FItemSheetData itemSheetData;
-
-	if (!GEngine)
-	{
-		//GEngine nullptr
-		return false;
-	}
-
-	auto gameinstance = Cast<UNFGameInstance>(UGameplayStatics::GetGameInstance(GEngine->GetCurrentPlayWorld()));
-	if (!gameinstance)
-	{
-		//gameinstance nullptr
-		return false;
-	}
-
-	bool bIsCorrectItemData = gameinstance->GetItemDataFromDataTable(InData.ItemName, itemSheetData);
-	if (!bIsCorrectItemData)
+	FItemSheetData itemSheetData = OnRequestItemSheetData.Execute(InData.ItemName);
+	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
+		Debug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
 		return false;
 	}
 
@@ -169,26 +158,19 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 		return -1;
 	}
 
+	if (!OnRequestItemSheetData.IsBound())
+	{
+		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
+		return -1;
+	}
+
+
 	// 데이터 테이블에서 올바른 아이템 정보를 가져와야함.
-	FItemSheetData itemSheetData;
-	
-	if (!GEngine)
-	{
-		//GEngine nullptr
-		return -1;
-	}
-
-	auto gameinstance= Cast<UNFGameInstance>(UGameplayStatics::GetGameInstance(GEngine->GetCurrentPlayWorld()));
-	if (!gameinstance)
-	{
-		//gameinstance nullptr
-		return -1;
-	}
-
-	bool bIsCorrectItemData = gameinstance->GetItemDataFromDataTable(InData.ItemName, itemSheetData);
-	if (!bIsCorrectItemData)
+	FItemSheetData itemSheetData = OnRequestItemSheetData.Execute(InData.ItemName);
+	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
+		Debug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
 		return -1;
 	}
 
@@ -227,8 +209,11 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 	{
 		if (Items[i].IsEmpty())
 		{
-			SetInventoryItem(i, leftover); //setInventoryItem에는 이미 OnInventoryItemsChanged가 있음
+			SetInventoryItem(i, leftover); 
+			
+			//setInventoryItem에는 이미 OnInventoryItemsChanged가 있음
 			//OnInventoryItemsChanged.Broadcast();
+			
 			return 0;
 		}
 	}

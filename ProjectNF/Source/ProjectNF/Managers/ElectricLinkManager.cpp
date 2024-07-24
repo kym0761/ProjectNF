@@ -4,7 +4,7 @@
 #include "ElectricLinkManager.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "ElectricLinkComponent.h"
+#include "GamePuzzle/PuzzleActors/ElectricLink/ElectricLinkComponent.h"
 
 #include "DebugHelper.h"
 

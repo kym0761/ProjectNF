@@ -17,6 +17,7 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryItemsChanged);
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FItemSheetData, FOnRequestItemSheetData, const FName&, ItemID);
 
 UCLASS()
 class GAMEITEM_API UInventoryObject : public UObject
@@ -26,6 +27,17 @@ class GAMEITEM_API UInventoryObject : public UObject
 public:
 
 	UInventoryObject();
+
+protected:
+	//인벤토리에 들어간 아이템
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	TArray<FItemSlotData> Items;
+
+	//인벤토리 사이즈
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	int32 InventorySize = 30;
+
+public:
 
 	/*-------------*/
 	//인벤토리 아이템 정보가 변경되면 해야할 일
@@ -37,14 +49,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FOnInventoryItemsChanged OnInventoryItemsChanged;
 
-protected:
-	//인벤토리에 들어간 아이템
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	TArray<FItemSlotData> Items;
-
-	//인벤토리 사이즈
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	int32 InventorySize = 30;
+	//TODO : 아직 InventoryObject 생성하고 이를 Set하는 기능을 안만듬. 인벤토리는 아직 동작하지 않을 것임.
+	//Item Sheet Data를 얻어오는 것을 요청.
+	UPROPERTY()
+	FOnRequestItemSheetData OnRequestItemSheetData;
 
 public:
 

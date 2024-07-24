@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class GAMEFARM_API UGridManager : public UObject, public IManageable
+class PROJECTNF_API UGridManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 

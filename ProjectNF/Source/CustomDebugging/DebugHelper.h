@@ -3,33 +3,35 @@
 #pragma once
 
 /*
-* µğ¹ö±ë ÄÚµå°¡ ¾îµğÀÖ´ÂÁö È®ÀÎÇÏ±â À§ÇØ ¸¸µç µğ¹ö±ë ¸ÅÅ©·Î
-* ÇÊ¿ä¾ø¾îÁø µğ¹ö±ë ÄÚµå¸¦ ºñÈ°¼ºÈ­ÇÏ±â À¯¿ëÇÔ.
-* UE_LOG¿Í AddOnScreenDebugMessage¸¦ µÇµµ·ÏÀÌ¸é ÀÌ ÄÚµå·Î ±³Ã¼ÇÒ °Í.
+* ë””ë²„ê¹… ì½”ë“œê°€ ì–´ë””ìˆëŠ”ì§€ í™•ì¸í•˜ê¸° ìœ„í•´ ë§Œë“  ë””ë²„ê¹… ë§¤í¬ë¡œ
+* í•„ìš”ì—†ì–´ì§„ ë””ë²„ê¹… ì½”ë“œë¥¼ ë¹„í™œì„±í™”í•˜ê¸° ìœ ìš©í•¨.
+* UE_LOGì™€ AddOnScreenDebugMessageë¥¼ ë˜ë„ë¡ì´ë©´ ì´ ì½”ë“œë¡œ êµì²´í•  ê²ƒ.
 */
 
-//¿¹½Ã) AActor::BeginPlay()
+//ì˜ˆì‹œ) AActor::BeginPlay()
 #define FUNCTION_NAME (TEXT(" Function Name : ") + FString(__FUNCTION__)+TEXT(" "))
 
-//¿¹½Ã) AActor::Func¿¡¼­ ::FuncÀÌ ºüÁ®¼­ AActor¸¸ ³ª¿È.
+//ì˜ˆì‹œ) AActor::Funcì—ì„œ ::Funcì´ ë¹ ì ¸ì„œ AActorë§Œ ë‚˜ì˜´.
 #define CURRENT_CLASS (TEXT(" Class Name : ") + FString(__FUNCTION__).Left(FString(__FUNCTION__).Find(TEXT(":"))) + TEXT(" "))
 
-//ÇÔ¼öÀÇ ¶óÀÎ¸¸ ³ª¿È
+//í•¨ìˆ˜ì˜ ë¼ì¸ë§Œ ë‚˜ì˜´
 #define CURRENT_LINE  (TEXT(" Line : ") + FString::FromInt(__LINE__) + TEXT(" "))
 
-//¿¹½Ã) void __cdecl AActor::BeginPlay(void) Çü½ÄÀ¸·Î Ãâ·ÂµÊ.
+//ì˜ˆì‹œ) void __cdecl AActor::BeginPlay(void) í˜•ì‹ìœ¼ë¡œ ì¶œë ¥ë¨.
 #define CURRENT_FUNCSIG (TEXT("/ Func signature : ") +FString(__FUNCSIG__)+ TEXT(" "))
 #define DEBUG_TEXT_POSITION (TEXT("\n") + FUNCTION_NAME + TEXT("\n") + CURRENT_LINE)
 
-//param0 ²À stringÀ¸·Î ÇÒ °Í.   ¿¹½Ã) DEBUG_TEXT("abc")
+//param0 ê¼­ TEXT(string)ìœ¼ë¡œ í•  ê²ƒ.   ì˜ˆì‹œ) DEBUG_TEXT("abc")
 #define DEBUG_TEXT(Param0) (TEXT(Param0)+DEBUG_TEXT_POSITION)
 
+//param0ì„ FStringìœ¼ë¡œ ë§Œë“¤ì–´ ì‚¬ìš©í•  ê²ƒ. ì˜ˆì‹œ) FString("abc"); FString::Printf(TEXT("?? : %d"),intVal);
+#define DEBUG_STRING(Param0) (Param0 + DEBUG_TEXT_POSITION)
 /**
  * 
  */
 namespace Debug
 {
-	//ÀÌ °ªÀ» false·Î ¹Ù²Ù¸é ¸ğµç ÆÄÀÏÀÇ µğ¹ö±×¸¦ ºñÈ°¼ºÈ­ÇÒ ¼ö ÀÖÀ½.
+	//ì´ ê°’ì„ falseë¡œ ë°”ê¾¸ë©´ ëª¨ë“  íŒŒì¼ì˜ ë””ë²„ê·¸ë¥¼ ë¹„í™œì„±í™”í•  ìˆ˜ ìˆìŒ.
 	static bool bDebugPlay = true;
 
 	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)

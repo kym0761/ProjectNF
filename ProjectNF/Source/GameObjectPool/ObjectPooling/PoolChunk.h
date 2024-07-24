@@ -15,7 +15,7 @@ class GAMEOBJECTPOOL_API UPoolChunk : public UObject
 {
 	GENERATED_BODY()
 	
-protected:
+private:
 
 	//IObjectPoolable을 인터페이스로 상속받은 "Actor" Queue
 	TQueue<IObjectPoolable*> PoolObjects;

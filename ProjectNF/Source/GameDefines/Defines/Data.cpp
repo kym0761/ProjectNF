@@ -262,3 +262,15 @@ FString FGameDateTime::ToString() const
 {
 	return FString::Printf(TEXT("| Year : %d -- Month : %d -- Day : %d -- Hour : %d -- Minute : %d |"), Year, Month, Day, Hour, Minute);
 }
+
+//~~
+
+FCropSheetData::FCropSheetData() :MaxGrowth(0),Mesh0(nullptr), Mesh1(nullptr), Mesh2(nullptr), Mesh3(nullptr)
+{
+}
+
+bool FCropSheetData::IsEmpty()
+{
+	//MaxGrowth가 0이거나 Mesh가 nullptr이면 빈 값으로 취급함.
+	return (MaxGrowth == 0) ||!Mesh0|| !Mesh1 || !Mesh2 || !Mesh3;
+}

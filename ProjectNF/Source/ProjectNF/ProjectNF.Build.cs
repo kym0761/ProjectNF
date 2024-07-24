@@ -23,11 +23,24 @@ public class ProjectNF : ModuleRules
         PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
 
         //Add Custom Modules in Source Folder.
-        PrivateDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool", "GameDefines" });
-        PrivateIncludePaths.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime", "GameObjectPool", "GameDefines" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle" });
+        PrivateIncludePaths.AddRange(new string[] {  "GameFarm", "GameItem", "GamePuzzle" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging"});
-        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameObjectPool" });
+        PrivateIncludePaths.AddRange(new string[] { "GameObjectPool" });
 
+        PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
+        PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
+
+
+
+
+
+
+        PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging"});
+        PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
+
+        PrivateIncludePathModuleNames.AddRange(new string[] { "GameTime" });
+        PrivateIncludePaths.AddRange(new string[] { "GameTime" });
     }
 }

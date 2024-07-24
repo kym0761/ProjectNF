@@ -16,4 +16,6 @@ void ANFGameModeBase::BeginPlay()
 
 	auto gameinstance= Cast<UNFGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	gameinstance->InitManagers();
+
+	gameinstance->Init();
 }

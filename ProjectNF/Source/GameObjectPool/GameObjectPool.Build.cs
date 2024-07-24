@@ -25,8 +25,8 @@ public class GameObjectPool : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
         PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
-        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
+        PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
 
     }
 }

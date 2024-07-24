@@ -22,10 +22,14 @@ public class GameItem : ModuleRules
 
         PrivateIncludePaths.AddRange(new string[] { "GameItem" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "ProjectNF", "GameDefines" });
-        PrivateIncludePaths.AddRange(new string[] { "ProjectNF", "GameDefines" });
+      
+        PrivateDependencyModuleNames.AddRange(new string[] {  "GameDefines" });
+        PrivateIncludePaths.AddRange(new string[] {  "GameDefines" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
-        PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
+        //PrivateDependencyModuleNames.AddRange(new string[] { "ProjectNF"});
+        //PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
+
+        PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
     }
 }

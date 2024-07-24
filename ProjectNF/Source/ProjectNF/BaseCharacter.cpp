@@ -23,7 +23,8 @@
 #include "FarmActors/FarmlandTile.h"
 
 #include "Defines/Data.h"
-#include "Grid/GridManager.h"
+#include "Managers/GridManager.h"
+#include "Managers/ObjectPoolManager.h"
 #include "System/NFGameInstance.h"
 
 #include "BaseAnimInstance.h"
@@ -249,9 +250,25 @@ void ABaseCharacter::UseFarmTool()
 	FActorSpawnParameters spawnPram;
 	spawnPram.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	//farmlandtile 설치 후 gridmanager에게 occupy 시킴
-	auto farmlandTile = GetWorld()->SpawnActor<AFarmlandTile>(
+	auto farmtile = GetWorld()->SpawnActor<AFarmlandTile>(
 		FarmlandTile_BP, gridManager->GridToWorld(grid), FRotator::ZeroRotator, spawnPram);
+
+	auto gameInstance = Cast<UNFGameInstance>(GetGameInstance());
+	if (!IsValid(gameInstance))
+	{
+		Debug::Print(DEBUG_TEXT("game instance is Invalid."));
+	}
+
+	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
+	farmtile->OnRequestCropSheetData.BindDynamic(gameInstance, &UNFGameInstance::GetCropDataFromSheet);
+
+	auto objectPoolManager = gameInstance->GetObjectPoolManager();
+	if (!IsValid(objectPoolManager))
+	{
+		Debug::Print(DEBUG_TEXT("Object pool Manager is Invalid."));
+	}
+
+	farmtile->OnRequestSpawnItemPickup.BindDynamic(objectPoolManager, &UObjectPoolManager::SpawnInPool);
 }
 
 void ABaseCharacter::DoWhat()

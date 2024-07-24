@@ -363,6 +363,9 @@ public:
 	//데이터 테이블 Row name으로 구분할 예정임.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
+	FText CropName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
 	int32 MaxGrowth;
 
 	//씨앗 상태
@@ -380,6 +383,22 @@ public:
 	//다 자란 상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TObjectPtr<UStaticMesh> Mesh3;
+
+	FCropSheetData();
+
+	FORCEINLINE bool operator==(const FCropSheetData& Other)
+	{
+		return CropName.EqualTo(Other.CropName);
+		//return CropName == Other.CropName;
+	}
+
+	FORCEINLINE bool operator!=(const FCropSheetData& Other)
+	{
+		return !(CropName.EqualTo(Other.CropName));
+		//return CropName != Other.CropName;
+	}
+
+	bool IsEmpty();
 
 };
 

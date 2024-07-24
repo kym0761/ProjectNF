@@ -13,7 +13,7 @@ class UElectricLinkComponent;
  * 
  */
 UCLASS(BlueprintType)
-class GAMEPUZZLE_API UElectricLinkManager : public UObject, public IManageable
+class PROJECTNF_API UElectricLinkManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 	
