@@ -9,7 +9,7 @@
 #include "Data.Generated.h"
 
 /**
- * È¤½Ã ¾ğ¸®¾ó ¼Ò½ºÀÇ ¹«¾ğ°¡¿Í Ãæµ¹µÇ¸é GameData¶ó°í ¸íÄª ¹Ù²Ü °Í ¤·¤µ¤·;
+ * í˜¹ì‹œ ì–¸ë¦¬ì–¼ ì†ŒìŠ¤ì˜ ë¬´ì–¸ê°€ì™€ ì¶©ëŒë˜ë©´ GameDataë¼ê³  ëª…ì¹­ ë°”ê¿€ ê²ƒ ã…‡ã……ã…‡;
  */
 
 #pragma region ItemData
@@ -21,13 +21,13 @@ struct GAMEDEFINES_API FItemSheetData : public FTableRowBase
 
 public:
 
-	//µ¥ÀÌÅÍ Å×ÀÌºíÀÇ 'Row Name'ÀÌ ¾ÆÀÌÅÛÀÇ "ItemID"·Î Ãë±Ş
+	//ë°ì´í„° í…Œì´ë¸”ì˜ 'Row Name'ì´ ì•„ì´í…œì˜ "ItemID"ë¡œ ì·¨ê¸‰
 
-	//ItemName°ªÀ¸·Î Localizeµ¥ÀÌÅÍ Å×ÀÌºíÀ» °Ë»öÇØ Korean ¾ğ¾î¶ó¸é Kor µ¥ÀÌÅÍ¸¦ °¡Á®¿Â´Ù..
+	//ItemNameê°’ìœ¼ë¡œ Localizeë°ì´í„° í…Œì´ë¸”ì„ ê²€ìƒ‰í•´ Korean ì–¸ì–´ë¼ë©´ Kor ë°ì´í„°ë¥¼ ê°€ì ¸ì˜¨ë‹¤..
 
 
-	//ItemBaseDataÀÇ ItemNameÀº FText·Î ÃßÈÄ Localizing¿¡ »ç¿ëµÉ ¼öµµ ÀÖ´Â °ªÀÌ´Ù.
-	// Item ID°¡ ¾Æ´Ô!
+	//ItemBaseDataì˜ ItemNameì€ FTextë¡œ ì¶”í›„ Localizingì— ì‚¬ìš©ë  ìˆ˜ë„ ìˆëŠ” ê°’ì´ë‹¤.
+	// Item IDê°€ ì•„ë‹˜!
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FText ItemNameID;
 
@@ -87,14 +87,14 @@ struct GAMEDEFINES_API FItemSlotData
 
 public:
 
-	//DataTableÀ» °Ë»öÇÒ ÀÌ¸§
+	//DataTableì„ ê²€ìƒ‰í•  ì´ë¦„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FName ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int32 Quantity;
 
-	// potential TODO : SlotData¿¡ Àåºñ ³»±¸µµ¿Í °°Àº Á¤º¸¸¦ ³ÖÀ» ¼ö ÀÖ°Ô Ãß°¡ÇÒ ÇÊ¿ä°¡ ÀÖÀ» ¼öµµ ÀÖÀ½.
+	// potential TODO : SlotDataì— ì¥ë¹„ ë‚´êµ¬ë„ì™€ ê°™ì€ ì •ë³´ë¥¼ ë„£ì„ ìˆ˜ ìˆê²Œ ì¶”ê°€í•  í•„ìš”ê°€ ìˆì„ ìˆ˜ë„ ìˆìŒ.
 
 	FItemSlotData();
 	//FItemSlotData(const FItemBaseData& ItemData, int32 Num);
@@ -114,7 +114,7 @@ public:
 	void SetEmpty();
 };
 
-//ItemShop¿¡¼­ »ç¿ëÇÒ ±¸Á¶Ã¼
+//ItemShopì—ì„œ ì‚¬ìš©í•  êµ¬ì¡°ì²´
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FShopItemData
 {
@@ -122,7 +122,7 @@ struct GAMEDEFINES_API FShopItemData
 
 public:
 
-	//DataTableÀ» °Ë»öÇÒ ÀÌ¸§
+	//DataTableì„ ê²€ìƒ‰í•  ì´ë¦„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FName ItemName;
 
@@ -137,7 +137,7 @@ public:
 
 };
 
-//Consumable ¾ÆÀÌÅÛ Á¤º¸
+//Consumable ì•„ì´í…œ ì •ë³´
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FConsumableItemData : public FTableRowBase
 {
@@ -164,7 +164,7 @@ public:
 
 };
 
-//Àåºñ ¾ÆÀÌÅÛÀÇ Á¤º¸
+//ì¥ë¹„ ì•„ì´í…œì˜ ì •ë³´
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FEquipmentItemData : public FTableRowBase
 {
@@ -192,10 +192,10 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	//EGameElementType ElementType;
 
-	//Ãß°¡ Á¤º¸°¡ ÇÊ¿äÇÒÁöµµ? --> ¿¹½Ã : Àåºñ Âø¿ë½Ã °É¸®´Â Buff È¿°ú
+	//ì¶”ê°€ ì •ë³´ê°€ í•„ìš”í• ì§€ë„? --> ì˜ˆì‹œ : ì¥ë¹„ ì°©ìš©ì‹œ ê±¸ë¦¬ëŠ” Buff íš¨ê³¼
 };
 
-//Á¦ÀÛ Á¤º¸
+//ì œì‘ ì •ë³´
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FItemCraftData : public FTableRowBase
 {
@@ -205,20 +205,20 @@ public:
 
 	//'Row Name' Will Be "ItemID" in Data Table
 
-	//Á¦ÀÛÇÏ¸é ³ª¿À´Â ¾ÆÀÌÅÛ °³¼ö
+	//ì œì‘í•˜ë©´ ë‚˜ì˜¤ëŠ” ì•„ì´í…œ ê°œìˆ˜
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int32 Quantity;
 
-	//ÇÊ¿äÇÑ ¾ÆÀÌÅÛ Á¤º¸ (ResourceItemName, ResourceQuantity)
+	//í•„ìš”í•œ ì•„ì´í…œ ì •ë³´ (ResourceItemName, ResourceQuantity)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TMap<FName, int32> Resources;
 
-	//Á¦ÀÛÇÏ´Âµ¥ ÇÊ¿äÇÑ ½Ã°£
+	//ì œì‘í•˜ëŠ”ë° í•„ìš”í•œ ì‹œê°„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	float LeadTime;
 
-	//Á¦ÀÛ ±â´ÉÀ» °³¼±ÇÒ ¾ÆÀÌµğ¾î°¡ ÇÊ¿ä
-	// °³¼± ¾ÆÀÌµğ¾î : Á¦ÀÛ start ½Ã°£À» µî·ÏÇÑ µÚ, Á¦ÀÛ completed ½Ã°£ÀÌ Áö³ª¸é ¾ÆÀÌÅÛÀ» ¾òÀ» ¼ö ÀÖ°Ô ÇÏ¸é µÉ µí?
+	//ì œì‘ ê¸°ëŠ¥ì„ ê°œì„ í•  ì•„ì´ë””ì–´ê°€ í•„ìš”
+	// ê°œì„  ì•„ì´ë””ì–´ : ì œì‘ start ì‹œê°„ì„ ë“±ë¡í•œ ë’¤, ì œì‘ completed ì‹œê°„ì´ ì§€ë‚˜ë©´ ì•„ì´í…œì„ ì–»ì„ ìˆ˜ ìˆê²Œ í•˜ë©´ ë  ë“¯?
 
 };
 
@@ -227,14 +227,14 @@ public:
 #pragma region Grid
 
 /**
- * FVector·Î Ç¥ÇöµÈ À§Ä¡¸¦ int , int Çü½ÄÀÇ ±×¸®µå·Î Ç¥ÇöÇÏ´Â Á¤º¸ ±¸Á¶Ã¼
+ * FVectorë¡œ í‘œí˜„ëœ ìœ„ì¹˜ë¥¼ int , int í˜•ì‹ì˜ ê·¸ë¦¬ë“œë¡œ í‘œí˜„í•˜ëŠ” ì •ë³´ êµ¬ì¡°ì²´
  */
 USTRUCT(BlueprintType, Blueprintable)
 struct GAMEDEFINES_API FGrid
 {
 	GENERATED_BODY()
 
-	//±¸Á¶Ã¼ _API ¸í½Ã ¾ÈÇÏ°í »ç¿ëÇÏ¸é ¸ŞÀÎ ¸ğµâ¿¡¼­ »ç¿ë½Ã ¹ö±× ¹ß»ıÇÔ.
+	//êµ¬ì¡°ì²´ _API ëª…ì‹œ ì•ˆí•˜ê³  ì‚¬ìš©í•˜ë©´ ë©”ì¸ ëª¨ë“ˆì—ì„œ ì‚¬ìš©ì‹œ ë²„ê·¸ ë°œìƒí•¨.
 
 public:
 
@@ -258,7 +258,7 @@ public:
 	bool IsInvalidGrid() const;
 };
 
-//¿ÜºÎ ¸ğµâ¿¡¼­ ÀÌ Hash°¡ Àû¿ëµÇ·Á¸é GAMEFARM_API°¡ ÇÔ¼ö ¾Õ¿¡ ºÙ¾î¾ßÇÏ´Â °ÍÀ¸·Î º¸ÀÓ.
+//ì™¸ë¶€ ëª¨ë“ˆì—ì„œ ì´ Hashê°€ ì ìš©ë˜ë ¤ë©´ GAMEFARM_APIê°€ í•¨ìˆ˜ ì•ì— ë¶™ì–´ì•¼í•˜ëŠ” ê²ƒìœ¼ë¡œ ë³´ì„.
 //hash : TSet, TMap..
 GAMEDEFINES_API uint32 GetTypeHash(const FGrid& Grid);
 
@@ -267,8 +267,8 @@ GAMEDEFINES_API uint32 GetTypeHash(const FGrid& Grid);
 #pragma region GameTime
 
 /**
- * °ÔÀÓ ¾È¿¡¼­ »ç¿ëÇÒ ³â ¿ù ÀÏ ½Ã°£
- * !! : Çö½Ç ½Ã°£ ¾Æ´Ô
+ * ê²Œì„ ì•ˆì—ì„œ ì‚¬ìš©í•  ë…„ ì›” ì¼ ì‹œê°„
+ * !! : í˜„ì‹¤ ì‹œê°„ ì•„ë‹˜
  */
 
 
@@ -279,7 +279,7 @@ struct GAMEDEFINES_API FGameDateTime
 
 public:
 
-	//! uint32´Â ¾ğ¸®¾ó ¿¡µğÅÍ¿¡¼­ »ç¿ëÇÒ ¼ö ¾ø±â ¶§¹®¿¡ int32¸¦ »ç¿ëÇÑ´Ù.
+	//! uint32ëŠ” ì–¸ë¦¬ì–¼ ì—ë””í„°ì—ì„œ ì‚¬ìš©í•  ìˆ˜ ì—†ê¸° ë•Œë¬¸ì— int32ë¥¼ ì‚¬ìš©í•œë‹¤.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Year;
@@ -296,16 +296,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Minute;
 
-#pragma region ConstTimeValue 	/*ÀÌ ºÎºĞÀº µÇµµ·ÏÀÌ¸é °Çµå¸®Áö ¸» °Í*/
+#pragma region ConstTimeValue 	/*ì´ ë¶€ë¶„ì€ ë˜ë„ë¡ì´ë©´ ê±´ë“œë¦¬ì§€ ë§ ê²ƒ*/
 
-	//¿¬µµ »óÇÑÄ¡´Â int32 ÃÖ´ë°ª(2^31-1) -> Á¤»óÀûÀÎ ÇÃ·¹ÀÌ¿¡¼­´Â »ç½Ç»ó µµ´ŞÀº ºÒ°¡´ÉÇÔ.
+	//ì—°ë„ ìƒí•œì¹˜ëŠ” int32 ìµœëŒ€ê°’(2^31-1) -> ì •ìƒì ì¸ í”Œë ˆì´ì—ì„œëŠ” ì‚¬ì‹¤ìƒ ë„ë‹¬ì€ ë¶ˆê°€ëŠ¥í•¨.
 	const static int32 MAX_YEAR = TNumericLimits<int32>::Max();
 	const static int32 MAX_MONTH = 12;
 	const static int32 MAX_HOUR = 24;
 	const static int32 MAX_MINUTE = 60;
 	const static int32 MAX_WEEK = 7;
 
-	// cpp¿¡¼­ ¾Ë¸Â´Â °ªÀ¸·Î ÃÊ±âÈ­ÇÑ´Ù.
+	// cppì—ì„œ ì•Œë§ëŠ” ê°’ìœ¼ë¡œ ì´ˆê¸°í™”í•œë‹¤.
 	const static TArray<int32> MAXDAY_OF_MONTH;
 	const static FGameDateTime MORNING;
 	const static FGameDateTime NOON;
@@ -320,11 +320,19 @@ public:
 	FGameDateTime operator-(const FGameDateTime& rValue);
 	FGameDateTime& operator-=(const FGameDateTime& rValue);
 
+	//!! : ê²Œì„ì†ì˜ Year Month DayëŠ” 0ì´ ë  ìˆ˜ ì—†ëŠ” ê°’ì´ë¼ëŠ” ê°€ì •í•˜ì— ì—°ì‚°ìë¥¼ ë§Œë“¤ì–´ì•¼í•¨.
+
+	bool operator>(const FGameDateTime& Other) const;
+	bool operator>=(const FGameDateTime& Other) const;
+	bool operator<(const FGameDateTime& Other) const;
+	bool operator<=(const FGameDateTime& Other) const;
+
+
 	FString ToString() const;
 
 };
 
-//¿ùÀÇ ¸íÄªÀ» °ü¸®ÇÒ µ¥ÀÌÅÍ Å×ÀÌºí
+//ì›”ì˜ ëª…ì¹­ì„ ê´€ë¦¬í•  ë°ì´í„° í…Œì´ë¸”
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FMonthRow : public FTableRowBase
 {
@@ -336,7 +344,7 @@ public:
 	FString MonthName;
 };
 
-//°èÀı ¸íÄªÀ» °ü¸®ÇÒ µ¥ÀÌÅÍ Å×ÀÌºí
+//ê³„ì ˆ ëª…ì¹­ì„ ê´€ë¦¬í•  ë°ì´í„° í…Œì´ë¸”
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FSeasonRow : public FTableRowBase
 {
@@ -346,6 +354,59 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SeasonName;
+};
+
+USTRUCT(BlueprintType)
+struct GAMEDEFINES_API FNPCScheduleSheetData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FString ScheduleOwner;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	int32 Priority;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FGameDateTime StartDateTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FGameDateTime ScheduleExpireDateTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FString Destination;
+
+	//í•´ë‹¹ ìŠ¤ì¼€ì¥´ì— ëŒ€í•œ ì„¤ëª…ì„ ì ì„ ê³µê°„. ì•„ë§ˆ ì•„ë¬´ ê¸°ëŠ¥ë„ ì—†ì„ ê²ƒì´ë‹¤.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FString Comment;
+
+};
+
+
+USTRUCT(BlueprintType)
+struct GAMEDEFINES_API FNPCScheduleActionData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	int32 Priority;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FGameDateTime StartDateTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FGameDateTime ScheduleExpireDateTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	FString Destination;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
+	bool bCompleted;
+
 };
 
 #pragma endregion
@@ -360,7 +421,7 @@ struct GAMEDEFINES_API FCropSheetData : public FTableRowBase
 
 public:
 
-	//µ¥ÀÌÅÍ Å×ÀÌºí Row nameÀ¸·Î ±¸ºĞÇÒ ¿¹Á¤ÀÓ.
+	//ë°ì´í„° í…Œì´ë¸” Row nameìœ¼ë¡œ êµ¬ë¶„í•  ì˜ˆì •ì„.
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
 	FText CropName;
@@ -368,19 +429,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Crop")
 	int32 MaxGrowth;
 
-	//¾¾¾Ñ »óÅÂ
+	//ì”¨ì•— ìƒíƒœ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TObjectPtr<UStaticMesh> Mesh0;
 
-	//»õ½Ï »óÅÂ
+	//ìƒˆì‹¹ ìƒíƒœ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TObjectPtr<UStaticMesh> Mesh1;
 
-	//Áß°£ »óÅÂ
+	//ì¤‘ê°„ ìƒíƒœ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TObjectPtr<UStaticMesh> Mesh2;
 
-	//´Ù ÀÚ¶õ »óÅÂ
+	//ë‹¤ ìë€ ìƒíƒœ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	TObjectPtr<UStaticMesh> Mesh3;
 
@@ -402,7 +463,7 @@ public:
 
 };
 
-//FarmlandTile¿¡ µé¾î°¥ Crop Á¤º¸ 
+//FarmlandTileì— ë“¤ì–´ê°ˆ Crop ì •ë³´ 
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FCropData
 {
@@ -421,8 +482,8 @@ public:
 
 };
 
-//SaveGame¿¡ »ç¿ëÇÒ ¼¼ÀÌºê¿ë ±¸Á¶Ã¼
-//Grid À§Ä¡°ªÀ» ÀúÀåÇÏ¿© loadÇÏ°í farm¸Ê¿¡¼­ GridÀ§Ä¡¿¡ ¸Â°Ô ¹èÄ¡ÇÒ ¿ëµµ
+//SaveGameì— ì‚¬ìš©í•  ì„¸ì´ë¸Œìš© êµ¬ì¡°ì²´
+//Grid ìœ„ì¹˜ê°’ì„ ì €ì¥í•˜ì—¬ loadí•˜ê³  farmë§µì—ì„œ Gridìœ„ì¹˜ì— ë§ê²Œ ë°°ì¹˜í•  ìš©ë„
 USTRUCT(BlueprintType)
 struct GAMEDEFINES_API FFarmlandSaveData
 {

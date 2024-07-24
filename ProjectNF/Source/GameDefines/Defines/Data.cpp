@@ -17,7 +17,7 @@ FItemSheetData::FItemSheetData()
 
 bool FItemSheetData::IsEmpty()
 {
-	//ItemBaseData�� �̸��� �� ���� �ƹ� ������ �ƴ� ������ ������.
+	//ItemBaseData의 이름의 빈 값은 아무 정보도 아닌 것으로 판정함.
 	return ItemNameID.IsEmpty();
 }
 
@@ -133,7 +133,7 @@ uint32 GetTypeHash(const FGrid& Grid)
 
 //~~
 
-//[0]��°�� ���ǻ� ������� �ʴ´�.
+//[0]번째는 편의상 사용하지 않는다.
 const TArray<int> FGameDateTime::MAXDAY_OF_MONTH = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 const FGameDateTime FGameDateTime::MORNING = FGameDateTime(0, 0, 0, 6, 0);
@@ -157,17 +157,17 @@ FGameDateTime FGameDateTime::operator+(const FGameDateTime& rValue)
 	int32 hour = this->Hour + rValue.Hour;
 	int32 minute = this->Minute + rValue.Minute;
 
-	//FIngameTime�� ���� ������ ������� ���� ���̹Ƿ�
-	//+�� ����� ������ �����÷��� ���ɼ��� ����.
+	//FIngameTime의 값은 음수를 허용하지 않을 것이므로
+	//+의 결과가 음수면 오버플로의 가능성이 있음.
 	if (year < 0 || month < 0 || day < 0 || hour < 0 || minute < 0)
 	{
 		return *this;
 	}
 
 	/*
-	* ��, ���� >= ���� : 0 ���
-	* ��, ���� > ���� : 0 �����
-	* ������ �ִ� ����ġ�� ������, �׶����� �÷����ϴ� ���� ���������� �Ұ����� ��.
+	* 시, 분은 >= 조건 : 0 허용
+	* 월, 일은 > 조건 : 0 비허용
+	* 연도도 최대 상한치가 있지만, 그때까지 플레이하는 것이 현실적으로 불가능할 것.
 	*/
 
 	if (minute >= MAX_MINUTE)
@@ -258,6 +258,170 @@ FGameDateTime& FGameDateTime::operator-=(const FGameDateTime& rValue)
 	return *this;
 }
 
+bool FGameDateTime::operator>(const FGameDateTime& Other) const
+{
+	// 연 월 일에 0값이 있다면, 해당 값으로 비교하기가 싫다는 의미임.
+
+	if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0) && (this->Day == 0 || Other.Day == 0))
+	{
+		//Year와 Month, Day가 유효하지 않음.
+		//시 , 분 만으로 비교함.
+
+		return	(this->Hour > Other.Hour) ||
+			(this->Hour == Other.Hour && this->Minute > Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0))
+	{
+		//Year와 Month가 유효하지 않음.
+		//일, 시 , 분 만으로 비교함.
+
+		return (this->Day > Other.Day) ||
+			(this->Day == Other.Day && this->Hour > Other.Hour) ||
+			(this->Day == Other.Day && this->Hour == Other.Hour && this->Minute > Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0))
+	{
+		//Year가 유효하지 않음
+		//월 일 시 분 으로 비교
+
+		return (this->Month > Other.Month) ||
+			(this->Month == Other.Month && this->Day > Other.Day) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour > Other.Hour) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute > Other.Minute);
+	}
+
+	//모든 값이 유효함.
+	//년 월 일 시 분 비교
+	return this->Year> Other.Year ||
+		(this->Year == Other.Year && this->Month > Other.Month) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day > Other.Day) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour > Other.Hour) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute > Other.Minute);
+}
+
+bool FGameDateTime::operator>=(const FGameDateTime& Other) const
+{
+	// 연 월 일에 0값이 있다면, 해당 값으로 비교하기가 싫다는 의미임.
+
+	if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0) && (this->Day == 0 || Other.Day == 0))
+	{
+		//Year와 Month, Day가 유효하지 않음.
+		//시 , 분 만으로 비교함.
+
+		return	(this->Hour >= Other.Hour) ||
+			(this->Hour == Other.Hour && this->Minute >= Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0))
+	{
+		//Year와 Month가 유효하지 않음.
+		//일, 시 , 분 만으로 비교함.
+
+		return (this->Day >= Other.Day) ||
+			(this->Day == Other.Day && this->Hour >= Other.Hour) ||
+			(this->Day == Other.Day && this->Hour == Other.Hour && this->Minute >= Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0))
+	{
+		//Year가 유효하지 않음
+		//월 일 시 분 으로 비교
+
+		return (this->Month >= Other.Month) ||
+			(this->Month == Other.Month && this->Day >= Other.Day) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour >= Other.Hour) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute >= Other.Minute);
+	}
+
+	//모든 값이 유효함.
+	//년 월 일 시 분 비교
+	return this->Year >= Other.Year ||
+		(this->Year == Other.Year && this->Month >= Other.Month) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day >= Other.Day) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour >= Other.Hour) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute >= Other.Minute);
+}
+
+bool FGameDateTime::operator<(const FGameDateTime& Other) const
+{
+	// 연 월 일에 0값이 있다면, 해당 값으로 비교하기가 싫다는 의미임.
+
+	if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0) && (this->Day == 0 || Other.Day == 0))
+	{
+		//Year와 Month, Day가 유효하지 않음.
+		//시 , 분 만으로 비교함.
+
+		return	(this->Hour < Other.Hour) ||
+			(this->Hour == Other.Hour && this->Minute < Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0))
+	{
+		//Year와 Month가 유효하지 않음.
+		//일, 시 , 분 만으로 비교함.
+
+		return (this->Day < Other.Day) ||
+			(this->Day == Other.Day && this->Hour < Other.Hour) ||
+			(this->Day == Other.Day && this->Hour == Other.Hour && this->Minute < Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0))
+	{
+		//Year가 유효하지 않음
+		//월 일 시 분 으로 비교
+
+		return (this->Month < Other.Month) ||
+			(this->Month == Other.Month && this->Day < Other.Day) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour < Other.Hour) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute < Other.Minute);
+	}
+
+	//모든 값이 유효함.
+	//년 월 일 시 분 비교
+	return this->Year < Other.Year ||
+		(this->Year == Other.Year && this->Month < Other.Month) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day < Other.Day) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour < Other.Hour) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute < Other.Minute);
+}
+
+bool FGameDateTime::operator<=(const FGameDateTime& Other) const
+{
+	// 연 월 일에 0값이 있다면, 해당 값으로 비교하기가 싫다는 의미임.
+
+	if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0) && (this->Day == 0 || Other.Day == 0))
+	{
+		//Year와 Month, Day가 유효하지 않음.
+		//시 , 분 만으로 비교함.
+
+		return	(this->Hour <= Other.Hour) ||
+			(this->Hour == Other.Hour && this->Minute <= Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0) && (this->Month == 0 || Other.Month == 0))
+	{
+		//Year와 Month가 유효하지 않음.
+		//일, 시 , 분 만으로 비교함.
+
+		return (this->Day <= Other.Day) ||
+			(this->Day == Other.Day && this->Hour <= Other.Hour) ||
+			(this->Day == Other.Day && this->Hour == Other.Hour && this->Minute <= Other.Minute);
+	}
+	else if ((this->Year == 0 || Other.Year == 0))
+	{
+		//Year가 유효하지 않음
+		//월 일 시 분 으로 비교
+
+		return (this->Month <= Other.Month) ||
+			(this->Month == Other.Month && this->Day <= Other.Day) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour <= Other.Hour) ||
+			(this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute <= Other.Minute);
+	}
+
+	//모든 값이 유효함.
+	//년 월 일 시 분 비교
+	return this->Year <= Other.Year ||
+		(this->Year == Other.Year && this->Month <= Other.Month) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day <= Other.Day) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour <= Other.Hour) ||
+		(this->Year == Other.Year && this->Month == Other.Month && this->Day == Other.Day && this->Hour == Other.Hour && this->Minute <= Other.Minute);
+}
+
 FString FGameDateTime::ToString() const
 {
 	return FString::Printf(TEXT("| Year : %d -- Month : %d -- Day : %d -- Hour : %d -- Minute : %d |"), Year, Month, Day, Hour, Minute);
@@ -271,6 +435,6 @@ FCropSheetData::FCropSheetData() :MaxGrowth(0),Mesh0(nullptr), Mesh1(nullptr), M
 
 bool FCropSheetData::IsEmpty()
 {
-	//MaxGrowth�� 0�̰ų� Mesh�� nullptr�̸� �� ������ �����.
+	//MaxGrowth가 0이거나 Mesh가 nullptr이면 빈 값으로 취급함.
 	return (MaxGrowth == 0) ||!Mesh0|| !Mesh1 || !Mesh2 || !Mesh3;
 }
