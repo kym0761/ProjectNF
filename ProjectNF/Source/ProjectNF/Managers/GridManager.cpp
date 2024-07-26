@@ -36,7 +36,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
 	}
 	
-	//GetCurrentPlayWorld()´Â Outer¿Í »ó°ü¾øÀÌ ÇöÀç °ÔÀÓÀÇ World¸¦ ¾òÀ» ¼ö ÀÖ´Ù.
+	//GetCurrentPlayWorld()ëŠ” Outerì™€ ìƒê´€ì—†ì´ í˜„ì¬ ê²Œì„ì˜ Worldë¥¼ ì–»ì„ ìˆ˜ ìˆë‹¤.
 	auto world = GEngine->GetCurrentPlayWorld();
 
 	if (IsValid(world))
@@ -53,8 +53,8 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 			world,
 			start,
 			end,
-			CellSize / 3, //gridsizeÀÇ 1/2~1/3À¸·Î ¼¼ÆÃÇÏ´Â °ÍÀÌ ÁÁ´Ù.
-			UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1), //ÇÁ·ÎÁ§Æ® ¼¼ÆÃÀÇ traceÃ¤³Î 1
+			CellSize / 3, //gridsizeì˜ 1/2~1/3ìœ¼ë¡œ ì„¸íŒ…í•˜ëŠ” ê²ƒì´ ì¢‹ë‹¤.
+			UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1), //í”„ë¡œì íŠ¸ ì„¸íŒ…ì˜ traceì±„ë„ 1
 			false,
 			ignores,
 			EDrawDebugTrace::ForDuration,
@@ -80,7 +80,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 	return false;
 }
 
-void UGridManager::ManagerInit()
+void UGridManager::InitManager()
 {
 	//?
 }

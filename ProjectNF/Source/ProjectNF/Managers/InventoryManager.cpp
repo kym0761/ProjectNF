@@ -12,14 +12,14 @@ TObjectPtr<UInventoryObject> UInventoryManager::GetInventory(FString InventoryOw
 {
 	if (InventoryOwner.IsEmpty())
 	{
-		//Àß¸øµÈ ÀÎº¥Åä¸® Á¢±Ù¹ı
+		//ì˜ëª»ëœ ì¸ë²¤í† ë¦¬ ì ‘ê·¼ë²•
 		return nullptr;
 	}
 
-	//TODO : ÀÎº¥Åä¸® Owner ÀÚÃ¼°¡ Á¸ÀçÇÏ´ÂÁöºÎÅÍ..
+	//TODO : ì¸ë²¤í† ë¦¬ Owner ìì²´ê°€ ì¡´ì¬í•˜ëŠ”ì§€ë¶€í„°..
 	if (!InventoryMap.Contains(InventoryOwner))
 	{
-		//TODO : ÀÎº¥Åä¸® »ı¼º½Ã, ÁöÁ¤µÈ Å©±â µîÀ¸·Î ÃÊ±âÈ­? 
+		//TODO : ì¸ë²¤í† ë¦¬ ìƒì„±ì‹œ, ì§€ì •ëœ í¬ê¸° ë“±ìœ¼ë¡œ ì´ˆê¸°í™”? 
 		UInventoryObject* inventory = NewObject<UInventoryObject>(this);
 		inventory->InitInventory();
 
@@ -30,7 +30,7 @@ TObjectPtr<UInventoryObject> UInventoryManager::GetInventory(FString InventoryOw
 	return InventoryMap[InventoryOwner];
 }
 
-void UInventoryManager::ManagerInit()
+void UInventoryManager::InitManager()
 {
 	//?
 }

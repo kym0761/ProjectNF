@@ -8,7 +8,7 @@
 
 #pragma region ObjectPool
  /**
-  * ObjectPoolÀÌ °¡´ÉÇÏ·Á¸é IObjectPoolableÀ» Actor¿¡ Àû¿ëÇØ¾ßÇÔ.
+  * ObjectPoolì´ ê°€ëŠ¥í•˜ë ¤ë©´ IObjectPoolableì„ Actorì— ì ìš©í•´ì•¼í•¨.
   */
 
 UINTERFACE(Blueprintable)
@@ -24,10 +24,10 @@ class GAMEDEFINES_API IObjectPoolable
 
 public:
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PoolBeginPlay();
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PoolEndPlay();
 
 };
@@ -37,10 +37,10 @@ public:
 
 #pragma region Puzzle
 /*
-ITriggerable : Trigger µ¿ÀÛ ÀÎÅÍÆäÀÌ½º
-IBeTriggerable : Trigger¸¦ ´çÇßÀ» ¶§ÀÇ µ¿ÀÛ ÀÎÅÍÆäÀÌ½º
-IResetable : ¸®¼ÂÀÌ °¡´ÉÇÑ ´ë»óÀÏ ¶§ ÇÊ¿äÇÑ ÀÎÅÍÆäÀÌ½º. ex) ResetButton
-ICombustible : ºÒ ºÙ´Â°Ô °¡´ÉÇÑ ´ë»óÀÏ ¶§ ÇÊ¿äÇÑ ÀÎÅÍÆäÀÌ½º. ex)FireBowl, FireStand
+ITriggerable : Trigger ë™ì‘ ì¸í„°í˜ì´ìŠ¤
+IBeTriggerable : Triggerë¥¼ ë‹¹í–ˆì„ ë•Œì˜ ë™ì‘ ì¸í„°í˜ì´ìŠ¤
+IResetable : ë¦¬ì…‹ì´ ê°€ëŠ¥í•œ ëŒ€ìƒì¼ ë•Œ í•„ìš”í•œ ì¸í„°í˜ì´ìŠ¤. ex) ResetButton
+ICombustible : ë¶ˆ ë¶™ëŠ”ê²Œ ê°€ëŠ¥í•œ ëŒ€ìƒì¼ ë•Œ í•„ìš”í•œ ì¸í„°í˜ì´ìŠ¤. ex)FireBowl, FireStand
 */
 
 //Interface Class Base. Don't Use.
@@ -168,7 +168,7 @@ class IManageable
 public:
 
 
-	virtual void ManagerInit() = 0;
+	virtual void InitManager() = 0;
 
 };
 

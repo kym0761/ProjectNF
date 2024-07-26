@@ -25,6 +25,8 @@
 #include "Defines/Data.h"
 #include "Managers/GridManager.h"
 #include "Managers/ObjectPoolManager.h"
+#include "Managers/DataManager.h"
+
 #include "System/NFGameInstance.h"
 
 #include "BaseAnimInstance.h"
@@ -35,12 +37,12 @@ ABaseCharacter::ABaseCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Ä«¸Ş¶ó¸¸ È¸Àü½ÃÅ²´Ù. Ä³¸¯ÅÍ´Â ÀÌµ¿ÇÒ¶§¸¸ È¸ÀüÇÑ´Ù.
+	// ì¹´ë©”ë¼ë§Œ íšŒì „ì‹œí‚¨ë‹¤. ìºë¦­í„°ëŠ” ì´ë™í• ë•Œë§Œ íšŒì „í•œë‹¤.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	//±âº» ÀÌµ¿ ¼¼ÆÃ
+	//ê¸°ë³¸ ì´ë™ ì„¸íŒ…
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1024.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 700.0f;
@@ -78,7 +80,7 @@ ABaseCharacter::ABaseCharacter()
 
 		CurrentCharacterState = CharacterStateMap[FString("Normal")];
 
-		//!! ºí·çÇÁ¸°Æ®¿¡¼­ »ç¿ëÇÔ.
+		//!! ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ ì‚¬ìš©í•¨.
 	}
 }
 
@@ -178,7 +180,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::Attack()
 {
-	//±ÙÁ¢ °ø°İ?
+	//ê·¼ì ‘ ê³µê²©?
 
 	Debug::Print(DEBUG_TEXT("Attack"));
 
@@ -196,8 +198,8 @@ void ABaseCharacter::Attack()
 
 void ABaseCharacter::UseFarmTool()
 {
-	//ÀÏ´Ü, Áö±İ farmtoolÀº ¶¥À» °æÀÛÇÏ´Â ±â´ÉÀ» ÇÏ´Â°É·Î ÇÑ´Ù.
-	//¸íÄª UseHoe·Î º¯°æÇØ¾ßÇÒ µí
+	//ì¼ë‹¨, ì§€ê¸ˆ farmtoolì€ ë•…ì„ ê²½ì‘í•˜ëŠ” ê¸°ëŠ¥ì„ í•˜ëŠ”ê±¸ë¡œ í•œë‹¤.
+	//ëª…ì¹­ UseHoeë¡œ ë³€ê²½í•´ì•¼í•  ë“¯
 
 	if (!IsValid(FarmlandTile_BP))
 	{
@@ -209,12 +211,12 @@ void ABaseCharacter::UseFarmTool()
 
 	FHitResult hit;
 
-	//farmPos¿¡¼­ ¾Æ·¡·Î 2000 ³»·Á°¡´Â ÁöÁ¡À¸·Î trace
+	//farmPosì—ì„œ ì•„ë˜ë¡œ 2000 ë‚´ë ¤ê°€ëŠ” ì§€ì ìœ¼ë¡œ trace
 	FVector start = FarmPos->GetComponentLocation();
 	FVector end = start + FVector::DownVector * 2000.0f;
 
-	//ÀÏ´Ü WorldStaticÀÌ¸é farmTileÀ» ¼³Ä¡ÇÑ´Ù.
-	//ÃßÈÄ¿¡ ¶¥ÀÇ Physical Material? À» ÅëÇØ ÈëºÎºĞ¿¡¼­¸¸ FarmtileÀ» ¼³Ä¡ÇÏ°Ô ¸¸µé ¼öµµ ÀÖÀ½.
+	//ì¼ë‹¨ WorldStaticì´ë©´ farmTileì„ ì„¤ì¹˜í•œë‹¤.
+	//ì¶”í›„ì— ë•…ì˜ Physical Material? ì„ í†µí•´ í™ë¶€ë¶„ì—ì„œë§Œ Farmtileì„ ì„¤ì¹˜í•˜ê²Œ ë§Œë“¤ ìˆ˜ë„ ìˆìŒ.
 	bool traceResult
 		= GetWorld()->LineTraceSingleByChannel(
 			hit,
@@ -242,7 +244,7 @@ void ABaseCharacter::UseFarmTool()
 	bool bExistOnGrid = gridManager->IsSomethingExistOnGrid(grid);
 	if (bExistOnGrid)
 	{
-		//´©°¡ Á¡À¯ÁßÀÌ¶ó ¸øÇÔ
+		//ëˆ„ê°€ ì ìœ ì¤‘ì´ë¼ ëª»í•¨
 		Debug::Print(DEBUG_TEXT("already occupying"));
 		return;
 	}
@@ -259,8 +261,15 @@ void ABaseCharacter::UseFarmTool()
 		Debug::Print(DEBUG_TEXT("game instance is Invalid."));
 	}
 
-	//farmtile¿¡ CropData¿Í SpawnÀ» ¿äÃ»ÇÏ´Â ±â´ÉÀ» bindÇØ¾ßÇÑ´Ù.
-	farmtile->OnRequestCropSheetData.BindDynamic(gameInstance, &UNFGameInstance::GetCropDataFromSheet);
+
+	auto dataManager = UNFGameInstance::GetDataManager();
+	if (!IsValid(dataManager))
+	{
+		Debug::Print(DEBUG_TEXT("Data Manager is Invalid."));
+	}
+
+	//farmtileì— CropDataì™€ Spawnì„ ìš”ì²­í•˜ëŠ” ê¸°ëŠ¥ì„ bindí•´ì•¼í•œë‹¤.
+	farmtile->OnRequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
 
 	auto objectPoolManager = gameInstance->GetObjectPoolManager();
 	if (!IsValid(objectPoolManager))
@@ -273,7 +282,7 @@ void ABaseCharacter::UseFarmTool()
 
 void ABaseCharacter::DoWhat()
 {
-	//¹¹ÇÒÁö ¾ÈÁ¤ÇØÁü
+	//ë­í• ì§€ ì•ˆì •í•´ì§
 
 	Debug::Print(DEBUG_TEXT("DoWhat"));
 
@@ -285,12 +294,12 @@ void ABaseCharacter::DoPlanting()
 
 	FHitResult hit;
 
-	//farmPos¿¡¼­ ¾Æ·¡·Î 2000 ³»·Á°¡´Â ÁöÁ¡À¸·Î trace
+	//farmPosì—ì„œ ì•„ë˜ë¡œ 2000 ë‚´ë ¤ê°€ëŠ” ì§€ì ìœ¼ë¡œ trace
 	FVector start = FarmPos->GetComponentLocation();
 	FVector end = start + FVector::DownVector * 2000.0f;
 
-	//ÀÏ´Ü WorldStaticÀÌ¸é farmTileÀ» ¼³Ä¡ÇÑ´Ù.
-	//ÃßÈÄ¿¡ ¶¥ÀÇ Physical Material? À» ÅëÇØ ÈëºÎºĞ¿¡¼­¸¸ FarmtileÀ» ¼³Ä¡ÇÏ°Ô ¸¸µé ¼öµµ ÀÖÀ½.
+	//ì¼ë‹¨ WorldStaticì´ë©´ farmTileì„ ì„¤ì¹˜í•œë‹¤.
+	//ì¶”í›„ì— ë•…ì˜ Physical Material? ì„ í†µí•´ í™ë¶€ë¶„ì—ì„œë§Œ Farmtileì„ ì„¤ì¹˜í•˜ê²Œ ë§Œë“¤ ìˆ˜ë„ ìˆìŒ.
 	bool traceResult
 		= GetWorld()->LineTraceSingleByChannel(
 			hit,
@@ -319,7 +328,7 @@ void ABaseCharacter::DoPlanting()
 
 	if (IsValid(farmtile))
 	{
-		//farmtileÀÇ Á¤º¸¸¦ setÇØÁØ´Ù.
+		//farmtileì˜ ì •ë³´ë¥¼ setí•´ì¤€ë‹¤.
 
 		auto cropData = FCropData();
 		cropData.bWatered = false;

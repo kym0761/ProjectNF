@@ -9,14 +9,14 @@ UObjectPoolManager::UObjectPoolManager()
 {
 }
 
-void UObjectPoolManager::ManagerInit()
+void UObjectPoolManager::InitManager()
 {
 	ObjectPoolMap.Empty();
 }
 
 AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, const FVector& Location, const FRotator& Rotation)
 {
-	//ObjectPoolable ÀÎÅÍÆäÀÌ½º Ã¼Å©
+	//ObjectPoolable ì¸í„°í˜ì´ìŠ¤ ì²´í¬
 	bool bCheckObjectPoolable = PoolableBP.GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
@@ -24,11 +24,11 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActo
 		return nullptr;
 	}
 
-	//ºí·çÇÁ¸°Æ® Å¸ÀÔÀ» Æ÷ÇÔÇÑ Class°¡ ¹«¾ùÀÎÁö È®ÀÎ
+	//ë¸”ë£¨í”„ë¦°íŠ¸ íƒ€ì…ì„ í¬í•¨í•œ Classê°€ ë¬´ì—‡ì¸ì§€ í™•ì¸
 	auto classKey = PoolableBP.GetDefaultObject()->GetClass();
 
 
-	//ÇØ´ç Å¬·¡½º Å¸ÀÔÀÇ Pool Chunk°¡ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é, PoolChunk »ı¼º
+	//í•´ë‹¹ í´ë˜ìŠ¤ íƒ€ì…ì˜ Pool Chunkê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´, PoolChunk ìƒì„±
 	if (!ObjectPoolMap.Contains(classKey))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("no Pool Chunk. make Pool Chunk To Spawn"));
@@ -40,28 +40,28 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActo
 	AActor* poolableActor = nullptr;
 
 
-	//PoolChunk°¡ ºñ¾ú´Ù¸é ±×³É »õ·Î »ı¼º
+	//PoolChunkê°€ ë¹„ì—ˆë‹¤ë©´ ê·¸ëƒ¥ ìƒˆë¡œ ìƒì„±
 	if (objectPoolQueue.IsEmpty())
 	{
 		Debug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 		poolableActor = WorldContext->GetWorld()->SpawnActor<AActor>(PoolableBP, Location, Rotation);
 	}
-	else //PoolChunk¿¡ ºñÈ°¼ºÈ­ Actor°¡ ÀÖ´Ù¸é, ÇØ´ç Chunk¿¡¼­ ÇÏ³ª ²¨³» »ç¿ëÇÑ´Ù.
+	else //PoolChunkì— ë¹„í™œì„±í™” Actorê°€ ìˆë‹¤ë©´, í•´ë‹¹ Chunkì—ì„œ í•˜ë‚˜ êº¼ë‚´ ì‚¬ìš©í•œë‹¤.
 	{
 		Debug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
 
-		//À§Áö ¼³Á¤ ¹× º¸ÀÌ°ÔÇÏ±â
-		//TODO : ¾×ÅÍ °ü·Ã °¢Á¾ È°¼ºÈ­ ·ÎÁ÷
+		//ìœ„ì§€ ì„¤ì • ë° ë³´ì´ê²Œí•˜ê¸°
+		//TODO : ì•¡í„° ê´€ë ¨ ê°ì¢… í™œì„±í™” ë¡œì§
 		poolableActor = Cast<AActor>(ObjectPoolable);
 		poolableActor->SetActorLocationAndRotation(Location, Rotation);
 		poolableActor->SetActorHiddenInGame(false);
 
 	}
 
-	//pool ¿ÀºêÁ§Æ®ÀÇ beginplay¸¦ ´ë½ÅÇÑ´Ù.
-	//½ÇÁ¦·Î else ÄÚµå ÂÊ¿¡¼­ ²¨³» »ç¿ëÇÑ ¿ÀºêÁ§Æ®´Â beginplay°¡ µ¿ÀÛ¾ÈÇÔ.
+	//pool ì˜¤ë¸Œì íŠ¸ì˜ beginplayë¥¼ ëŒ€ì‹ í•œë‹¤.
+	//ì‹¤ì œë¡œ else ì½”ë“œ ìª½ì—ì„œ êº¼ë‚´ ì‚¬ìš©í•œ ì˜¤ë¸Œì íŠ¸ëŠ” beginplayê°€ ë™ì‘ì•ˆí•¨.
 	IObjectPoolable::Execute_PoolBeginPlay(poolableActor);
 
 	return nullptr;
@@ -69,7 +69,7 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActo
 
 void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 {
-	//Poolable È®ÀÎ
+	//Poolable í™•ì¸
 	IObjectPoolable* objectPoolable = Cast<IObjectPoolable>(PoolableActor);
 	if (!objectPoolable)
 	{
@@ -79,7 +79,7 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 
 	auto classkey = PoolableActor->GetClass();
 
-	//PoolChunk°¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ. Ã»Å©°¡ ¾øÀ¸¸é Ãß°¡ÇÑ´Ù.
+	//PoolChunkê°€ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸. ì²­í¬ê°€ ì—†ìœ¼ë©´ ì¶”ê°€í•œë‹¤.
 	if (!ObjectPoolMap.Contains(classkey))
 	{
 		Debug::Print(DEBUG_TEXT("no Pool Chunk. make Pool Chunk To Despawn."));
@@ -87,15 +87,15 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 		ObjectPoolMap.Add(classkey, poolChunk);
 	}
 
-	//ChunkÀÇ Queue¿¡ ³Ö´Â´Ù.
+	//Chunkì˜ Queueì— ë„£ëŠ”ë‹¤.
 	ObjectPoolMap[classkey]->GetPoolObjectQueue().Enqueue(objectPoolable);
 
-	//Pool¿¡ ³ÖÀº °ÍÀº ¾Èº¸ÀÌ°Ô ÇÑ´Ù.
-	//TODO : ¾×ÅÍ °ü·Ã °¢Á¾ ºñÈ°¼ºÈ­
-	//¹®Á¦ : ¾Èº¸ÀÌ±â¸¸ ÇÏ°í Physics°¡ ÄÑÁ®ÀÖÀ½. ´Ù¸¸ ¿ÀºêÁ§Æ® Ç®¸µ ±â´É ÀÚÃ¼¿¡ ¹®Á¦°¡ ÀÖ´Â°Ô ¾Æ´Ï¹Ç·Î ÀÏ´Ü Ok
-	//ÇØ°á¹æ¾È? : ÀÏ´Ü ´êÁö ¾ÊÀ» À§Ä¡·Î ÀÌµ¿½ÃÅ²´Ù.
+	//Poolì— ë„£ì€ ê²ƒì€ ì•ˆë³´ì´ê²Œ í•œë‹¤.
+	//TODO : ì•¡í„° ê´€ë ¨ ê°ì¢… ë¹„í™œì„±í™”
+	//ë¬¸ì œ : ì•ˆë³´ì´ê¸°ë§Œ í•˜ê³  Physicsê°€ ì¼œì ¸ìˆìŒ. ë‹¤ë§Œ ì˜¤ë¸Œì íŠ¸ í’€ë§ ê¸°ëŠ¥ ìì²´ì— ë¬¸ì œê°€ ìˆëŠ”ê²Œ ì•„ë‹ˆë¯€ë¡œ ì¼ë‹¨ Ok
+	//í•´ê²°ë°©ì•ˆ? : ì¼ë‹¨ ë‹¿ì§€ ì•Šì„ ìœ„ì¹˜ë¡œ ì´ë™ì‹œí‚¨ë‹¤.
 	PoolableActor->SetActorHiddenInGame(true);
-	PoolableActor->SetActorLocationAndRotation(FVector(-10000, -10000, 1000000), FRotator::ZeroRotator); //´êÁö ¾ÊÀ» ¸¸ÇÑ À§Ä¡·Î ÀÌµ¿
+	PoolableActor->SetActorLocationAndRotation(FVector(-10000, -10000, 1000000), FRotator::ZeroRotator); //ë‹¿ì§€ ì•Šì„ ë§Œí•œ ìœ„ì¹˜ë¡œ ì´ë™
 
 	IObjectPoolable::Execute_PoolEndPlay(PoolableActor);
 
@@ -105,8 +105,8 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 
 void UObjectPoolManager::ClearObjectPooling()
 {
-	//ObjectPool¿¡ ÀÖ´Â ¾×ÅÍµéÀº ºñÈ°¼ºÈ­ »óÅÂ±äÇØµµ World°¡ »ç¶óÁö±â Àü¿¡´Â °è¼Ó Á¸ÀçÇÔ
-	//¸¸¾à World°¡ Á¸ÀçÇÏ´Â »óÈ²¿¡¼­ ObjectPoolMapÀ» ºñ¿öµµ ¿ÀºêÁ§Æ®µéÀÌ »ç¶óÁöÁö ¾Ê±â ¶§¹®¿¡ Clear¸¦ µû·Î ¸¸µë.
+	//ObjectPoolì— ìˆëŠ” ì•¡í„°ë“¤ì€ ë¹„í™œì„±í™” ìƒíƒœê¸´í•´ë„ Worldê°€ ì‚¬ë¼ì§€ê¸° ì „ì—ëŠ” ê³„ì† ì¡´ì¬í•¨
+	//ë§Œì•½ Worldê°€ ì¡´ì¬í•˜ëŠ” ìƒí™©ì—ì„œ ObjectPoolMapì„ ë¹„ì›Œë„ ì˜¤ë¸Œì íŠ¸ë“¤ì´ ì‚¬ë¼ì§€ì§€ ì•Šê¸° ë•Œë¬¸ì— Clearë¥¼ ë”°ë¡œ ë§Œë“¬.
 
 	for (auto pi : ObjectPoolMap)
 	{
@@ -128,7 +128,7 @@ void UObjectPoolManager::ClearObjectPooling()
 
 	}
 
-	//!! : chunk°¡ ÇÊ¿äÇÏ¸é ÀÌ ºÎºĞ º¯°æÇÒ °Í
+	//!! : chunkê°€ í•„ìš”í•˜ë©´ ì´ ë¶€ë¶„ ë³€ê²½í•  ê²ƒ
 	ObjectPoolMap.Empty();
 
 

@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 
-#pragma region ItemEnum //¾ÆÀÌÅÛ ºĞ·ù
+#pragma region ItemEnum //ì•„ì´í…œ ë¶„ë¥˜
 
 UENUM(BlueprintType)
 enum class  EItemGroupType : uint8
 {
 	None = 0 UMETA(DisplayName = "None"),
 
-	/*ÀÏ¹İ ¾ÆÀÌÅÛ ºĞ·ù*/
+	/*ì¼ë°˜ ì•„ì´í…œ ë¶„ë¥˜*/
 	Equipment UMETA(DisplayName = "Equipment"),
 	Consumable UMETA(DisplayName = "Consumable")
 
@@ -22,15 +22,15 @@ enum class  EItemType : uint8
 {
 	None = 0 UMETA(DisplayName = "None"),
 
-	/*Àåºñ ¾ÆÀÌÅÛ ºĞ·ù*/
+	/*ì¥ë¹„ ì•„ì´í…œ ë¶„ë¥˜*/
 	Weapon UMETA(DisplayName = "Weapon"),
 	Armor UMETA(DisplayName = "Armor"),
 	Accessory UMETA(DisplayName = "Accessory"),
 
-	/*ÀÏ¹İ ¾ÆÀÌÅÛ ºĞ·ù*/
+	/*ì¼ë°˜ ì•„ì´í…œ ë¶„ë¥˜*/
 	Potion UMETA(DisplayName = "Potion"),
 	Harvest UMETA(DisplayName = "Harvest")
-	// Ãß°¡ÇÒ °Ô ´õ ÀÖ´ÂÁö?
+	// ì¶”ê°€í•  ê²Œ ë” ìˆëŠ”ì§€?
 
 };
 
@@ -39,32 +39,32 @@ enum class  EItemSubType : uint8
 {
 	None = 0 UMETA(DisplayName = "None"),
 
-	/*¹«±â*/
+	/*ë¬´ê¸°*/
 	Sword UMETA(DisplayName = "Weapon"),
 	Dagger UMETA(DisplayName = "Dagger"),
 	Bow UMETA(DisplayName = "Bow"),
 	Wand UMETA(DisplayName = "Wand"),
 
-	/*°©¿Ê*/
+	/*ê°‘ì˜·*/
 	Helmet UMETA(DisplayName = "Helmet"),
 	Armor UMETA(DisplayName = "Armor"),
 	Shield UMETA(DisplayName = "Shield"),
 	Gloves UMETA(DisplayName = "Gloves"),
 	Shoes UMETA(DisplayName = "Shoes"),
 
-	/*¾Ç¼¼¼­¸®*/
+	/*ì•…ì„¸ì„œë¦¬*/
 	Accessory UMETA(DisplayName = "Accessory"),
 
-	/*ÀÏ¹İ ¾ÆÀÌÅÛ ºĞ·ù*/
+	/*ì¼ë°˜ ì•„ì´í…œ ë¶„ë¥˜*/
 	HealthPotion UMETA(DisplayName = "HealthPotion"),
 	ManaPotion UMETA(DisplayName = "ManaPotion"),
 
-	Harvest UMETA(DisplayName = "Harvest")
-	// Ãß°¡ÇÒ °Ô ´õ ÀÖ´ÂÁö?
+	ETC UMETA(DisplayName = "ETC")
+	// ì¶”ê°€í•  ê²Œ ë” ìˆëŠ”ì§€?
 
 };
 
-////ComsumableItemÀÇ È¿°ú ºĞ·ù
+////ComsumableItemì˜ íš¨ê³¼ ë¶„ë¥˜
 ////bitmask => 0(ignored), 1, 2, 4, 8, ..., 256(X)
 //UENUM(BlueprintType, Meta = (BitFlags, UseEnumValuesAsMaskValuesInEditor = "true"))
 //enum class  EConsumableItemType : uint8
@@ -119,15 +119,15 @@ enum class EItemStar : uint8
 
 #pragma region State
 
-//CastÇÏÁö ¾Ê°í Ä³¸¯ÅÍ State°¡ ¹«¾ùÀÎÁö ¾Ë¾Æ³»±â À§ÇÑ Enum
-//State¸¦ Ãß°¡ÇÑ´Ù¸é ²À Ãß°¡ÇÑ µÚ CharacterStateTypeÀ» ¿Ã¹Ù¸¥ °ªÀ¸·Î SetÇÒ °Í
+//Castí•˜ì§€ ì•Šê³  ìºë¦­í„° Stateê°€ ë¬´ì—‡ì¸ì§€ ì•Œì•„ë‚´ê¸° ìœ„í•œ Enum
+//Stateë¥¼ ì¶”ê°€í•œë‹¤ë©´ ê¼­ ì¶”ê°€í•œ ë’¤ CharacterStateTypeì„ ì˜¬ë°”ë¥¸ ê°’ìœ¼ë¡œ Setí•  ê²ƒ
 
 UENUM(BlueprintType)
 enum class  ECharacterStateType : uint8
 {
 	NONE = 0 UMETA(DisplayName = "NONE"),
 
-	/*ÀÏ¹İ ¾ÆÀÌÅÛ ºĞ·ù*/
+	/*ì¼ë°˜ ì•„ì´í…œ ë¶„ë¥˜*/
 	NORMAL UMETA(DisplayName = "NORMAL"),
 	BATTLE UMETA(DisplayName = "BATTLE"),
 	FARMING UMETA(DisplayName = "FARMING"),

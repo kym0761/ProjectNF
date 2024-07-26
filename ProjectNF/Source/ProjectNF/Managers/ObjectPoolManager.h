@@ -11,11 +11,10 @@
 class UPoolChunk;
 
 /**
- * ObjectPoolManager : Object PoolÀ» ´ã´çÇÏ´Â ¸Å´ÏÀú
- * GameMode¿¡ ÀÖÀ» ¿¹Á¤?
- * ¾ğ¸®¾ó ¾×ÅÍµéÀº LevelÀÌ ¹Ù²î¸é ÀüºÎ »ç¶óÁö±â ¶§¹®¿¡ ½Ì±ÛÅæÀÌ³ª GameInstance¸¦ »ç¿ëÇØ ObjectPoolÀ» ÇÏ±â °ï¶õÇÔ.
+ * ObjectPoolManager : Object Poolì„ ë‹´ë‹¹í•˜ëŠ” ë§¤ë‹ˆì €
+ * ì–¸ë¦¬ì–¼ ì•¡í„°ë“¤ì€ Levelì´ ë°”ë€Œë©´ ì „ë¶€ ì‚¬ë¼ì§€ê¸° ë•Œë¬¸ì— Levelì´ ë°”ë€Œë©´ Resetí•´ì£¼ì–´ì•¼í•¨.
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTNF_API UObjectPoolManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
@@ -26,25 +25,25 @@ public:
 
 protected:
 
-	//Å¬·¡½º ÀÌ¸§(BluePrint Æ÷ÇÔ)ÇÏ¿© Å¬·¡½º ´ÜÀ§ÀÇ key¸¦ »ç¿ëÇÑ MapÀ¸·Î ¸¸µé¾î
-	//°¢°¢ÀÇ Å¬·¡½º¿¡ ¸ÅÄªÇÏ´Â Object Pool Chunk¸¦ °ü¸®
+	//í´ë˜ìŠ¤ ì´ë¦„(BluePrint í¬í•¨)í•˜ì—¬ í´ë˜ìŠ¤ ë‹¨ìœ„ì˜ keyë¥¼ ì‚¬ìš©í•œ Mapìœ¼ë¡œ ë§Œë“¤ì–´
+	//ê°ê°ì˜ í´ë˜ìŠ¤ì— ë§¤ì¹­í•˜ëŠ” Object Pool Chunkë¥¼ ê´€ë¦¬
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pool")
 	TMap<UClass*, UPoolChunk*> ObjectPoolMap;
 
 public:
 
-	virtual void ManagerInit() override;
+	virtual void InitManager() override;
 
-	//Ç®¿¡¼­ ¿ÀºêÁ§Æ®¸¦ ¾ò¾î spawnÇÔ
+	//í’€ì—ì„œ ì˜¤ë¸Œì íŠ¸ë¥¼ ì–»ì–´ spawní•¨
 	UFUNCTION(BlueprintCallable)
 	AActor* SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, const FVector& Location, const FRotator& Rotation);
 
-	//UFUNCTION()°ú template°¡ È£È¯µÇÁö ¾Ê¾Æ¼­ Delegate¿¡ ºÙÀÏ ¶§ ÀÌ ÇÔ¼ö¸¦ »ç¿ëÇÒ ¼ö ¾øÀ½.
+	//UFUNCTION()ê³¼ templateê°€ í˜¸í™˜ë˜ì§€ ì•Šì•„ì„œ Delegateì— ë¶™ì¼ ë•Œ ì´ í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•  ìˆ˜ ì—†ìŒ.
 	template <typename T>
 	T* SpawnFromPool(UObject* WorldContext, TSubclassOf<T> PoolableBP, FVector Location, FRotator Rotation);
 
 
-	//¿ÀºêÁ§Æ®¸¦ È¸¼öÇÏ¿© Ç®¿¡ ³ÖÀ½
+	//ì˜¤ë¸Œì íŠ¸ë¥¼ íšŒìˆ˜í•˜ì—¬ í’€ì— ë„£ìŒ
 	UFUNCTION(BlueprintCallable)
 	void DespawnToPool(AActor* PoolableActor);
 
@@ -55,7 +54,7 @@ public:
 template<typename T>
 T* UObjectPoolManager::SpawnFromPool(UObject* WorldContext, TSubclassOf<T> PoolableBP, FVector Location, FRotator Rotation)
 {
-	//ObjectPoolable ÀÎÅÍÆäÀÌ½º Ã¼Å©
+	//ObjectPoolable ì¸í„°í˜ì´ìŠ¤ ì²´í¬
 	bool bCheckObjectPoolable = PoolableBP.GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
@@ -63,11 +62,11 @@ T* UObjectPoolManager::SpawnFromPool(UObject* WorldContext, TSubclassOf<T> Poola
 		return nullptr;
 	}
 
-	//ºí·çÇÁ¸°Æ® Å¸ÀÔÀ» Æ÷ÇÔÇÑ Class°¡ ¹«¾ùÀÎÁö È®ÀÎ
+	//ë¸”ë£¨í”„ë¦°íŠ¸ íƒ€ì…ì„ í¬í•¨í•œ Classê°€ ë¬´ì—‡ì¸ì§€ í™•ì¸
 	auto classKey = PoolableBP.GetDefaultObject()->GetClass();
 
 
-	//ÇØ´ç Å¬·¡½º Å¸ÀÔÀÇ Pool Chunk°¡ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é, PoolChunk »ı¼º
+	//í•´ë‹¹ í´ë˜ìŠ¤ íƒ€ì…ì˜ Pool Chunkê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´, PoolChunk ìƒì„±
 	if (!ObjectPoolMap.Contains(classKey))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("no Pool Chunk. make Pool Chunk To Spawn"));
@@ -79,28 +78,28 @@ T* UObjectPoolManager::SpawnFromPool(UObject* WorldContext, TSubclassOf<T> Poola
 	T* poolableActor = nullptr;
 
 
-	//PoolChunk°¡ ºñ¾ú´Ù¸é ±×³É »õ·Î »ı¼º
+	//PoolChunkê°€ ë¹„ì—ˆë‹¤ë©´ ê·¸ëƒ¥ ìƒˆë¡œ ìƒì„±
 	if (objectPoolQueue.IsEmpty())
 	{
 		Debug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 		poolableActor = WorldContext->GetWorld()->SpawnActor<T>(PoolableBP, Location, Rotation);
 	}
-	else //PoolChunk¿¡ ºñÈ°¼ºÈ­ Actor°¡ ÀÖ´Ù¸é, ÇØ´ç Chunk¿¡¼­ ÇÏ³ª ²¨³» »ç¿ëÇÑ´Ù.
+	else //PoolChunkì— ë¹„í™œì„±í™” Actorê°€ ìˆë‹¤ë©´, í•´ë‹¹ Chunkì—ì„œ í•˜ë‚˜ êº¼ë‚´ ì‚¬ìš©í•œë‹¤.
 	{
 		Debug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
 
-		//À§Áö ¼³Á¤ ¹× º¸ÀÌ°ÔÇÏ±â
-		//TODO : ¾×ÅÍ °ü·Ã °¢Á¾ È°¼ºÈ­ ·ÎÁ÷
+		//ìœ„ì§€ ì„¤ì • ë° ë³´ì´ê²Œí•˜ê¸°
+		//TODO : ì•¡í„° ê´€ë ¨ ê°ì¢… í™œì„±í™” ë¡œì§
 		poolableActor = Cast<AActor>(ObjectPoolable);
 		poolableActor->SetActorLocationAndRotation(Location, Rotation);
 		poolableActor->SetActorHiddenInGame(false);
 
 	}
 
-	//pool ¿ÀºêÁ§Æ®ÀÇ beginplay¸¦ ´ë½ÅÇÑ´Ù.
-	//½ÇÁ¦·Î else ÄÚµå ÂÊ¿¡¼­ ²¨³» »ç¿ëÇÑ ¿ÀºêÁ§Æ®´Â beginplay°¡ µ¿ÀÛ¾ÈÇÔ.
+	//pool ì˜¤ë¸Œì íŠ¸ì˜ beginplayë¥¼ ëŒ€ì‹ í•œë‹¤.
+	//ì‹¤ì œë¡œ else ì½”ë“œ ìª½ì—ì„œ êº¼ë‚´ ì‚¬ìš©í•œ ì˜¤ë¸Œì íŠ¸ëŠ” beginplayê°€ ë™ì‘ì•ˆí•¨.
 	IObjectPoolable::Execute_PoolBeginPlay(poolableActor);
 
 

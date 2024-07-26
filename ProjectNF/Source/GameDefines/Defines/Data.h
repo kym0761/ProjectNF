@@ -378,7 +378,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
 	FString Destination;
 
-	//해당 스케쥴에 대한 설명을 적을 공간. 아마 아무 기능도 없을 것이다.
+	//해당 스케쥴에 대한 설명을 적을 공간. 딱히 기능은 없다.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Schedule")
 	FString Comment;
 

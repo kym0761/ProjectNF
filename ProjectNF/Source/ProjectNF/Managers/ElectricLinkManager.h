@@ -12,7 +12,7 @@ class UElectricLinkComponent;
 /**
  * 
  */
-UCLASS(BlueprintType)
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTNF_API UElectricLinkManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
@@ -21,12 +21,12 @@ public:
 
 	UElectricLinkManager();
 	
-	//¸Ê ÀüÃ¼¿¡ ÀÖ´Â electricLinkµé
+	//ë§µ ì „ì²´ì— ìˆëŠ” electricLinkë“¤
 	UPROPERTY()
 	TSet<TObjectPtr<UElectricLinkComponent>> ElectricLinks;
 
-	//¸Ê¿¡ Á¸ÀçÇÏ´Â root electricLinkµé
-	//root´Â Àü±â¸¦ »ı¼ºÇÏ´Â ¿ªÇÒÀ» ÇÔ
+	//ë§µì— ì¡´ì¬í•˜ëŠ” root electricLinkë“¤
+	//rootëŠ” ì „ê¸°ë¥¼ ìƒì„±í•˜ëŠ” ì—­í• ì„ í•¨
 	UPROPERTY()
 	TSet<TObjectPtr<UElectricLinkComponent>> RootLinks;
 
@@ -38,6 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LinkTest();
 
-	virtual void ManagerInit() override;
+	virtual void InitManager() override;
 
 };

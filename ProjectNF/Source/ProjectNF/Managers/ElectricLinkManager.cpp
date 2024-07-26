@@ -14,9 +14,9 @@ UElectricLinkManager::UElectricLinkManager()
 
 void UElectricLinkManager::SearchAllLinks()
 {
-	//¸Ê¿¡ Á¸ÀçÇÏ´Â ¸ğµç Electric Link Component µéÀ» °Ë»öÇÑ´Ù.
-	//°ÔÀÓ ½ÇÇà ½Ã ÃÖÃÊ 1¹ø¸¸ ½ÇÇàµÉ °ÍÀÌ´Ù.
-	//°ÔÀÓ Áß°£¿¡ Link¸¦ º¸À¯ÇÑ Actor°¡ Ãß°¡µÈ´Ù¸é ÀÌ¸¦ ´Ù½Ã ½ÇÇàÇØ¾ß ÇÒ ¼öµµ ÀÖ´Ù.
+	//ë§µì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  Electric Link Component ë“¤ì„ ê²€ìƒ‰í•œë‹¤.
+	//ê²Œì„ ì‹¤í–‰ ì‹œ ìµœì´ˆ 1ë²ˆë§Œ ì‹¤í–‰ë  ê²ƒì´ë‹¤.
+	//ê²Œì„ ì¤‘ê°„ì— Linkë¥¼ ë³´ìœ í•œ Actorê°€ ì¶”ê°€ëœë‹¤ë©´ ì´ë¥¼ ë‹¤ì‹œ ì‹¤í–‰í•´ì•¼ í•  ìˆ˜ë„ ìˆë‹¤.
 
 	if (!GetWorld())
 	{
@@ -26,7 +26,7 @@ void UElectricLinkManager::SearchAllLinks()
 	ElectricLinks.Empty();
 	RootLinks.Empty();
 
-	//!! : ¾×ÅÍ°¡ 100¸¸°³ ³ÑÀ¸¸é ¹®Á¦ »ı±æ µí?
+	//!! : ì•¡í„°ê°€ 100ë§Œê°œ ë„˜ìœ¼ë©´ ë¬¸ì œ ìƒê¸¸ ë“¯?
 	TArray<AActor*> allActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
 
@@ -50,7 +50,7 @@ void UElectricLinkManager::SearchAllLinks()
 
 void UElectricLinkManager::LinkTest()
 {
-	//closeSet ¾È¿¡ µé¾î¿Â °ÍµéÀº ÀüºÎ activate »óÅÂ°¡ µÈ´Ù
+	//closeSet ì•ˆì— ë“¤ì–´ì˜¨ ê²ƒë“¤ì€ ì „ë¶€ activate ìƒíƒœê°€ ëœë‹¤
 	TSet<TObjectPtr<UElectricLinkComponent>> closedSet;
 
 	for (auto root : RootLinks)
@@ -83,8 +83,8 @@ void UElectricLinkManager::LinkTest()
 		}
 	}
 
-	//closedSet ¾È¿¡ ÀÖ´Â ¸ğµç °ÍµéÀ» ActivateÇÑ´Ù.
-	//closedSet ¾È¿¡ ¾ø´Â °ÍµéÀº ¸ğµÎ DeactivateÇÑ´Ù.
+	//closedSet ì•ˆì— ìˆëŠ” ëª¨ë“  ê²ƒë“¤ì„ Activateí•œë‹¤.
+	//closedSet ì•ˆì— ì—†ëŠ” ê²ƒë“¤ì€ ëª¨ë‘ Deactivateí•œë‹¤.
 	for (auto i : ElectricLinks)
 	{
 		if (closedSet.Contains(i))
@@ -100,7 +100,7 @@ void UElectricLinkManager::LinkTest()
 
 }
 
-void UElectricLinkManager::ManagerInit()
+void UElectricLinkManager::InitManager()
 {
 	if (!GEngine)
 	{

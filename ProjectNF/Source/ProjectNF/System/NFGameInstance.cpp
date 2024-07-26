@@ -10,12 +10,14 @@
 #include "Managers/ElectricLinkManager.h"
 #include "Managers/ObjectPoolManager.h"
 #include "Managers/InventoryManager.h"
+#include "Managers/DataManager.h"
 
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
 TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
 TObjectPtr<UObjectPoolManager> UNFGameInstance::GObjectPoolManager = nullptr;
 TObjectPtr<UInventoryManager> UNFGameInstance::GInventoryManager = nullptr;
+TObjectPtr<UDataManager> UNFGameInstance::GDataManager = nullptr;
 
 UNFGameInstance::UNFGameInstance()
 {
@@ -43,7 +45,7 @@ void UNFGameInstance::Save()
 
 	if (!IsValid(saveGame))
 	{
-		//saveGame ∏∏µÈ±‚ Ω«∆–
+		//saveGame ÎßåÎì§Í∏∞ Ïã§Ìå®
 		return;
 	}
 
@@ -65,74 +67,13 @@ void UNFGameInstance::Load()
 
 	if (!IsValid(saveGame))
 	{
-		//load Ω«∆–
+		//load Ïã§Ìå®
 		return;
 	}
 
 	PlayerName = saveGame->PlayerName;
 	PlayerNumber = saveGame->SaveSlotUserIndex;
 
-}
-
-bool UNFGameInstance::GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out)
-{
-	//∫Û æ∆¿Ã≈€ ID
-	if (ItemID.IsNone())
-	{
-		Debug::Print(DEBUG_TEXT("Empty ItemID"));
-		return false;
-	}
-
-	//¡∏¿Á«œ¡ˆ æ ¥¬ æ∆¿Ã≈€ µ•¿Ã≈Õ
-	if (!ItemSheetDataMap.Contains(ItemID))
-	{
-		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
-		return false;
-	}
-
-	Out = ItemSheetDataMap[ItemID];
-	return true;
-}
-
-bool UNFGameInstance::IsValidItem(const FName& ItemID) const
-{
-	//Mapø° ¡∏¿Á«œ∏È æ∆¿Ã≈€ ¡∏¿Á«‘
-	if (ItemSheetDataMap.Contains(ItemID))
-	{
-		return true;
-	}
-
-	//¡∏¿Á«œ¡ˆ æ ¿Ω
-	return false;
-}
-
-FCropSheetData UNFGameInstance::GetCropDataFromSheet(const FName& CropID)
-{
-	//∫Û Crop ID
-	if (CropID.IsNone())
-	{
-		Debug::Print(DEBUG_TEXT("Empty CropID"));
-		return FCropSheetData();
-	}
-
-	//Data Table¿Ã æ∆¡˜ æ¯¿Ω
-	if (!IsValid(CropSheetTable))
-	{
-		Debug::Print(DEBUG_TEXT("Crop Sheet Table Not Set"));
-		return FCropSheetData();
-	}
-
-
-	//¡∏¿Á«œ¥¬ æ∆¿Ã≈€¿Ã∏È ∞·∞˙ µµ√‚ π◊ true
-	FCropSheetData* cropSheetData = CropSheetTable->FindRow<FCropSheetData>(CropID, "");
-	if (cropSheetData != nullptr)
-	{
-
-		return *cropSheetData;
-	}
-
-	//¡∏¿Á«œ¡ˆ æ ¥¬ æ∆¿Ã≈€ ¡§∫∏
-	return FCropSheetData();
 }
 
 int32 UNFGameInstance::GetMoney() const
@@ -161,95 +102,62 @@ void UNFGameInstance::InitManagers()
 {
 	Debug::Print(DEBUG_TEXT("InitManagers Called."));
 
-	//∏≈¥œ¿˙ √÷√  ª˝º∫ π◊ √ ±‚»≠
+	if (!IsValid(GridManager_BP) ||
+		!IsValid(ElectricLinkManager_BP) ||
+		!IsValid(ObjectPoolManager_BP) ||
+		!IsValid(InventoryManager_BP) ||
+		!IsValid(DataManager_BP))
+	{
+		Debug::Print(DEBUG_TEXT("Manager blueprint Are Not Set."));
+		return;
+	}
+
+	//Îß§ÎãàÏ†Ä ÏµúÏ¥à ÏÉùÏÑ± Î∞è Ï¥àÍ∏∞Ìôî
 	{
 		if (!IsValid(GridManager))
 		{
-			GridManager = NewObject<UGridManager>(this);
+			NewObject<UGridManager>(this, GridManager_BP);
+			GridManager = NewObject<UGridManager>(this, GridManager_BP);
 			GGridManager = GridManager;
 		}
 
 		if (!IsValid(ElectricLinkManager))
 		{
-			ElectricLinkManager = NewObject<UElectricLinkManager>(this);
+			ElectricLinkManager = NewObject<UElectricLinkManager>(this, ElectricLinkManager_BP);
 			GElectricLinkManager = ElectricLinkManager;
 		}
 
 		if (!IsValid(ObjectPoolManager))
 		{
-			ObjectPoolManager = NewObject<UObjectPoolManager>(this);
+			ObjectPoolManager = NewObject<UObjectPoolManager>(this, ObjectPoolManager_BP);
 			GObjectPoolManager = ObjectPoolManager;
 		}
 
 		if (!IsValid(InventoryManager))
 		{
-			InventoryManager = NewObject<UInventoryManager>(this);
+			InventoryManager = NewObject<UInventoryManager>(this, InventoryManager_BP);
 			GInventoryManager = InventoryManager;
 		}
+
+		if (!IsValid(DataManager))
+		{
+			DataManager = NewObject<UDataManager>(this, DataManager_BP);
+			GDataManager = DataManager;
+		}
+
 	}
 	
 
-	GridManager->ManagerInit();
-	ElectricLinkManager->ManagerInit();
-	ObjectPoolManager->ManagerInit();
-	InventoryManager->ManagerInit();
-
+	GridManager->InitManager();
+	ElectricLinkManager->InitManager();
+	ObjectPoolManager->InitManager();
+	InventoryManager->InitManager();
+	DataManager->InitManager();
 }
 
 void UNFGameInstance::Init()
 {
-	//if (!IsValid(ItemDataTable))
-	//{
-	//	Debug::Print(DEBUG_TEXT("Item Data Table Not set"));
-	//	return;
-	//}
-
-	//if (!IsValid(CropSheetTable))
-	//{
-	//	Debug::Print(DEBUG_TEXT("Crop Sheet Table Not set"));
-	//	return;
-	//}
-
-	IncludeSheetDataToMap<FItemSheetData>(ItemSheetDataMap, ItemDataTable);
-
-	IncludeSheetDataToMap<FCropSheetData>(CropSheetDataMap, CropSheetTable);
-
-	//{
-	//	auto rowNames = ItemDataTable->GetRowNames();
-	//	for (auto rowName : rowNames)
-	//	{
-	//		FItemSheetData* sheetData = ItemDataTable->FindRow<FItemSheetData>(rowName, "");
-	//		if (!sheetData)
-	//		{
-	//			Debug::Print(DEBUG_TEXT("Warning! : Item sheetData nullptr"));
-	//			continue;
-	//		}
-
-	//		ItemSheetDataMap.Add(rowName, *sheetData);
-	//	}
-
-	//	//for (auto i : ItemSheetDataMap)
-	//	//{
-	//	//	FString str = FString::Printf(TEXT("key : %s, Value : %s"), *i.Key.ToString(), *i.Value.ItemNameID.ToString());
-
-	//	//	Debug::Print(DEBUG_STRING(str));
-	//	//}
-	//}
-
-	//{
-	//	auto rowNames = CropSheetTable->GetRowNames();
-	//	for (auto rowName : rowNames)
-	//	{
-	//		FCropSheetData* sheetData = CropSheetTable->FindRow<FCropSheetData>(rowName, "");
-	//		if (!sheetData)
-	//		{
-	//			Debug::Print(DEBUG_TEXT("Warning! : Crop sheetData nullptr"));
-	//			continue;
-	//		}
-	//		CropSheetDataMap.Add(rowName, *sheetData);
-	//	}
-
-	//}
+	// ?
 
 }
 
@@ -271,4 +179,9 @@ TObjectPtr<UObjectPoolManager> UNFGameInstance::GetObjectPoolManager()
 TObjectPtr<UInventoryManager> UNFGameInstance::GetInventoryManager()
 {
 	return GInventoryManager;
+}
+
+TObjectPtr<UDataManager> UNFGameInstance::GetDataManager()
+{
+	return GDataManager;
 }

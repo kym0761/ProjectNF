@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTNF_API UGridManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
@@ -34,5 +34,5 @@ public:
 
 	bool IsSomethingExistOnGrid(const FGrid& Grid) const;
 
-	virtual void ManagerInit() override;
+	virtual void InitManager() override;
 };

@@ -12,7 +12,7 @@ class UInventoryObject;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTNF_API UInventoryManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
@@ -25,7 +25,7 @@ public:
 
 protected:
 
-	//key : ÀÎº¥Åä¸® ¼ÒÀ¯ÀÚ , value : ÀÎº¥Åä¸®
+	//key : ì¸ë²¤í† ë¦¬ ì†Œìœ ì , value : ì¸ë²¤í† ë¦¬
 	UPROPERTY()
 	TMap<FString, TObjectPtr<UInventoryObject>> InventoryMap;
 
@@ -37,6 +37,6 @@ public:
 
 public:
 
-	virtual void ManagerInit() override;
+	virtual void InitManager() override;
 
 };
