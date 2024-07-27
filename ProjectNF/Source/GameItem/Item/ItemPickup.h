@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Defines/Data.h"
-#include "Defines/interfaces.h"
+#include "Defines/interfaces/ObjectPoolInterfaces.h"
+#include "Defines/interfaces/InteractiveInterfaces.h"
 #include "GameFramework/Actor.h"
 #include "ItemPickup.generated.h"
 

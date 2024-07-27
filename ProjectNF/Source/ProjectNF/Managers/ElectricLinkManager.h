@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/ManagerInterfaces.h"
 #include "ElectricLinkManager.generated.h"
 
 class UElectricLinkComponent;
@@ -21,7 +21,7 @@ public:
 
 	UElectricLinkManager();
 	
-	//맵 전체에 있는 electricLink들
+	//맵 전체에 있는 electricLink의 모음
 	UPROPERTY()
 	TSet<TObjectPtr<UElectricLinkComponent>> ElectricLinks;
 

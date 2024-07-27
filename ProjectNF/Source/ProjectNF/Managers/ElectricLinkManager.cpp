@@ -15,20 +15,36 @@ UElectricLinkManager::UElectricLinkManager()
 void UElectricLinkManager::SearchAllLinks()
 {
 	//맵에 존재하는 모든 Electric Link Component 들을 검색한다.
-	//게임 실행 시 최초 1번만 실행될 것이다.
+	//레벨에서 최초 1번만 실행될 것이다.
 	//게임 중간에 Link를 보유한 Actor가 추가된다면 이를 다시 실행해야 할 수도 있다.
 
-	if (!GetWorld())
+	//UObject* outer = this;
+	//while (IsValid(outer))
+	//{
+	//	Debug::Print(DEBUG_STRING(FString::Printf(TEXT("%s"),*outer->GetName())));
+	//	outer = outer->GetOuter();
+	//}
+
+	if (!GEngine)
 	{
+		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+		return;
+	}
+
+	auto world = GEngine->GetCurrentPlayWorld();
+
+	if (!IsValid(world))
+	{
+		Debug::Print(DEBUG_TEXT("World is Invalid."));
 		return;
 	}
 
 	ElectricLinks.Empty();
 	RootLinks.Empty();
 
-	//!! : 액터가 100만개 넘으면 문제 생길 듯?
+	//!! : 액터가 100만개 넘으면 약간의 문제가 생길 듯?
 	TArray<AActor*> allActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
+	UGameplayStatics::GetAllActorsOfClass(world, AActor::StaticClass(), allActors);
 
 	for (auto i : allActors)
 	{
@@ -105,12 +121,19 @@ void UElectricLinkManager::InitManager()
 	if (!GEngine)
 	{
 		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+		return;
 	}
 
 	SearchAllLinks();
 
 
-	auto world = GEngine->GetCurrentPlayWorld();
+	UWorld* world = GEngine->GetCurrentPlayWorld();
+	if (!IsValid(world))
+	{
+		Debug::Print(DEBUG_TEXT("world is invalid."));
+		return;
+	}
+
 
 	world->GetTimerManager().SetTimer(
 		ElectricLinkTimer,

@@ -15,10 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 
-#include "CharacterStrategy/ChBattleState.h"
-#include "CharacterStrategy/ChFarmingState.h"
-#include "CharacterStrategy/ChNormalState.h"
-#include "CharacterStrategy/chPlantingState.h"
+#include "CharacterState/CharacterState.h"
 
 #include "FarmActors/FarmlandTile.h"
 
@@ -66,22 +63,6 @@ ABaseCharacter::ABaseCharacter()
 	FarmPos->SetupAttachment(GetRootComponent());
 	FarmPos->SetRelativeLocation(FVector(100.0f,0.0f,50.0f));
 
-	{
-		auto battleState = CreateDefaultSubobject<UChBattleState>(TEXT("BATTLESTATE"));
-		auto farmingState = CreateDefaultSubobject<UChFarmingState>(TEXT("FARMINGSTATE"));
-		auto normalState = CreateDefaultSubobject<UChNormalState>(TEXT("NORMALSTATE"));
-
-		auto plantingState = CreateDefaultSubobject<UchPlantingState>(TEXT("PlantingSTATE"));
-
-		CharacterStateMap.Add(FString("Battle"), battleState);
-		CharacterStateMap.Add(FString("Farming"), farmingState);
-		CharacterStateMap.Add(FString("Normal"), normalState);
-		CharacterStateMap.Add(FString("Planting"), plantingState);
-
-		CurrentCharacterState = CharacterStateMap[FString("Normal")];
-
-		//!! 블루프린트에서 사용함.
-	}
 }
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
@@ -122,12 +103,12 @@ void ABaseCharacter::Look(const FInputActionValue& Value)
 
 void ABaseCharacter::MouseLeft(const FInputActionValue& Value)
 {
-	if (!IsValid(CurrentCharacterState))
+	if (!IsValid(CharacterState))
 	{
 		return;
 	}
 
-	CurrentCharacterState->StateAction();
+	CharacterState->StateAction();
 
 
 }
@@ -145,6 +126,17 @@ void ABaseCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	//Character의 State를 Beginplay에서 생성
+	{
+		CharacterState = NewObject<UCharacterState>(this);
+
+		CharacterState->SetStateType(ECharacterStateType::NORMAL);
+
+		//!! 블루프린트에서 기능 테스트 용도로 사용함.
+		//!! 애니메이션 블루 프린트에서 애니메이션 재생 기준으로 사용 중.
+	}
+
 
 }
 
@@ -340,5 +332,25 @@ void ABaseCharacter::DoPlanting()
 		Debug::Print(DEBUG_TEXT("Crop Planting OK"));
 	}
 
+}
+
+void ABaseCharacter::BattleAction()
+{
+	Attack();
+}
+
+void ABaseCharacter::FarmingAction()
+{
+	UseFarmTool();
+}
+
+void ABaseCharacter::NormalAction()
+{
+	DoWhat();
+}
+
+void ABaseCharacter::PlantingAction()
+{
+	DoPlanting();
 }
 

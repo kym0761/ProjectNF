@@ -5,19 +5,20 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Defines/Interfaces/CharacterActionInterfaces.h"
 #include "BaseCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-class UBaseCharacterState;
+class UCharacterState;
 
 /*
-*±âº» Ä³¸¯ÅÍ
+*ê¸°ë³¸ ìºë¦­í„°
 */
 UCLASS()
-class PROJECTNF_API ABaseCharacter : public ACharacter
+class PROJECTNF_API ABaseCharacter : public ACharacter , public ICharacterAction
 {
 	GENERATED_BODY()
 
@@ -36,7 +37,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-	//Farm ÀÛ¾÷ÇÒ ¶§ ¾î´À ÁöÁ¡¿¡¼­ Çàµ¿ÇÏ°Ô ÇÒ °ÍÀÎÁö¿¡ ´ëÇÑ Scene Component
+	//Farm ì‘ì—…í•  ë•Œ LineTrace ìœ„ì¹˜ ì§€ì .
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> FarmPos;
 
@@ -50,7 +51,7 @@ protected:
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	/** Jump Input Action */
-	//Jump´Â ±âº» ACharacterÀÇ ±â´ÉÀ» »ç¿ëÇÔ.
+	//JumpëŠ” ê¸°ë³¸ ACharacterì˜ ê¸°ëŠ¥ì„ ì‚¬ìš©í•¨.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> JumpAction;
 
@@ -77,15 +78,14 @@ protected:
 
 #pragma endregion
 
+public:
+
 protected:
 
-	//Character State¸¦ »ç¿ëÇÏ¿©, ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ¶û ±â´ÉÀ» Á¦¾îÇÔ
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
-	TMap<FString, TObjectPtr<UBaseCharacterState>> CharacterStateMap;
+	//Character Stateë¥¼ ì‚¬ìš©í•˜ì—¬, ì• ë‹ˆë©”ì´ì…˜ì´ë‘ ê¸°ëŠ¥ì„ ì œì–´í•¨
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category ="State", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UBaseCharacterState> CurrentCharacterState;
+	TObjectPtr<UCharacterState> CharacterState;
 
 
 protected:
@@ -106,7 +106,7 @@ public:
 
 public:
 
-	/*State Å×½ºÆ®¿ëµµ, ÃßÈÄ ÁøÂ¥ ±â´ÉÀÌ µÉ ¼öµµ*/
+	/*State í…ŒìŠ¤íŠ¸ìš©ë„, ì¶”í›„ ì§„ì§œ ê¸°ëŠ¥ì´ ë  ìˆ˜ë„*/
 	void Attack();
 
 	void UseFarmTool();
@@ -114,5 +114,15 @@ public:
 	void DoWhat();
 
 	void DoPlanting();
+
+public:
+
+	virtual void BattleAction() override;
+
+	virtual void FarmingAction() override;
+
+	virtual void NormalAction() override;
+
+	virtual void PlantingAction() override;
 
 };

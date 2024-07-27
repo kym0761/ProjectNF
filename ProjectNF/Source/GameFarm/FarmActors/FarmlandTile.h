@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Defines/Data.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/InteractiveInterfaces.h"
 #include "FarmlandTile.generated.h"
 
 class UStaticMeshComponent;
@@ -16,8 +16,8 @@ DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FCropSheetData, FOnRequestCropSheetData
 DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FOnRequestSpawnItemPickup, UObject*, WorldContext, TSubclassOf<AActor>, AItemPickup_BP, const FVector&, Location, const FRotator&, Rotator);
 
 /*
-* Grid¸¦ Á¡À¯ÇÏ°í ÀÛ¹°À» Å°¿ï ¶¥ Å¸ÀÏ
-* ÀÛ¹°ÀÇ Á¤º¸¿Í ¼ºÀå Á¤µµ¿¡ µû¶ó ¶¥ Mesh À§¿¡ ÀÛ¹° Mesh°¡ ³ªÅ¸³¯ °Í
+* Gridë¥¼ ì ìœ í•˜ê³  ì‘ë¬¼ì„ í‚¤ìš¸ ë•… íƒ€ì¼
+* ì‘ë¬¼ì˜ ì •ë³´ì™€ ì„±ì¥ ì •ë„ì— ë”°ë¼ ë•… Mesh ìœ„ì— ì‘ë¬¼ Meshê°€ ë‚˜íƒ€ë‚  ê²ƒ
 */
 UCLASS()
 class GAMEFARM_API AFarmlandTile : public AActor, public IInteractive
@@ -46,11 +46,11 @@ protected:
 
 public:
 
-	//CropSheetData¸¦ ¾ò´Â °ÍÀ» ¿äÃ».
+	//CropSheetDataë¥¼ ì–»ëŠ” ê²ƒì„ ìš”ì²­.
 	UPROPERTY()
 	FOnRequestCropSheetData OnRequestCropSheetData;
 
-	//ItemPickupÀ» SpawnÇÏ´Â °ÍÀ» ¿äÃ».
+	//ItemPickupì„ Spawní•˜ëŠ” ê²ƒì„ ìš”ì²­.
 	UPROPERTY()
 	FOnRequestSpawnItemPickup OnRequestSpawnItemPickup;
 

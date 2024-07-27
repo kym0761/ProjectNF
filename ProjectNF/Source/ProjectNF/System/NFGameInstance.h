@@ -15,7 +15,7 @@ class UElectricLinkManager;
 class UObjectPoolManager;
 class UInventoryManager;
 class UDataManager;
-
+class UGameManager;
 /**
  * 
  */
@@ -53,23 +53,6 @@ public:
 #pragma endregion
 
 
-#pragma region GameResource
-
-protected:
-
-	/*재화들은 GameInstance에서 관리할 수 있음.*/
-	UPROPERTY()
-	int32 Money;
-
-public:
-
-	int32 GetMoney() const;
-	void AddMoney(int32 InMoney);
-	bool SpendMoney(int32 Pay);
-
-#pragma endregion
-
-
 #pragma region Managers
 
 public:
@@ -89,6 +72,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
 	TSubclassOf<UDataManager> DataManager_BP;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UGameManager> GameManager_BP;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
@@ -106,6 +92,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UDataManager> DataManager;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UGameManager> GameManager;
 private:
 
 	static TObjectPtr<UGridManager> GGridManager;
@@ -113,6 +101,7 @@ private:
 	static TObjectPtr<UObjectPoolManager> GObjectPoolManager;
 	static TObjectPtr<UInventoryManager> GInventoryManager;
 	static TObjectPtr<UDataManager> GDataManager;
+	static TObjectPtr<UGameManager> GGameManager;
 public:
 
 	static 	TObjectPtr<UGridManager> GetGridManager();
@@ -120,12 +109,13 @@ public:
 	static 	TObjectPtr<UObjectPoolManager> GetObjectPoolManager();
 	static 	TObjectPtr<UInventoryManager> GetInventoryManager();
 	static 	TObjectPtr<UDataManager> GetDataManager();
+	static 	TObjectPtr<UGameManager> GetGameManager();
 
 	void InitManagers();
 #pragma endregion
 
 public:
 
-	void Init();
+	void InitNFGameInstance();
 
 };

@@ -7,7 +7,7 @@
 #include "NFGameModeBase.generated.h"
 
 /**
- * GameModeBase¿¡ ManagerµéÀ» Ãß°¡ÇÏ¸é, °ÔÀÓ¸ğµå¿¡¼­ Manager¸¦ Á¢±Ù °¡´ÉÇÔ.
+ * ì´ ê²Œì„ëª¨ë“œ BaseëŠ” GameInstanceë¥¼ Inití•˜ëŠ” ê¸°ëŠ¥ì„ ê°€ì§€ê³  ìˆìŒ.
  */
 UCLASS()
 class PROJECTNF_API ANFGameModeBase : public AGameModeBase
@@ -22,5 +22,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void StartPlay() override;
 
 };

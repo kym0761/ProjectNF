@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/PuzzleInterfaces.h"
 #include "PuzzleActors/PuzzleActorBase.h"
 #include "FireStand.generated.h"
 
@@ -37,7 +37,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Effect")
 	TObjectPtr<UNiagaraComponent> FireEffect;
 
-	//È­·Î´ë´Â bPuzzleActiveº¸´Ù bFireOnÀÇ ¿ì¼±¼øÀ§°¡ ³ôÀ½.
+	//í™”ë¡œëŒ€ëŠ” bPuzzleActiveë³´ë‹¤ bFireOnì˜ ìš°ì„ ìˆœìœ„ê°€ ë†’ìŒ.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Fire|Variable")
 	bool bFireOn;
 

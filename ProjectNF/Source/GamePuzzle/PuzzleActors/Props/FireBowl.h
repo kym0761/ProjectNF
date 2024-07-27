@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/PuzzleInterfaces.h"
 #include "PuzzleActors/PuzzlePhysicsProp.h"
 #include "FireBowl.generated.h"
 

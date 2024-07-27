@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/ObjectPoolInterfaces.h"
 #include "PoolChunk.generated.h"
 
 /**
- * Pool °¡´ÉÇÑ ¿ÀºêÁ§Æ®¸¦ º¸°üÇÏ´Â Ã»Å© Å¬·¡½º. TQueue »ç¿ëÇÔ.
+ * Pool ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ ë³´ê´€í•˜ëŠ” ì²­í¬ í´ë˜ìŠ¤. TQueue ì‚¬ìš©í•¨.
  */
 UCLASS()
 class GAMEOBJECTPOOL_API UPoolChunk : public UObject
@@ -17,7 +17,7 @@ class GAMEOBJECTPOOL_API UPoolChunk : public UObject
 	
 private:
 
-	//IObjectPoolableÀ» ÀÎÅÍÆäÀÌ½º·Î »ó¼Ó¹ŞÀº "Actor" Queue
+	//IObjectPoolableì„ ì¸í„°í˜ì´ìŠ¤ë¡œ ìƒì†ë°›ì€ "Actor" Queue
 	TQueue<IObjectPoolable*> PoolObjects;
 
 public:

@@ -4,38 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Interfaces.generated.h"
-
-#pragma region ObjectPool
- /**
-  * ObjectPool이 가능하려면 IObjectPoolable을 Actor에 적용해야함.
-  */
-
-UINTERFACE(Blueprintable)
-class GAMEDEFINES_API UObjectPoolable : public UInterface
-{
-	GENERATED_BODY()
-};
-
-//Actual Interface Class. You must Use This When you Inherit Interface.
-class GAMEDEFINES_API IObjectPoolable
-{
-	GENERATED_BODY()
-
-public:
-
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void PoolBeginPlay();
-
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void PoolEndPlay();
-
-};
+#include "PuzzleInterfaces.generated.h"
 
 
-#pragma endregion
 
-#pragma region Puzzle
 /*
 ITriggerable : Trigger 동작 인터페이스
 IBeTriggerable : Trigger를 당했을 때의 동작 인터페이스
@@ -125,51 +97,3 @@ public:
 
 };
 
-#pragma endregion
-
-
-#pragma region Interactive
-
-//Interactive Interface Class Base. Don't Use.
-UINTERFACE(Blueprintable)
-class UInteractive : public UInterface
-{
-	GENERATED_BODY()
-};
-
-//Actual Interactive Interface Class. You must Use This When you Inherit Interface.
-class IInteractive
-{
-	GENERATED_BODY()
-
-public:
-
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent, Category = "Interactive")
-	void Interact(APawn* InteractCauser);
-
-};
-
-#pragma endregion
-
-#pragma region Managerable
-
-//Interactive Interface Class Base. Don't Use.
-UINTERFACE(Blueprintable)
-class UManageable : public UInterface
-{
-	GENERATED_BODY()
-};
-
-//Actual Interactive Interface Class. You must Use This When you Inherit Interface.
-class IManageable
-{
-	GENERATED_BODY()
-
-public:
-
-
-	virtual void InitManager() = 0;
-
-};
-
-#pragma endregion

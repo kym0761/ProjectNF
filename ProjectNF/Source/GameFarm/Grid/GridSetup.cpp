@@ -11,7 +11,8 @@ AGridSetup::AGridSetup()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GridVisual = CreateDefaultSubobject<UGridVisualComponent>(TEXT("GridVisual"));
-	GridVisual->SetupAttachment(RootComponent);
+	SetRootComponent(GridVisual);
+
 }
 
 // Called when the game starts or when spawned

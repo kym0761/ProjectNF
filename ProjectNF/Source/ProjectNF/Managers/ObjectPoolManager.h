@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/ManagerInterfaces.h"
+#include "Defines/Interfaces/ObjectPoolInterfaces.h"
 #include "DebugHelper.h"
 #include "ObjectPoolManager.generated.h"
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Defines/Interfaces.h"
+#include "Defines/Interfaces/ManagerInterfaces.h"
 #include "Defines/Data.h"
 #include "DebugHelper.h"
 #include "DataManager.generated.h"

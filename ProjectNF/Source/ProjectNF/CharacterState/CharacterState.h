@@ -5,32 +5,36 @@
 #include "CoreMinimal.h"
 #include "Defines/Enums.h"
 #include "UObject/NoExportTypes.h"
-#include "BaseCharacterState.generated.h"
+#include "CharacterState.generated.h"
 
-//ÆÄ»ı Å¬·¡½ºµé ch ºÙÀÎ ÀÌÀ¯´Â ¾ğ¸®¾ó ¿£Áø ¾îµò°¡¿¡ ÀÌ¸§ÀÌ °°Àº Å¬·¡½º°¡ Á¸ÀçÇÔ
-//ch = characterÀÓ
+//íŒŒìƒ í´ë˜ìŠ¤ë“¤ ch ë¶™ì¸ ì´ìœ ëŠ” ì–¸ë¦¬ì–¼ ì—”ì§„ ì–´ë”˜ê°€ì— ì´ë¦„ì´ ê°™ì€ í´ë˜ìŠ¤ê°€ ì¡´ì¬í•¨
+//ch = characterì„
 
 /**
  * 
  */
 UCLASS()
-class PROJECTNF_API UBaseCharacterState : public UObject
+class PROJECTNF_API UCharacterState : public UObject
 {
 	GENERATED_BODY()
 	
 public:
-	UBaseCharacterState();
+	UCharacterState();
 
-	//StateÀÇ Å¸ÀÔ
+	//Stateì˜ íƒ€ì…
 	UPROPERTY(BlueprintReadWrite, Category = "State")
 	ECharacterStateType CharacterStateType;
 
 	//Outer == Character
 	UPROPERTY(BlueprintReadWrite, Category = "State")
-	TObjectPtr<class ABaseCharacter> CharacterRef;
+	TObjectPtr<class AActor> StateOwner;
 
 public:
 
 	virtual void StateAction();
+
+	//Character BPì—ì„œ 1 2 3 4 ëˆŒëŸ¬ì„œ ì‚¬ìš©ì¤‘
+	UFUNCTION(Blueprintcallable)
+	void SetStateType(ECharacterStateType InputStateType);
 
 };

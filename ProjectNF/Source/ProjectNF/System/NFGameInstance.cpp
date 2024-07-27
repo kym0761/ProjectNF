@@ -11,6 +11,7 @@
 #include "Managers/ObjectPoolManager.h"
 #include "Managers/InventoryManager.h"
 #include "Managers/DataManager.h"
+#include "Managers/GameManager.h"
 
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
@@ -18,6 +19,7 @@ TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr
 TObjectPtr<UObjectPoolManager> UNFGameInstance::GObjectPoolManager = nullptr;
 TObjectPtr<UInventoryManager> UNFGameInstance::GInventoryManager = nullptr;
 TObjectPtr<UDataManager> UNFGameInstance::GDataManager = nullptr;
+TObjectPtr<UGameManager> UNFGameInstance::GGameManager = nullptr;
 
 UNFGameInstance::UNFGameInstance()
 {
@@ -76,28 +78,6 @@ void UNFGameInstance::Load()
 
 }
 
-int32 UNFGameInstance::GetMoney() const
-{
-	return Money;
-}
-
-void UNFGameInstance::AddMoney(int32 InMoney)
-{
-	Money += InMoney;
-}
-
-bool UNFGameInstance::SpendMoney(int32 Pay)
-{
-	if (Pay > Money)
-	{
-		return false;
-	}
-
-	Money -= Pay;
-	return true;
-}
-
-
 void UNFGameInstance::InitManagers()
 {
 	Debug::Print(DEBUG_TEXT("InitManagers Called."));
@@ -106,7 +86,9 @@ void UNFGameInstance::InitManagers()
 		!IsValid(ElectricLinkManager_BP) ||
 		!IsValid(ObjectPoolManager_BP) ||
 		!IsValid(InventoryManager_BP) ||
-		!IsValid(DataManager_BP))
+		!IsValid(DataManager_BP) ||
+		!IsValid(GameManager_BP)
+		)
 	{
 		Debug::Print(DEBUG_TEXT("Manager blueprint Are Not Set."));
 		return;
@@ -145,6 +127,12 @@ void UNFGameInstance::InitManagers()
 			GDataManager = DataManager;
 		}
 
+		if (!IsValid(GameManager))
+		{
+			GameManager = NewObject<UGameManager>(this, GameManager_BP);
+			GGameManager = GameManager;
+		}
+
 	}
 	
 
@@ -153,11 +141,12 @@ void UNFGameInstance::InitManagers()
 	ObjectPoolManager->InitManager();
 	InventoryManager->InitManager();
 	DataManager->InitManager();
+	GameManager->InitManager();
 }
 
-void UNFGameInstance::Init()
+void UNFGameInstance::InitNFGameInstance()
 {
-	// ?
+	InitManagers();
 
 }
 
@@ -184,4 +173,9 @@ TObjectPtr<UInventoryManager> UNFGameInstance::GetInventoryManager()
 TObjectPtr<UDataManager> UNFGameInstance::GetDataManager()
 {
 	return GDataManager;
+}
+
+TObjectPtr<UGameManager> UNFGameInstance::GetGameManager()
+{
+	return GGameManager;
 }
