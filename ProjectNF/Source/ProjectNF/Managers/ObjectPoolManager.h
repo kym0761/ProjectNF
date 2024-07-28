@@ -37,7 +37,7 @@ public:
 
 	//풀에서 오브젝트를 얻어 spawn함
 	UFUNCTION(BlueprintCallable)
-	AActor* SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, const FVector& Location, const FRotator& Rotation);
+	AActor* SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation);
 
 	//UFUNCTION()과 template가 호환되지 않아서 Delegate에 붙일 때 이 함수를 사용할 수 없음.
 	template <typename T>

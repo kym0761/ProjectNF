@@ -14,10 +14,10 @@ void UObjectPoolManager::InitManager()
 	ObjectPoolMap.Empty();
 }
 
-AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActor> PoolableBP, const FVector& Location, const FRotator& Rotation)
+AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation)
 {
 	//ObjectPoolable 인터페이스 체크
-	bool bCheckObjectPoolable = PoolableBP.GetDefaultObject()->Implements<UObjectPoolable>();
+	bool bCheckObjectPoolable = PoolableBP->GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
 		Debug::Print(DEBUG_TEXT("not ObjectPoolable"));
@@ -25,8 +25,7 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActo
 	}
 
 	//블루프린트 타입을 포함한 Class가 무엇인지 확인
-	auto classKey = PoolableBP.GetDefaultObject()->GetClass();
-
+	auto classKey = PoolableBP->GetDefaultObject()->GetClass();
 
 	//해당 클래스 타입의 Pool Chunk가 존재하지 않는다면, PoolChunk 생성
 	if (!ObjectPoolMap.Contains(classKey))
@@ -43,8 +42,12 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, TSubclassOf<AActo
 	//PoolChunk가 비었다면 그냥 새로 생성
 	if (objectPoolQueue.IsEmpty())
 	{
+		//충돌을 무시하고 무조건 spawn함
+		FActorSpawnParameters spawnParam;
+		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
 		Debug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
-		poolableActor = WorldContext->GetWorld()->SpawnActor<AActor>(PoolableBP, Location, Rotation);
+		poolableActor = WorldContext->GetWorld()->SpawnActor<AActor>(PoolableBP, Location, Rotation, spawnParam);
 	}
 	else //PoolChunk에 비활성화 Actor가 있다면, 해당 Chunk에서 하나 꺼내 사용한다.
 	{

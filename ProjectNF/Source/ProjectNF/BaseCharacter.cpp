@@ -261,7 +261,7 @@ void ABaseCharacter::UseFarmTool()
 
 void ABaseCharacter::DoWhat()
 {
-	//뭐할지 안정해짐
+	//뭐할지 안 정해짐
 
 	Debug::Print(DEBUG_TEXT("DoWhat"));
 

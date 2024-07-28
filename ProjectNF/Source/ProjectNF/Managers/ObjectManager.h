@@ -9,7 +9,7 @@
 #include "ObjectManager.generated.h"
 
 /**
- * 
+ * ActorSpawnFactory다.
  */
 UCLASS(BlueprintType, Blueprintable)
 class PROJECTNF_API UObjectManager : public UObject, public IManageable
@@ -22,12 +22,18 @@ public:
 
 protected:
 
-	//BP_ObjectManager에서 관리함.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
-	TMap<FString, TSubclassOf<AActor>> BlueprintMap;
+	/*
+	* BP_ObjectManager에서 등록해 사용한다.
+	* Key : "ClassName" ,Value : BP_SomeActor
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
+	TMap<FString, UClass*> BlueprintMap;
 
 public:
-
+	/*
+	* Spawn할 때 TSubclassOf<AActor>를 거치지 않고 String으로 Spawn한다.
+	* 예시)Spawn(TEXT("WantToSpawn"),Location,Rotation);
+	*/
 	UFUNCTION()
 	AActor* Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
 
