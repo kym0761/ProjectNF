@@ -16,6 +16,7 @@ class UObjectPoolManager;
 class UInventoryManager;
 class UDataManager;
 class UGameManager;
+class UObjectManager;
 /**
  * 
  */
@@ -75,6 +76,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
 	TSubclassOf<UGameManager> GameManager_BP;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	TSubclassOf<UObjectManager> ObjectManager_BP;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
@@ -94,7 +98,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGameManager> GameManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UObjectManager> ObjectManager;
+
 private:
+
+	//Manager를 위에 변수가 있는데도 전역변수로도 관리하는 이유는, Get_Manager()를 Static 함수로 사용할 수 있게 만들기 위함이다.
 
 	static TObjectPtr<UGridManager> GGridManager;
 	static TObjectPtr<UElectricLinkManager> GElectricLinkManager;
@@ -102,6 +112,8 @@ private:
 	static TObjectPtr<UInventoryManager> GInventoryManager;
 	static TObjectPtr<UDataManager> GDataManager;
 	static TObjectPtr<UGameManager> GGameManager;
+	static TObjectPtr<UObjectManager> GObjectManager;
+
 public:
 
 	static 	TObjectPtr<UGridManager> GetGridManager();
@@ -110,6 +122,7 @@ public:
 	static 	TObjectPtr<UInventoryManager> GetInventoryManager();
 	static 	TObjectPtr<UDataManager> GetDataManager();
 	static 	TObjectPtr<UGameManager> GetGameManager();
+	static TObjectPtr<UObjectManager> GetObjectManager();
 
 	void InitManagers();
 #pragma endregion

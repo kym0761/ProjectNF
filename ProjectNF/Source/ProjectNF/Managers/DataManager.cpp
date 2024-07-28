@@ -60,7 +60,6 @@ FCropSheetData UDataManager::GetCropDataFromSheet(const FName& CropID)
 	FCropSheetData* cropSheetData = CropSheetTable->FindRow<FCropSheetData>(CropID, "");
 	if (cropSheetData != nullptr)
 	{
-
 		return *cropSheetData;
 	}
 

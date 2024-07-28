@@ -13,7 +13,7 @@ class UBoxComponent;
 class AItemPickup;
 
 DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FCropSheetData, FOnRequestCropSheetData, const FName&, CropID);
-DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FOnRequestSpawnItemPickup, UObject*, WorldContext, TSubclassOf<AActor>, AItemPickup_BP, const FVector&, Location, const FRotator&, Rotator);
+DECLARE_DYNAMIC_DELEGATE_RetVal_ThreeParams(AActor*, FOnRequestSpawnItemPickup, FString, ToSpawnClassName, const FVector&, Location, const FRotator&, Rotator);
 
 /*
 * Grid를 점유하고 작물을 키울 땅 타일
@@ -41,8 +41,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Crop")
 	FCropData CropData;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="Crop", Meta=(AllowPrivateAccess = true))
-	TSubclassOf<AItemPickup> ItemPickup_BP;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="Crop", Meta=(AllowPrivateAccess = true))
+	//TSubclassOf<AItemPickup> ItemPickup_BP;
 
 public:
 

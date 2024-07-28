@@ -73,17 +73,17 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 		break;
 	}
 
-	//Á¤»ó ¾ÆÀÌÅÛÀÌ¶ó ÆÇ´ÜµÇ¸é CropData¸¦ SetÇÔ.
+	//ì •ìƒ ì•„ì´í…œì´ë¼ íŒë‹¨ë˜ë©´ CropDataë¥¼ Setí•¨.
 	CropData = InCropData;
 
 }
 
 void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 {
-	//´Ù ÀÚ¶õ ÀÛ¹°À» »Ì±â?
-	//levelÀÌ 3ÀÌ µÇ¸é mesh¸¦ »èÁ¦ÇÑ´Ù.
+	//ë‹¤ ìžëž€ ìž‘ë¬¼ì„ ë½‘ê¸°?
+	//levelì´ 3ì´ ë˜ë©´ meshë¥¼ ì‚­ì œí•œë‹¤.
 
-	//TODO : ´ÙÀÛ ÀÛ¹°ÀÌ¸é levelÀ» 2·Î ¶³±¼ ¼ö ÀÖ°Ô growthLevelÀ» ¶³±Å¾ßÇÔ.
+	//TODO : ë‹¤ìž‘ ìž‘ë¬¼ì´ë©´ levelì„ 2ë¡œ ë–¨êµ´ ìˆ˜ ìžˆê²Œ growthLevelì„ ë–¨ê¶ˆì•¼í•¨.
 
 
 	FCropSheetData cropsheetData;
@@ -106,7 +106,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 
 	if (growthLevel == 3)
 	{
-		//ÃÊ±âÈ­
+		//ì´ˆê¸°í™”
 		CropMesh->SetStaticMesh(nullptr);
 		CropData = FCropData();
 
@@ -117,7 +117,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 			return;
 		}
 		
-		OnRequestSpawnItemPickup.Execute(this, ItemPickup_BP, GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
+		OnRequestSpawnItemPickup.Execute(TEXT("ItemPickup"), GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
 
 	}
 	else

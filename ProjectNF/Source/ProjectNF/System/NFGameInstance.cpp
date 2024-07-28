@@ -12,7 +12,7 @@
 #include "Managers/InventoryManager.h"
 #include "Managers/DataManager.h"
 #include "Managers/GameManager.h"
-
+#include "Managers/ObjectManager.h"
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
 TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
@@ -20,6 +20,8 @@ TObjectPtr<UObjectPoolManager> UNFGameInstance::GObjectPoolManager = nullptr;
 TObjectPtr<UInventoryManager> UNFGameInstance::GInventoryManager = nullptr;
 TObjectPtr<UDataManager> UNFGameInstance::GDataManager = nullptr;
 TObjectPtr<UGameManager> UNFGameInstance::GGameManager = nullptr;
+TObjectPtr<UObjectManager> UNFGameInstance::GObjectManager = nullptr;
+
 
 UNFGameInstance::UNFGameInstance()
 {
@@ -87,7 +89,8 @@ void UNFGameInstance::InitManagers()
 		!IsValid(ObjectPoolManager_BP) ||
 		!IsValid(InventoryManager_BP) ||
 		!IsValid(DataManager_BP) ||
-		!IsValid(GameManager_BP)
+		!IsValid(GameManager_BP) ||
+		!IsValid(ObjectManager_BP)
 		)
 	{
 		Debug::Print(DEBUG_TEXT("Manager blueprint Are Not Set."));
@@ -133,6 +136,12 @@ void UNFGameInstance::InitManagers()
 			GGameManager = GameManager;
 		}
 
+		if (!IsValid(ObjectManager))
+		{
+			ObjectManager = NewObject<UObjectManager>(this, ObjectManager_BP);
+			GObjectManager = ObjectManager;
+		}
+
 	}
 	
 
@@ -142,6 +151,7 @@ void UNFGameInstance::InitManagers()
 	InventoryManager->InitManager();
 	DataManager->InitManager();
 	GameManager->InitManager();
+	ObjectManager->InitManager();
 }
 
 void UNFGameInstance::InitNFGameInstance()
@@ -178,4 +188,9 @@ TObjectPtr<UDataManager> UNFGameInstance::GetDataManager()
 TObjectPtr<UGameManager> UNFGameInstance::GetGameManager()
 {
 	return GGameManager;
+}
+
+TObjectPtr<UObjectManager> UNFGameInstance::GetObjectManager()
+{
+	return GObjectManager;
 }

@@ -7,9 +7,6 @@
 #include "UObject/NoExportTypes.h"
 #include "CharacterState.generated.h"
 
-//파생 클래스들 ch 붙인 이유는 언리얼 엔진 어딘가에 이름이 같은 클래스가 존재함
-//ch = character임
-
 /**
  * 
  */

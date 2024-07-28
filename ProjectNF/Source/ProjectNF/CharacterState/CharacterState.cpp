@@ -16,19 +16,6 @@ UCharacterState::UCharacterState()
 void UCharacterState::StateAction()
 {
 
-	//auto outer = GetOuter();
-	//if (IsValid(outer))
-	//{
-	//	if (GEngine)
-	//	{
-	//		FString str = FString::Printf(TEXT("State's Owner %s"), *outer->GetName());
-
-	//		GEngine->AddOnScreenDebugMessage(
-	//			FMath::Rand(), 3.0f, FColor::Emerald,
-	//			str);
-	//	}
-	//}
-
 	ICharacterAction* characterActionInterface = Cast<ICharacterAction>(StateOwner);
 	if (!characterActionInterface)
 	{

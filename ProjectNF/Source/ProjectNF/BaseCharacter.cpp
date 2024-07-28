@@ -23,6 +23,7 @@
 #include "Managers/GridManager.h"
 #include "Managers/ObjectPoolManager.h"
 #include "Managers/DataManager.h"
+#include "Managers/ObjectManager.h"
 
 #include "System/NFGameInstance.h"
 
@@ -193,14 +194,6 @@ void ABaseCharacter::UseFarmTool()
 	//일단, 지금 farmtool은 땅을 경작하는 기능을 하는걸로 한다.
 	//명칭 UseHoe로 변경해야할 듯
 
-	if (!IsValid(FarmlandTile_BP))
-	{
-		//farmlandtile bp not set
-
-		Debug::Print(DEBUG_TEXT("FarmlandTile BP is not set"));
-		return;
-	}
-
 	FHitResult hit;
 
 	//farmPos에서 아래로 2000 내려가는 지점으로 trace
@@ -241,16 +234,14 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
-	FActorSpawnParameters spawnPram;
-	spawnPram.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	auto objManager = UNFGameInstance::GetObjectManager();
 
-	auto farmtile = GetWorld()->SpawnActor<AFarmlandTile>(
-		FarmlandTile_BP, gridManager->GridToWorld(grid), FRotator::ZeroRotator, spawnPram);
+	auto farmtile = Cast<AFarmlandTile>(objManager->Spawn(TEXT("FarmlandTile"), gridManager->GridToWorld(grid)));
 
-	auto gameInstance = Cast<UNFGameInstance>(GetGameInstance());
-	if (!IsValid(gameInstance))
+	if (!IsValid(farmtile))
 	{
-		Debug::Print(DEBUG_TEXT("game instance is Invalid."));
+		Debug::Print(DEBUG_TEXT("Spawn Object Failed."));
+		return;
 	}
 
 
@@ -258,18 +249,14 @@ void ABaseCharacter::UseFarmTool()
 	if (!IsValid(dataManager))
 	{
 		Debug::Print(DEBUG_TEXT("Data Manager is Invalid."));
+		return;
 	}
 
 	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
 	farmtile->OnRequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
 
-	auto objectPoolManager = gameInstance->GetObjectPoolManager();
-	if (!IsValid(objectPoolManager))
-	{
-		Debug::Print(DEBUG_TEXT("Object pool Manager is Invalid."));
-	}
 
-	farmtile->OnRequestSpawnItemPickup.BindDynamic(objectPoolManager, &UObjectPoolManager::SpawnInPool);
+	farmtile->OnRequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
 }
 
 void ABaseCharacter::DoWhat()

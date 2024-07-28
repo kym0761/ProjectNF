@@ -78,7 +78,7 @@ protected:
 
 #pragma endregion
 
-public:
+#pragma region rCharacterState
 
 protected:
 
@@ -87,11 +87,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category ="State", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCharacterState> CharacterState;
 
-
-protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Farming", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class AFarmlandTile> FarmlandTile_BP;
+#pragma endregion
 
 protected:
 	// Called when the game starts or when spawned
