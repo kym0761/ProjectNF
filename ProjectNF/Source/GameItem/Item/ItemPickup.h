@@ -12,6 +12,13 @@
 class USphereComponent;
 class UStaticMeshComponent;
 
+/*
+* pickup 사용 예시
+* 1 : 인벤토리 슬롯을 땅에 드래그하여 땅에 떨궜을 때 (혹은 밖에 꺼내기 등)
+* 2 : 몬스터가 죽었을 때 템 떨어트리기
+* 3 : 밭에서 수확물 채집할 때
+*/
+
 UCLASS()
 class GAMEITEM_API AItemPickup : public AActor, public IInteractive, public IObjectPoolable
 {

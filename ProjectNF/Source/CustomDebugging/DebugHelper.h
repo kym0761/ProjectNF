@@ -24,8 +24,8 @@
 //param0 꼭 TEXT(string)으로 할 것.   예시) DEBUG_TEXT("abc")
 #define DEBUG_TEXT(Param0) (TEXT(Param0)+DEBUG_TEXT_POSITION)
 
-//param0을 FString으로 만들어 사용할 것. 예시) FString("abc"); FString::Printf(TEXT("?? : %d"),intVal);
-#define DEBUG_STRING(Param0) (Param0 + DEBUG_TEXT_POSITION)
+//예시) DEBUG_VATEXT(TEXT("%s, %s"),*Str1, *Str2);
+#define DEBUG_VATEXT(TextFormat, ...) (FString::Printf(TextFormat,__VA_ARGS__) + DEBUG_TEXT_POSITION)
 /**
  * 
  */

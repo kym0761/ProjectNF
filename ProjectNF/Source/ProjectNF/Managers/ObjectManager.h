@@ -41,7 +41,7 @@ public:
 
 	virtual void InitManager() override;
 
-	void LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, TArray<FName>& FolderPaths);
+	void LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths);
 
 };
 

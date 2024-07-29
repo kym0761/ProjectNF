@@ -104,7 +104,7 @@ void UObjectManager::InitManager()
 
 }
 
-void UObjectManager::LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, TArray<FName>& FolderPaths)
+void UObjectManager::LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths)
 {
 	FAssetRegistryModule& assetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 
@@ -140,11 +140,11 @@ void UObjectManager::LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* Ta
 	{
 		if (IsValid(i.Value))
 		{
-			Debug::Print(DEBUG_STRING(FString::Printf(TEXT("%s, %s"), *i.Key, *i.Value->GetName())));
+			Debug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
 		}
 		else
 		{
-			Debug::Print(DEBUG_STRING(FString::Printf(TEXT("%s,nullptr"), *i.Key)));
+			Debug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
 		}
 	}
 }

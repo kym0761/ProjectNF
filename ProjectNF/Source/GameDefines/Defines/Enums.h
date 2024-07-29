@@ -81,7 +81,7 @@ enum class  EItemSubType : uint8
 
 
 UENUM(BlueprintType)
-enum class  ECureType : uint8
+enum class ECureType : uint8
 {
 	None UMETA(DisplayName = "None"),
 
@@ -123,7 +123,7 @@ enum class EItemStar : uint8
 //State를 추가한다면 꼭 추가한 뒤 CharacterStateType을 올바른 값으로 Set할 것
 
 UENUM(BlueprintType)
-enum class  ECharacterStateType : uint8
+enum class ECharacterStateType : uint8
 {
 	NONE = 0 UMETA(DisplayName = "NONE"),
 

@@ -23,6 +23,7 @@ public:
 
 	//데이터 테이블의 'Row Name'이 아이템의 "ItemID"로 취급
 
+	//TODO : 번역용 기능 만들기
 	//ItemName값으로 Localize데이터 테이블을 검색해 Korean 언어라면 Kor 데이터를 가져온다..
 
 
@@ -320,13 +321,12 @@ public:
 	FGameDateTime operator-(const FGameDateTime& rValue);
 	FGameDateTime& operator-=(const FGameDateTime& rValue);
 
-	//!! : 게임속의 Year Month Day는 0이 될 수 없는 값이라는 가정하에 연산자를 만들어야함.
+	//!! : 게임속의 Year Month Day는 0이 될 수 없는 값이라는 가정하에 비교 연산자를 만들어야함.
 
 	bool operator>(const FGameDateTime& Other) const;
 	bool operator>=(const FGameDateTime& Other) const;
 	bool operator<(const FGameDateTime& Other) const;
 	bool operator<=(const FGameDateTime& Other) const;
-
 
 	FString ToString() const;
 

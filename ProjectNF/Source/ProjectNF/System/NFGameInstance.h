@@ -56,30 +56,34 @@ public:
 
 #pragma region Managers
 
-public:
+protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	/*Blueprint Class*/
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGridManager> GridManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UElectricLinkManager> ElectricLinkManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UObjectPoolManager> ObjectPoolManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UInventoryManager> InventoryManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UDataManager> DataManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGameManager> GameManager_BP;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UObjectManager> ObjectManager_BP;
 
 protected:
+
+	//실제 Manager 오브젝트
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UGridManager> GridManager;
@@ -104,7 +108,7 @@ protected:
 
 private:
 
-	//Manager를 위에 변수가 있는데도 전역변수로도 관리하는 이유는, Get_Manager()를 Static 함수로 사용할 수 있게 만들기 위함이다.
+	//위에 Manager 변수가 있는데도 전역변수로도 관리하는 이유는, Get_Manager()를 Static 함수로 사용할 수 있게 만들기 위함이다.
 
 	static TObjectPtr<UGridManager> GGridManager;
 	static TObjectPtr<UElectricLinkManager> GElectricLinkManager;
