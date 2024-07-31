@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Defines/Data.h"
 #include "NFSaveGame.generated.h"
 
 /**
@@ -33,5 +34,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Save")
 	FString PlayerName;
+	
+
+	UPROPERTY()
+	TArray<FInventorySaveData> InventorySave;
 
 };

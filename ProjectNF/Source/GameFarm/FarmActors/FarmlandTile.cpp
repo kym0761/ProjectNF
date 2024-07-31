@@ -53,6 +53,11 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 	}
 	cropsheetData = OnRequestCropSheetData.Execute(InCropData.CropName);
 
+	if (cropsheetData.IsEmpty())
+	{
+		Debug::Print(DEBUG_TEXT("Empty Crop Sheet Data"));
+		return;
+	}
 
 	int32 growthInterval = cropsheetData.MaxGrowth / 3;
 	int32 growthLevel = FMath::Clamp(CropData.CurrentGrowth / growthInterval, 0, 3);
@@ -85,15 +90,13 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 
 	//TODO : 다작 작물이면 level을 2로 떨굴 수 있게 growthLevel을 떨궈야함.
 
-
-	FCropSheetData cropsheetData;
-
 	if (!OnRequestCropSheetData.IsBound())
 	{
 		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 		return;
 	}
-	cropsheetData = OnRequestCropSheetData.Execute(CropData.CropName);
+
+	FCropSheetData cropsheetData = OnRequestCropSheetData.Execute(CropData.CropName);
 
 	if (cropsheetData.IsEmpty())
 	{

@@ -48,12 +48,12 @@ void APuzzleButton::Tick(float DeltaTime)
 	{
 		FVector lerpVal= FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonDownPos, DeltaTime*10);
 
-		//ButtonMesh¸¦ ÃµÃµÈ÷ ¾Æ·¡·Î?
+		//ButtonMeshë¥¼ ì²œì²œíˆ ì•„ë˜ë¡œ?
 		ButtonMesh->SetRelativeLocation(lerpVal);
 	}
 	else
 	{
-		//ButtonMesh¸¦ ÃµÃµÈ÷ À§·Î?
+		//ButtonMeshë¥¼ ì²œì²œíˆ ìœ„ë¡œ?
 
 		FVector lerpVal = FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonUpPos, DeltaTime*10);
 
@@ -65,7 +65,7 @@ void APuzzleButton::Tick(float DeltaTime)
 		TriggerTimer += DeltaTime;
 	}
 
-	//¹öÆ°À» ¹â°í ÀÖ´Â µ¿¾È, Trigger()¸¦ °è¼Ó È£ÃâÇÏ¿© ¹öÆ° ´©¸¥ µÚ¿¡ ½Ã°£Á¦ÇÑÀÌ ÀÖ´Â PuzzleActor¸¦ ´Ù½Ã TriggerÇÑ´Ù.
+	//ë²„íŠ¼ì„ ë°Ÿê³  ìˆëŠ” ë™ì•ˆ, Trigger()ë¥¼ ê³„ì† í˜¸ì¶œí•˜ì—¬ ë²„íŠ¼ ëˆ„ë¥¸ ë’¤ì— ì‹œê°„ì œí•œì´ ìˆëŠ” PuzzleActorë¥¼ ë‹¤ì‹œ Triggerí•œë‹¤.
 	if (bButtonActive && (TriggerTimer >= TriggerInterval))
 	{
 		Trigger();
@@ -76,12 +76,15 @@ void APuzzleButton::Tick(float DeltaTime)
 
 void APuzzleButton::OnButtonBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	
+
+
 	UCharacterMovementComponent* characterMovement = OtherActor->FindComponentByClass<UCharacterMovementComponent>();
 	UPrimitiveComponent* primitiveComp = OtherComp;
 
-	// CharacterMovement È¤Àº PhysicsComponent.°¡ À§¿¡ ÀÖÀ¸¸é ButtonDownÇÔ.
-	if ((IsValid(characterMovement) 
-		|| (primitiveComp && primitiveComp->IsSimulatingPhysics())))
+	// CharacterMovement í˜¹ì€ PhysicsComponent.ê°€ ìœ„ì— ìˆìœ¼ë©´ ButtonDowní•¨.
+	if (//(IsValid(characterMovement) ||
+		(IsValid(primitiveComp) && primitiveComp->IsSimulatingPhysics()))
 	{
 		//Button Down.
 		ButtonDown();
@@ -90,15 +93,15 @@ void APuzzleButton::OnButtonBeginOverlap(UPrimitiveComponent* OverlappedComponen
 
 void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	//EndOverlapÀÌ µ¿ÀÛÇÒ ¶§, ¾ÆÁ÷ ¹öÆ° À§¿¡ ¹«¾ğ°¡°¡ ÀÖ´ÂÁö¸¦ È®ÀÎÇØ¾ßÇÑ´Ù.
+	//EndOverlapì´ ë™ì‘í•  ë•Œ, ì•„ì§ ë²„íŠ¼ ìœ„ì— ë¬´ì–¸ê°€ê°€ ìˆëŠ”ì§€ë¥¼ í™•ì¸í•´ì•¼í•œë‹¤.
 
 	TArray<UPrimitiveComponent*> overlappingComponents;
 	GetOverlappingComponents(overlappingComponents);
 
-	//ÀÏ´Ü false
+	//ì¼ë‹¨ false
 	bool temp = false;
 
-	//CharacterMovement È¤Àº PhysicsComponent°¡ ÀÖ´ÂÁö¸¦ È®ÀÎÇÑ´Ù.
+	//CharacterMovement í˜¹ì€ PhysicsComponentê°€ ìˆëŠ”ì§€ë¥¼ í™•ì¸í•œë‹¤.
 	for (UPrimitiveComponent* i : overlappingComponents)
 	{
 		if (!IsValid(i))
@@ -115,7 +118,7 @@ void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		UCharacterMovementComponent* characterMovement = owner->FindComponentByClass<UCharacterMovementComponent>();
 
-		//Ä³¸¯ÅÍ°¡ ¹â°í ÀÖ°Å³ª, Physic ¹°Ã¼°¡ ¾ÆÁ÷ ¹öÆ° À§¿¡ ÀÖÀ» ¶§ temp¸¦ true·Î ¼¼ÆÃÇÏ°í ºüÁ®³ª¿Â´Ù.
+		//ìºë¦­í„°ê°€ ë°Ÿê³  ìˆê±°ë‚˜, Physic ë¬¼ì²´ê°€ ì•„ì§ ë²„íŠ¼ ìœ„ì— ìˆì„ ë•Œ tempë¥¼ trueë¡œ ì„¸íŒ…í•˜ê³  ë¹ ì ¸ë‚˜ì˜¨ë‹¤.
 		if (IsValid(characterMovement) || i->IsSimulatingPhysics())
 		{
 			temp = true;
@@ -123,7 +126,7 @@ void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent,
 		}
 	}
 
-	//temp°¡ false¸é buttonUp ½ÃµµÇÑ´Ù.
+	//tempê°€ falseë©´ buttonUp ì‹œë„í•œë‹¤.
 	if (temp == false)
 	{
 		ButtonUp();
@@ -133,26 +136,26 @@ void APuzzleButton::OnButtonEndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void APuzzleButton::ButtonUp()
 {
-	//falseÀÌ¸é buttonUp ¹«½Ã
+	//falseì´ë©´ buttonUp ë¬´ì‹œ
 	if (bButtonActive == false)
 	{
 		return;
 	}
 
 	bButtonActive = false;
-	Trigger();//deactivate ¾Ë¸²
+	Trigger();//deactivate ì•Œë¦¼
 }
 
 void APuzzleButton::ButtonDown()
 {
-	//true¸é buttonDown ¹«½Ã
+	//trueë©´ buttonDown ë¬´ì‹œ
 	if (bButtonActive == true)
 	{
 		return;
 	}
 
 	bButtonActive = true;
-	Trigger(); // activate ¾Ë¸²
+	Trigger(); // activate ì•Œë¦¼
 }
 
 void APuzzleButton::Trigger()

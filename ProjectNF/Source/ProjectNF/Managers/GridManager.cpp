@@ -67,7 +67,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 
 		if (hitResult)
 		{
-			Debug::Print(FString::Printf(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
+			Debug::Print(DEBUG_VATEXT(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
 			return true;
 		}
 

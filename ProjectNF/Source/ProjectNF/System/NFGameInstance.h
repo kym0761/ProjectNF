@@ -17,6 +17,9 @@ class UInventoryManager;
 class UDataManager;
 class UGameManager;
 class UObjectManager;
+
+class UNFSaveGame;
+
 /**
  * 
  */
@@ -46,11 +49,18 @@ public:
 
 public:
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Save();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void Load();
+
+protected:
+
+	void SaveInventory(UNFSaveGame* SaveGame);
+	void LoadInventory(UNFSaveGame* SaveGame);
+
+
 #pragma endregion
 
 

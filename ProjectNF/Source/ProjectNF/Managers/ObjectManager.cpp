@@ -99,12 +99,12 @@ void UObjectManager::InitManager()
 
 	//Blueprints 폴더에 있는 모든 액터 블루프린트를 긁어온다.
 	TArray<FName> blueprintPaths;
-	blueprintPaths.Add(TEXT("/Game/Blueprints")); //분류할 때 폴더 여러개를 사용할 수도 있음.
-	LoadBlueprint(BlueprintMap, AActor::StaticClass(), blueprintPaths);
+	blueprintPaths.Add(TEXT("/Game/Blueprints")); //블루프린트를 긁어올 때 폴더 여러개로 분류했다면, 해당 폴더들 전부를 add하면 된다.
+	LoadBlueprints(BlueprintMap, AActor::StaticClass(), blueprintPaths); //ActorBlueprint만 가져온다.
 
 }
 
-void UObjectManager::LoadBlueprint(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths)
+void UObjectManager::LoadBlueprints(TMap<FString, UClass*>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths)
 {
 	FAssetRegistryModule& assetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 

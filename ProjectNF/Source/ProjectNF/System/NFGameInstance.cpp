@@ -50,13 +50,18 @@ void UNFGameInstance::Save()
 	if (!IsValid(saveGame))
 	{
 		//saveGame 만들기 실패
+		Debug::Print(DEBUG_TEXT("SaveGame Making Failed.."));
 		return;
 	}
 
 	saveGame->PlayerName = PlayerName;
 	saveGame->SaveSlotUserIndex = PlayerNumber;
 
-	UGameplayStatics::SaveGameToSlot(saveGame, saveGame->SaveSlotName, saveGame->SaveSlotUserIndex);
+	//인벤토리 데이터 세이브
+	SaveInventory(saveGame);
+
+
+	UGameplayStatics::SaveGameToSlot(saveGame, PlayerName, PlayerNumber);
 
 }
 
@@ -72,11 +77,51 @@ void UNFGameInstance::Load()
 	if (!IsValid(saveGame))
 	{
 		//load 실패
+		Debug::Print(DEBUG_TEXT("SaveGame Loading Failed.."));
+
+		//Load를 실패했어도 GameInstance는 초기화가 되어야함.
+		InitNFGameInstance();
+
 		return;
 	}
 
 	PlayerName = saveGame->PlayerName;
 	PlayerNumber = saveGame->SaveSlotUserIndex;
+
+	//GameInstance를 init한 후 Loading.
+	InitNFGameInstance();
+
+	//인벤토리 Load
+	LoadInventory(saveGame);
+}
+
+void UNFGameInstance::SaveInventory(UNFSaveGame* SaveGame)
+{
+	//Inventory의 데이터를 전부 읽고 savegame에 인벤토리 정보를 저장함.
+
+	auto& inventories = InventoryManager->GetAllInventories();
+
+	SaveGame->InventorySave.Empty();
+
+	for (auto& inventory : inventories)
+	{
+		FInventorySaveData inventorySave;
+		inventorySave.InventoryID = inventory.Key;
+		inventorySave.Items = inventory.Value->GetAllItems();
+
+		SaveGame->InventorySave.Add(inventorySave);
+	}
+
+}
+
+void UNFGameInstance::LoadInventory(UNFSaveGame* SaveGame)
+{
+	//savegame의 인벤토리 정보를 얻어 inventory manager를 세팅함.
+
+	auto& inventorySave = SaveGame->InventorySave;
+
+	InventoryManager->LoadInventories(inventorySave);
+
 
 }
 
@@ -152,6 +197,9 @@ void UNFGameInstance::InitManagers()
 	DataManager->InitManager();
 	GameManager->InitManager();
 	ObjectManager->InitManager();
+
+	Debug::Print(DEBUG_TEXT("Instance's Managers Init Completed."));
+
 }
 
 void UNFGameInstance::InitNFGameInstance()

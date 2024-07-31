@@ -148,7 +148,7 @@ public:
 
 	//'Row Name' Will Be "ItemID" in Data Table
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable", Meta = (BitMask, BitMaskEnum = EConsumableItemType))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
 	int32 ConsumableItemType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Consumable")
@@ -222,6 +222,21 @@ public:
 	// 개선 아이디어 : 제작 start 시간을 등록한 뒤, 제작 completed 시간이 지나면 아이템을 얻을 수 있게 하면 될 듯?
 
 };
+
+USTRUCT(BlueprintType)
+struct GAMEDEFINES_API FInventorySaveData
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save")
+	FString InventoryID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Save")
+	TArray<FItemSlotData> Items;
+};
+
 
 #pragma endregion
 

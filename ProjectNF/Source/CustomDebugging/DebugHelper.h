@@ -9,23 +9,27 @@
 */
 
 //예시) AActor::BeginPlay()
-#define FUNCTION_NAME (TEXT(" Function Name : ") + FString(__FUNCTION__)+TEXT(" "))
+#define FUNCTION_NAME (TEXT(" Func : ") + FString(__FUNCTION__)+TEXT(" "))
 
 //예시) AActor::Func에서 ::Func이 빠져서 AActor만 나옴.
-#define CURRENT_CLASS (TEXT(" Class Name : ") + FString(__FUNCTION__).Left(FString(__FUNCTION__).Find(TEXT(":"))) + TEXT(" "))
+#define CURRENT_CLASS (TEXT(" Class : ") + FString(__FUNCTION__).Left(FString(__FUNCTION__).Find(TEXT(":"))) + TEXT(" "))
 
 //함수의 라인만 나옴
-#define CURRENT_LINE  (TEXT(" Line : ") + FString::FromInt(__LINE__) + TEXT(" "))
+#define CURRENT_LINE  (TEXT("  Line : ") + FString::FromInt(__LINE__) + TEXT(" "))
 
 //예시) void __cdecl AActor::BeginPlay(void) 형식으로 출력됨.
 #define CURRENT_FUNCSIG (TEXT("/ Func signature : ") +FString(__FUNCSIG__)+ TEXT(" "))
+
+//custom Format : 필요할 때 알아서 조립해서 쓸 수 있음.
 #define DEBUG_TEXT_POSITION (TEXT("\n") + FUNCTION_NAME + TEXT("\n") + CURRENT_LINE)
 
+#define ENDLINE TEXT("\n----------------------------------------")
+
 //param0 꼭 TEXT(string)으로 할 것.   예시) DEBUG_TEXT("abc")
-#define DEBUG_TEXT(Param0) (TEXT(Param0)+DEBUG_TEXT_POSITION)
+#define DEBUG_TEXT(Param0) (TEXT(Param0)+DEBUG_TEXT_POSITION + ENDLINE)
 
 //예시) DEBUG_VATEXT(TEXT("%s, %s"),*Str1, *Str2);
-#define DEBUG_VATEXT(TextFormat, ...) (FString::Printf(TextFormat,__VA_ARGS__) + DEBUG_TEXT_POSITION)
+#define DEBUG_VATEXT(TextFormat, ...) (FString::Printf(TextFormat,__VA_ARGS__) + DEBUG_TEXT_POSITION + ENDLINE)
 /**
  * 
  */

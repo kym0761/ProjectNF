@@ -2,6 +2,8 @@
 
 
 #include "InventoryComponent.h"
+#include "System/NFGameInstance.h"
+#include "Managers/InventoryManager.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -23,20 +25,20 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	Debug::Print(DEBUG_TEXT("Inventory Component BeginPlay()"));
+
 }
 
 void UInventoryComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	//InventorySizeÀÇ °ªÀÌ º¯°æµÆÀ» ¶§ ÀÎº¥Åä¸®ÀÇ Å©±â¸¦ ´Ù½Ã ÀçÁ¶Á¤ÇÑ´Ù.
-	FProperty* prop = PropertyChangedEvent.Property;
-	if (prop->GetName() == TEXT("InventorySize"))
-	{
-		//InitializeInventory();
-	}
+	////InventorySizeì˜ ê°’ì´ ë³€ê²½ëì„ ë•Œ ì¸ë²¤í† ë¦¬ì˜ í¬ê¸°ë¥¼ ë‹¤ì‹œ ì¬ì¡°ì •í•œë‹¤.
+	//FProperty* prop = PropertyChangedEvent.Property;
+	//if (prop->GetName() == TEXT("InventorySize"))
+	//{
+	//	//InitializeInventory();
+	//}
 }
 
 
@@ -48,9 +50,26 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
+void UInventoryComponent::InitInventoryComponent()
+{
+	Debug::Print(DEBUG_TEXT("Inventory Component Init()"));
+
+	auto inventoryManager = UNFGameInstance::GetInventoryManager();
+
+	if (IsValid(inventoryManager))
+	{
+		inventoryManager->TryGetInventory(InventoryID);
+
+	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("Inventory Manager is Invalid."));
+	}
+}
+
 //bool UInventoryComponent::CheckInventoryHasSpace() const
 //{
-//	//ºó ½½·ÔÀÌ ÀÖÀ¸¸é ÀÎº¥Åä¸®°¡ ºñ¾ú´Ù°í »ı°¢.
+//	//ë¹ˆ ìŠ¬ë¡¯ì´ ìˆìœ¼ë©´ ì¸ë²¤í† ë¦¬ê°€ ë¹„ì—ˆë‹¤ê³  ìƒê°.
 //
 //	//for (int32 i = 0; i < Items.Num(); i++)
 //	//{
@@ -65,15 +84,15 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //const FItemSlotData* UInventoryComponent::GetInventoryItem(const int32 Index) const
 //{
-//	//ÀÎº¥Åä¸® »çÀÌÁî ÀÌ»óÀÇ °ªÀ» ¾òÀ¸·Á°í ÇÏ¸é ¹®Á¦°¡ ÀÖÀ» ¼öµµ ÀÖÀ½.
+//	//ì¸ë²¤í† ë¦¬ ì‚¬ì´ì¦ˆ ì´ìƒì˜ ê°’ì„ ì–»ìœ¼ë ¤ê³  í•˜ë©´ ë¬¸ì œê°€ ìˆì„ ìˆ˜ë„ ìˆìŒ.
 //
 //	//if (Items.IsValidIndex(Index))
 //	//{
-//	//	//¾ÆÀÌÅÛ À§Ä¡°ª? ¹ö±×³ª¼­ ¹®Á¦ »ı±â¸é, ±¸Á¶Ã¼ º¹»ç·Î returnÇÏ´Â °É·Î º¯°æÇÒ °Í.
+//	//	//ì•„ì´í…œ ìœ„ì¹˜ê°’? ë²„ê·¸ë‚˜ì„œ ë¬¸ì œ ìƒê¸°ë©´, êµ¬ì¡°ì²´ ë³µì‚¬ë¡œ returní•˜ëŠ” ê±¸ë¡œ ë³€ê²½í•  ê²ƒ.
 //	//	return &Items[Index];
 //	//}
 //
-//	////½ÇÆĞ.
+//	////ì‹¤íŒ¨.
 //	//UE_LOG(LogTemp, Warning, TEXT("Invalid Item Index Requested.."));
 //	return nullptr;
 //}
@@ -86,23 +105,23 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //	}
 //
 //	Items[Index] = InData;
-//	// TODO : ¾ÆÀÌÅÛ µ¥ÀÌÅÍ°¡ ¹Ù²î¾úÀ½À» ¾Ë¸®´Â °ÍÀÌ ÇÊ¿äÇÔ.
+//	// TODO : ì•„ì´í…œ ë°ì´í„°ê°€ ë°”ë€Œì—ˆìŒì„ ì•Œë¦¬ëŠ” ê²ƒì´ í•„ìš”í•¨.
 //	OnInventoryItemsChanged.Broadcast();
 //	return true;
 //}
 //
 //int32 UInventoryComponent::AddItemToInventory(const FItemSlotData& InData)
 //{
-//	//-1 : ½ÇÆĞ , 0 : ¼º°ø , 1 ÀÌ»ó : ¾ÆÀÌÅÛÀÌ ³²¾ÒÀ½.
+//	//-1 : ì‹¤íŒ¨ , 0 : ì„±ê³µ , 1 ì´ìƒ : ì•„ì´í…œì´ ë‚¨ì•˜ìŒ.
 //
 //	if (InData.IsEmpty())
 //	{
-//		//ºó µ¥ÀÌÅÍ´Â ³ÖÁö ¾ÊÀ½.
+//		//ë¹ˆ ë°ì´í„°ëŠ” ë„£ì§€ ì•ŠìŒ.
 //		return -1;
 //	}
 //
-//	//TODO : ¾ÆÀÌÅÛ Á¤º¸¸¦ È®ÀÎÇÏ´Â ÀÛ¾÷ ÇÊ¿äÇÔ.
-//	FItemSheetData itemSheetData; // µ¥ÀÌÅÍ Å×ÀÌºí¿¡¼­ ¿Ã¹Ù¸¥ ¾ÆÀÌÅÛ Á¤º¸¸¦ °¡Á®¿Í¾ßÇÔ.
+//	//TODO : ì•„ì´í…œ ì •ë³´ë¥¼ í™•ì¸í•˜ëŠ” ì‘ì—… í•„ìš”í•¨.
+//	FItemSheetData itemSheetData; // ë°ì´í„° í…Œì´ë¸”ì—ì„œ ì˜¬ë°”ë¥¸ ì•„ì´í…œ ì •ë³´ë¥¼ ê°€ì ¸ì™€ì•¼í•¨.
 //
 //	FItemSlotData leftover = InData;
 //
@@ -113,7 +132,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //			continue;
 //		}
 //
-//		//TODO : ¾ÆÀÌÅÛ ½½·Ô¿¡ ¾ÆÀÌÅÛÀÌ ÃÖ´ë stack Ã¤¿ï ¼ö ÀÖ´Â ¾çº¸´Ù °ø°£ÀÌ ³²´ÂÁö È®ÀÎ?
+//		//TODO : ì•„ì´í…œ ìŠ¬ë¡¯ì— ì•„ì´í…œì´ ìµœëŒ€ stack ì±„ìš¸ ìˆ˜ ìˆëŠ” ì–‘ë³´ë‹¤ ê³µê°„ì´ ë‚¨ëŠ”ì§€ í™•ì¸?
 //		if(Items[i].Quantity < itemSheetData.MaxQuantity)
 //		{
 //			int32 extra = itemSheetData.MaxQuantity - Items[i].Quantity;
@@ -124,13 +143,13 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //			if (leftover.Quantity == 0)
 //			{
-//				//³²Àº°Ô ¾øÀ¸¸é ¼º°ø.
+//				//ë‚¨ì€ê²Œ ì—†ìœ¼ë©´ ì„±ê³µ.
 //				OnInventoryItemsChanged.Broadcast();
 //				return 0;
 //			}
 //			else if (leftover.Quantity < 0)
 //			{
-//				//À½¼ö¸é ¹®Á¦°¡ ÀÖ±äÇÔ. ´Ù¸¸, ÀÎº¥Åä¸®¿¡ ¹İ¿µÀÌ µÆÀ¸¹Ç·Î ÀÏ´Ü 0À¸·Î Ãë±Ş
+//				//ìŒìˆ˜ë©´ ë¬¸ì œê°€ ìˆê¸´í•¨. ë‹¤ë§Œ, ì¸ë²¤í† ë¦¬ì— ë°˜ì˜ì´ ëìœ¼ë¯€ë¡œ ì¼ë‹¨ 0ìœ¼ë¡œ ì·¨ê¸‰
 //				OnInventoryItemsChanged.Broadcast();
 //				return 0;
 //			}
@@ -138,8 +157,8 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //	}
 //
-//	//¿©±â±îÁö ¿Ô´Ù¸é, leftoverÀÇ ¾çÀÌ ³²¾ÆÀÖ°Å³ª, È¤Àº °°Àº ½½·ÔÀ» Ã£Áö ¸øÇÔ.
-//	//ºó °ø°£ ÀÖÀ¸¸é Á¤º¸¸¦ ³Ö´Â´Ù.
+//	//ì—¬ê¸°ê¹Œì§€ ì™”ë‹¤ë©´, leftoverì˜ ì–‘ì´ ë‚¨ì•„ìˆê±°ë‚˜, í˜¹ì€ ê°™ì€ ìŠ¬ë¡¯ì„ ì°¾ì§€ ëª»í•¨.
+//	//ë¹ˆ ê³µê°„ ìˆìœ¼ë©´ ì •ë³´ë¥¼ ë„£ëŠ”ë‹¤.
 //	for (int i = 0; i < Items.Num(); i++)
 //	{
 //		if (Items[i].IsEmpty())
@@ -150,8 +169,8 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //		}
 //	}
 //
-//	//Warning 1 : leftoverÀÇ ¾ÆÀÌÅÛÀ» ¾à°£ ¾ò¾ú´Âµ¥, ¹Ù´Ú¿¡ ¶³¾îÁø ¾ÆÀÌÅÛ Ã³¸®°¡ Á¦´ë·Î µÇÁö ¾ÊÀ½.
-//	//Warning 2 : º¸»óÀ» ¾òÀ¸·Á Çß´Âµ¥, º¸»óÀÌ ÃÊ°úµÇ¼­ ³²À½ or ÀÎº¥Åä¸® °ø°£ÀÌ ¾ø¾î¼­ º¸»óÀ» ¾Æ¿¹ ¾òÁö ¸øÇÔ.
+//	//Warning 1 : leftoverì˜ ì•„ì´í…œì„ ì•½ê°„ ì–»ì—ˆëŠ”ë°, ë°”ë‹¥ì— ë–¨ì–´ì§„ ì•„ì´í…œ ì²˜ë¦¬ê°€ ì œëŒ€ë¡œ ë˜ì§€ ì•ŠìŒ.
+//	//Warning 2 : ë³´ìƒì„ ì–»ìœ¼ë ¤ í–ˆëŠ”ë°, ë³´ìƒì´ ì´ˆê³¼ë˜ì„œ ë‚¨ìŒ or ì¸ë²¤í† ë¦¬ ê³µê°„ì´ ì—†ì–´ì„œ ë³´ìƒì„ ì•„ì˜ˆ ì–»ì§€ ëª»í•¨.
 //	OnInventoryItemsChanged.Broadcast();
 //	return leftover.Quantity;
 //
@@ -159,7 +178,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //bool UInventoryComponent::UseItemInInventory(const int32 ItemIndex)
 //{
-//	//TODO : ¾ÆÀÌÅÛ Á¾·ù¿¡ µû¶ó ¾ÆÀÌÅÛ °¹¼ö¸¦ ³»¸®°Å³ª, ÀåÂøÇÏ°Å³ª... µîµî
+//	//TODO : ì•„ì´í…œ ì¢…ë¥˜ì— ë”°ë¼ ì•„ì´í…œ ê°¯ìˆ˜ë¥¼ ë‚´ë¦¬ê±°ë‚˜, ì¥ì°©í•˜ê±°ë‚˜... ë“±ë“±
 //
 //	return false;
 //}
@@ -180,12 +199,12 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //	{
 //		int32 currentQuantity = Items[i].Quantity;
 //
-//		if (quantity == currentQuantity) // ÇÊ¿äÇÑ ¾ç°ú ¾ÆÀÌÅÛ ½½·ÔÀÇ ¾ç°ú °°À» ¶§
+//		if (quantity == currentQuantity) // í•„ìš”í•œ ì–‘ê³¼ ì•„ì´í…œ ìŠ¬ë¡¯ì˜ ì–‘ê³¼ ê°™ì„ ë•Œ
 //		{
 //			quantity = 0;
 //			Items[i].SetEmpty();
 //		}
-//		else if (currentQuantity > quantity) //¾ÆÀÌÅÛ ½½·ÔÀÇ ¾çÀÌ ÇÊ¿äÇÑ ¾çº¸´Ù ¸¹À» ¶§
+//		else if (currentQuantity > quantity) //ì•„ì´í…œ ìŠ¬ë¡¯ì˜ ì–‘ì´ í•„ìš”í•œ ì–‘ë³´ë‹¤ ë§ì„ ë•Œ
 //		{
 //			int32 temp = currentQuantity - quantity;
 //			quantity = 0;
@@ -197,15 +216,15 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //			Items[i].SetEmpty();
 //		}
 //
-//		if (quantity <= 0) //¿©±â´Â ¹«Á¶°Ç µ¿ÀÛÇÒ °ÍÀÌ¶ó°í º»´Ù.
+//		if (quantity <= 0) //ì—¬ê¸°ëŠ” ë¬´ì¡°ê±´ ë™ì‘í•  ê²ƒì´ë¼ê³  ë³¸ë‹¤.
 //		{
 //			OnInventoryItemsChanged.Broadcast();
 //			return true;
 //		}
 //	}
 //
-//	//¿©±â±îÁö ¿ÀÁö ¾ÊÀ» °ÍÀÌ¶ó »ı°¢ÇÔ.
-//	//ÀÌ¹Ì ¾ÆÀÌÅÛÀÌ Á¸ÀçÇÏ´ÂÁö, ±×¸®°í °¹¼ö°¡ ÃæºĞÇÑÁö °Ë»çÇÏ°í ½ÇÇàÇÏ±â ¶§¹®ÀÌ´Ù.
+//	//ì—¬ê¸°ê¹Œì§€ ì˜¤ì§€ ì•Šì„ ê²ƒì´ë¼ ìƒê°í•¨.
+//	//ì´ë¯¸ ì•„ì´í…œì´ ì¡´ì¬í•˜ëŠ”ì§€, ê·¸ë¦¬ê³  ê°¯ìˆ˜ê°€ ì¶©ë¶„í•œì§€ ê²€ì‚¬í•˜ê³  ì‹¤í–‰í•˜ê¸° ë•Œë¬¸ì´ë‹¤.
 //	return false;
 //}
 //
@@ -234,7 +253,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //	int32 quantity = Quantity;
 //
-//	//°°Àº ¾ÆÀÌÅÛ ÀÌ¸§ÀÇ ½½·ÔÀ» Ã£¾Æ, ¾çÀ» ÁÙ¿©°¡¸é¼­ ¾çÀÌ 0 ÀÌÇÏÀÇ °ªÀÌ ³ª¿Â´Ù¸é ±× ¾ÆÀÌÅÛÀÇ °³¼ö°¡ ÃæºĞÈ÷ ÀÖ´Ù´Â ÀÇ¹Ì.
+//	//ê°™ì€ ì•„ì´í…œ ì´ë¦„ì˜ ìŠ¬ë¡¯ì„ ì°¾ì•„, ì–‘ì„ ì¤„ì—¬ê°€ë©´ì„œ ì–‘ì´ 0 ì´í•˜ì˜ ê°’ì´ ë‚˜ì˜¨ë‹¤ë©´ ê·¸ ì•„ì´í…œì˜ ê°œìˆ˜ê°€ ì¶©ë¶„íˆ ìˆë‹¤ëŠ” ì˜ë¯¸.
 //	for (int32 i = 0; i < Items.Num(); i++)
 //	{
 //		if (Items[i].ItemName == ItemName)
@@ -252,7 +271,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //int32 UInventoryComponent::GetItemQuantity(const FName& ItemName) const
 //{
-//	//ÇØ´ç ¾ÆÀÌÅÛÀÇ ÃÑ °¹¼ö°¡ ¸î°³ÀÎÁö °Ë»ö.
+//	//í•´ë‹¹ ì•„ì´í…œì˜ ì´ ê°¯ìˆ˜ê°€ ëª‡ê°œì¸ì§€ ê²€ìƒ‰.
 //	int32 sum = 0;
 //
 //	for (int32 i = 0; i < Items.Num(); i++)
@@ -268,7 +287,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //TArray<FItemSlotData> UInventoryComponent::GetAllItems() const
 //{
-//	//¾ÆÀÌÅÛ Á¤º¸ º¹»çº»
+//	//ì•„ì´í…œ ì •ë³´ ë³µì‚¬ë³¸
 //	return Items;
 //}
 //
@@ -276,7 +295,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //{
 //	if (Val <= 0)
 //	{
-//		//Àß¸øµÈ ÀÎº¥Åä¸® Å©±â
+//		//ì˜ëª»ëœ ì¸ë²¤í† ë¦¬ í¬ê¸°
 //		return;
 //	}
 //
@@ -294,7 +313,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //{
 //	if (ExpandSize <= InventorySize)
 //	{
-//		//¿Ã¹Ù¸¥ È®Àå Å©±â°¡ ¾Æ´Ô.
+//		//ì˜¬ë°”ë¥¸ í™•ì¥ í¬ê¸°ê°€ ì•„ë‹˜.
 //		return;
 //	}
 //
@@ -302,7 +321,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //	SetInventorySize(ExpandSize);
 //
-//	//È®ÀåµÈ ÀÎº¥Åä¸®¿¡ ±âÁ¸ ¾ÆÀÌÅÛ Á¤º¸ ³Ö±â
+//	//í™•ì¥ëœ ì¸ë²¤í† ë¦¬ì— ê¸°ì¡´ ì•„ì´í…œ ì •ë³´ ë„£ê¸°
 //	for (int32 i = 0; i < prevItems.Num(); i++)
 //	{
 //		Items[i] = prevItems[i];
@@ -316,23 +335,23 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //{
 //	if (!(IsValid(From) && IsValid(To)))
 //	{
-//		//¿Ã¹Ù¸¥ ÀÎº¥Åä¸®°¡ ¾Æ´Ô
+//		//ì˜¬ë°”ë¥¸ ì¸ë²¤í† ë¦¬ê°€ ì•„ë‹˜
 //		return false;
 //	}
 //
 //	if (!From->Items.IsValidIndex(FromSlotIndex) || !To->Items.IsValidIndex(ToSlotIndex))
 //	{
-//		//°¢ ÀÎº¥Åä¸®ÀÇ ¿Ã¹Ù¸¥ index°¡ ¾Æ´Ô
+//		//ê° ì¸ë²¤í† ë¦¬ì˜ ì˜¬ë°”ë¥¸ indexê°€ ì•„ë‹˜
 //		return false;
 //	}
 //
 //	FItemSlotData i1 = From->Items[FromSlotIndex];
 //	FItemSlotData i2 = To->Items[ToSlotIndex];
 //
-//	//TODO : ¾ÆÀÌÅÛ Á¤º¸¸¦ È®ÀÎÇÏ´Â ·ÎÁ÷ÀÌ ÇÊ¿äÇÔ.
+//	//TODO : ì•„ì´í…œ ì •ë³´ë¥¼ í™•ì¸í•˜ëŠ” ë¡œì§ì´ í•„ìš”í•¨.
 //	FItemSheetData itemSheetData;
 //
-//	if (i1.ItemName != i2.ItemName) //¼­·Î ´Ù¸¥ ¾ÆÀÌÅÛ -> ¼­·ÎÀÇ À§Ä¡¸¦ ¹Ù²Ş
+//	if (i1.ItemName != i2.ItemName) //ì„œë¡œ ë‹¤ë¥¸ ì•„ì´í…œ -> ì„œë¡œì˜ ìœ„ì¹˜ë¥¼ ë°”ê¿ˆ
 //	{
 //		From->Items[FromSlotIndex] = i2;
 //		To->Items[ToSlotIndex] = i1;
@@ -341,10 +360,10 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //		To->OnInventoryItemsChanged.Broadcast();
 //		return true;
 //	}
-//	else // °°Àº ¾ÆÀÌÅÛÀÌ¸é Á¶ÀÎÇÑ´Ù.
+//	else // ê°™ì€ ì•„ì´í…œì´ë©´ ì¡°ì¸í•œë‹¤.
 //	{
 //
-//		if (itemSheetData.MaxQuantity >= i1.Quantity + i2.Quantity) //ToSlot °¹¼ö¶û FromSlot °¹¼öÀÇ ÇÕÀÌ ÇÑ ½½·Ô¿¡ µé¾î°¥ Á¤µµ·Î ÃæºĞÇÏ¸é.. "ToSlot"¿¡ ¾ÆÀÌÅÛÀÌ ÀüºÎ µé¾î°¨. "FromSlot"Àº ºó ½½·ÔÀÌ µÊ.
+//		if (itemSheetData.MaxQuantity >= i1.Quantity + i2.Quantity) //ToSlot ê°¯ìˆ˜ë‘ FromSlot ê°¯ìˆ˜ì˜ í•©ì´ í•œ ìŠ¬ë¡¯ì— ë“¤ì–´ê°ˆ ì •ë„ë¡œ ì¶©ë¶„í•˜ë©´.. "ToSlot"ì— ì•„ì´í…œì´ ì „ë¶€ ë“¤ì–´ê°. "FromSlot"ì€ ë¹ˆ ìŠ¬ë¡¯ì´ ë¨.
 //		{
 //			i1.Quantity += i2.Quantity;
 //			i2 = FItemSlotData();
@@ -357,7 +376,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //			To->OnInventoryItemsChanged.Broadcast();
 //			return true;
 //		}
-//		else //µÑÀÌ ÇÕÃÄ¼­ ÃÖ´ë ¼ö·®À» ÃÊ°úÇÏ¸é.. "ToSlot"¿¡´Â Max Quantity ¸¸Å­ µé¾î°¨ , "FromSlot"¿¡´Â ³ª¸ÓÁö°¡ µé¾î°¨.
+//		else //ë‘˜ì´ í•©ì³ì„œ ìµœëŒ€ ìˆ˜ëŸ‰ì„ ì´ˆê³¼í•˜ë©´.. "ToSlot"ì—ëŠ” Max Quantity ë§Œí¼ ë“¤ì–´ê° , "FromSlot"ì—ëŠ” ë‚˜ë¨¸ì§€ê°€ ë“¤ì–´ê°.
 //		{
 //			int32 temp = i1.Quantity + i2.Quantity;
 //			i1.Quantity = itemSheetData.MaxQuantity;
@@ -376,13 +395,13 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 //
 //	}
 //
-//	//¾Ë¼ö¾ø´Â ÀÌÀ¯·Î Swap ½ÇÆĞÇÔ. ¾Æ¸¶ ¿©±â¿¡ ¿ÀÁö ¾ÊÀ» °ÍÀ¸·Î º¸ÀÓ.
+//	//ì•Œìˆ˜ì—†ëŠ” ì´ìœ ë¡œ Swap ì‹¤íŒ¨í•¨. ì•„ë§ˆ ì—¬ê¸°ì— ì˜¤ì§€ ì•Šì„ ê²ƒìœ¼ë¡œ ë³´ì„.
 //	return false;
 //}
 //
 //void UInventoryComponent::InitializeInventory()
 //{
-//	//ÀÎº¥Åä¸® °ø°£À» ÀüºÎ ºñ¿ì°í, ºó ¾ÆÀÌÅÛ ½½·Ô Á¤º¸¸¦ ³Ö´Â´Ù.
+//	//ì¸ë²¤í† ë¦¬ ê³µê°„ì„ ì „ë¶€ ë¹„ìš°ê³ , ë¹ˆ ì•„ì´í…œ ìŠ¬ë¡¯ ì •ë³´ë¥¼ ë„£ëŠ”ë‹¤.
 //
 //	Items.Empty();
 //

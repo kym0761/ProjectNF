@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Inventory/InventoryObject.h"
 #include "Defines/Interfaces/ManagerInterfaces.h"
 #include "InventoryManager.generated.h"
 
-class UInventoryObject;
+//class UInventoryObject;
+
+struct FInventorySaveData;
 
 /**
  * 
@@ -27,16 +30,21 @@ protected:
 
 	//key : 인벤토리 소유자 , value : 인벤토리
 	UPROPERTY()
-	TMap<FString, TObjectPtr<UInventoryObject>> InventoryMap;
+	TMap<FString, UInventoryObject*> InventoryMap;
 
 public:
 
-	TObjectPtr<UInventoryObject> GetInventory(FString InventoryOwner);
+	UInventoryObject* TryGetInventory(FString InventoryOwner);
 
 #pragma endregion
 
 public:
 
 	virtual void InitManager() override;
+
+
+	void LoadInventories(const TArray<FInventorySaveData>& InventorySaveData);
+
+	const TMap<FString, UInventoryObject*>& GetAllInventories() const;
 
 };

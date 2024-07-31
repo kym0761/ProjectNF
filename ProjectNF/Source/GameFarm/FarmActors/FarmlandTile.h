@@ -62,7 +62,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable) //임시로 성장 기능을 캐릭터 블루프린트에서 진행함. 추후 기능 완성시 삭제해도 됨.
 	void SetInfo(FCropData InCropData);
 
 	virtual void Interact_Implementation(APawn* InteractCauser);

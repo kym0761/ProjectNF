@@ -6,11 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "ItemStorage.generated.h"
 
-class UInventoryComponent;
+//class UInventoryComponent;
 class StaticMeshComponent;
 class USphereComponent;
 
-/*¾ÆÀÌÅÛ Ã¢°í ¿ªÇÒÀ» ÇÏ´Â Actor*/
+/*ì•„ì´í…œ ì°½ê³  ì—­í• ì„ í•˜ëŠ” Actor*/
 
 UCLASS()
 class GAMEITEM_API AItemStorage : public AActor
@@ -23,7 +23,7 @@ public:
 
 protected:
 	
-	//Storage¿Í OverlapÇÒ Collision
+	//Storageì™€ Overlapí•  Collision
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -31,9 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> StorageMesh;
 
-	//StorageÀÇ Inventory
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Storage", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInventoryComponent> InventoryComponent;
+	////Storageì˜ Inventory
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Storage", meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<UInventoryComponent> InventoryComponent;
 
 protected:
 	// Called when the game starts or when spawned

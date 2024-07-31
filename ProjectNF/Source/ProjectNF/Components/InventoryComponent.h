@@ -10,13 +10,16 @@
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryItemsChanged);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class GAMEITEM_API UInventoryComponent : public UActorComponent
+class PROJECTNF_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
 	UInventoryComponent();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	FString InventoryID;
 
 protected:
 	// Called when the game starts
@@ -27,32 +30,36 @@ protected:
 public:
 
 	///*-------------*/
-	////ÀÎº¥Åä¸® ¾ÆÀÌÅÛ Á¤º¸°¡ º¯°æµÇ¸é ÇØ¾ßÇÒ ÀÏ
-	////1 ÀÎº¥Åä¸® UI Á¤º¸¸¦ º¯°æÇØ¾ßÇÔ.
-	////2 ¸Ê ÀÌµ¿? °ÔÀÓ ÀúÀå µîÀ» °í·ÁÇØ Á¤º¸ ÀúÀåÀ» ºÒ·¯¿ÍÁÖ¾î¾ßÇÔ?
-	////3 ±âÅ¸ µîµî
-	////ÁÖÀÇ : ÀÎº¥Åä¸® UI »èÁ¦µÈ µÚ¿¡ ¹®Á¦°¡ »ı±â¸é ÀÌ ºÎºĞ¿¡ bindµÈ ºÎºĞÀ» ¾ø¾Ö¾ßÇÔ.
+	////ì¸ë²¤í† ë¦¬ ì•„ì´í…œ ì •ë³´ê°€ ë³€ê²½ë˜ë©´ í•´ì•¼í•  ì¼
+	////1 ì¸ë²¤í† ë¦¬ UI ì •ë³´ë¥¼ ë³€ê²½í•´ì•¼í•¨.
+	////2 ë§µ ì´ë™? ê²Œì„ ì €ì¥ ë“±ì„ ê³ ë ¤í•´ ì •ë³´ ì €ì¥ì„ ë¶ˆëŸ¬ì™€ì£¼ì–´ì•¼í•¨?
+	////3 ê¸°íƒ€ ë“±ë“±
+	////ì£¼ì˜ : ì¸ë²¤í† ë¦¬ UI ì‚­ì œëœ ë’¤ì— ë¬¸ì œê°€ ìƒê¸°ë©´ ì´ ë¶€ë¶„ì— bindëœ ë¶€ë¶„ì„ ì—†ì• ì•¼í•¨.
 	///*-------------*/
 	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	//FOnInventoryItemsChanged OnInventoryItemsChanged;
 
 protected:
 
-	////ÀÎº¥Åä¸®¿¡ µé¾î°£ ¾ÆÀÌÅÛ
+	////ì¸ë²¤í† ë¦¬ì— ë“¤ì–´ê°„ ì•„ì´í…œ
 	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	//TArray<FItemSlotData> Items;
 
-	////ÀÎº¥Åä¸® »çÀÌÁî
+	////ì¸ë²¤í† ë¦¬ ì‚¬ì´ì¦ˆ
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	//int32 InventorySize;
 
-	//¸¶¿ì½º·Î ¾ÆÀÌÅÛÀ» ³ª´©°Å³ª ÇÒ ¶§ »ç¿ëÇÒ ¼ö ÀÖ´Â ÀÓ½Ã °ø°£
+	//ë§ˆìš°ìŠ¤ë¡œ ì•„ì´í…œì„ ë‚˜ëˆ„ê±°ë‚˜ í•  ë•Œ ì‚¬ìš©í•  ìˆ˜ ìˆëŠ” ì„ì‹œ ê³µê°„
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	FItemSlotData DraggedItem;
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
+
+	void InitInventoryComponent();
 
 //public:
 //

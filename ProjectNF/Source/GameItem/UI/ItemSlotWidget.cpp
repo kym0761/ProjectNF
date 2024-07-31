@@ -8,7 +8,7 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/DragDropOperation.h"
 
-#include "Inventory/InventoryComponent.h"
+//#include "InventoryComponent.h"
 
 void UItemSlotWidget::NativeConstruct()
 {
@@ -46,92 +46,92 @@ FReply UItemSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const
 {
 	Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
 
-	//drag¿´´ÂÁö, ¾Æ´Ï¸é Å¬¸¯ÀÌ¾ú´ÂÁö¿¡ µû¶ó Çàµ¿ÀÌ ´Ş¶ó¾ßÇÒ ¼ö ÀÖÀ½
-	//drag¸é 
+	//dragì˜€ëŠ”ì§€, ì•„ë‹ˆë©´ í´ë¦­ì´ì—ˆëŠ”ì§€ì— ë”°ë¼ í–‰ë™ì´ ë‹¬ë¼ì•¼í•  ìˆ˜ ìˆìŒ
+	//dragë©´ 
 
 	return FReply::Handled();
 }
 
 void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
-	if (IsValid(ItemSlotBP))
-	{
-		//drag drop¿¡ ¾µ bp°¡ ¾øÀ½
-		return;
-	}
-
-	if (!IsValid(InventoryComponentRef))
-	{
-		//drag¿¡ ÇÊ¿äÇÑ InventoryRef°¡ ¾øÀ½
-		return;
-	}
-
-	//if (!InventoryComponentRef->GetAllItems().IsValidIndex(InventorySlotNumber))
+	//if (IsValid(ItemSlotBP))
 	//{
-	//	//Slot Number°¡ ¿Ã¹Ù¸£Áö¾ÊÀ½
+	//	//drag dropì— ì“¸ bpê°€ ì—†ìŒ
 	//	return;
 	//}
 
-	//TODO : Item Database¿¡¼­ item Á¤º¸¸¦ °¡Á®¿Í¾ßÇÔ.
-	//ÀÌÀ¯ : Item Image ¼¼ÆÃ µî¿¡ ÇÊ¿äÇÔ
+	//if (!IsValid(InventoryComponentRef))
+	//{
+	//	//dragì— í•„ìš”í•œ InventoryRefê°€ ì—†ìŒ
+	//	return;
+	//}
 
-	//drag display
-	TObjectPtr<UItemSlotWidget> dragDisplay = CreateWidget<UItemSlotWidget>(GetOwningPlayer(), ItemSlotBP);
+	////if (!InventoryComponentRef->GetAllItems().IsValidIndex(InventorySlotNumber))
+	////{
+	////	//Slot Numberê°€ ì˜¬ë°”ë¥´ì§€ì•ŠìŒ
+	////	return;
+	////}
 
-	if (!IsValid(dragDisplay))
-	{
-		//drag display »ı¼º ½ÇÆĞ
-		return;
-	}
+	////TODO : Item Databaseì—ì„œ item ì •ë³´ë¥¼ ê°€ì ¸ì™€ì•¼í•¨.
+	////ì´ìœ  : Item Image ì„¸íŒ… ë“±ì— í•„ìš”í•¨
 
-	//TODO : functionÀ¸·Î ÁÙÀÏ ÇÊ¿ä°¡ ÀÖÀ½
-	dragDisplay->InventoryComponentRef = InventoryComponentRef;
-	dragDisplay->InventorySlotNumber = InventorySlotNumber;
-	//dragDisplay->UpdateItemSlotWidget();
+	////drag display
+	//TObjectPtr<UItemSlotWidget> dragDisplay = CreateWidget<UItemSlotWidget>(GetOwningPlayer(), ItemSlotBP);
 
-	//drag drop operation
-	//?? : new object¿¡ outer¸¦ ¼³Á¤ÇÏÁö ¾Ê¾ÒÀ¸¹Ç·Î 
-	// ±ä ½Ã°£µ¿¾È µå·¡±×¸¦ ÁøÇàÇÏ°í ÀÖÀ¸¸é Garbage CollectionµÇ´Â À§ÇèÀº ¾øÀ»Áö?
-	//È¤½Ã ³ªÁß¿¡ ¹®Á¦ »ı±â¸é ¿©±â °íÄ¡´Â °Ô ÁÁÀ»Áöµµ ¸ğ¸§
-	TObjectPtr<UDragDropOperation> dragdropOper = NewObject<UDragDropOperation>(); // outer?
-	dragdropOper->Payload = this;
-	dragdropOper->DefaultDragVisual = dragDisplay;
-	dragdropOper->Pivot = EDragPivot::CenterCenter;
+	//if (!IsValid(dragDisplay))
+	//{
+	//	//drag display ìƒì„± ì‹¤íŒ¨
+	//	return;
+	//}
 
-	OutOperation = dragdropOper;
+	////TODO : functionìœ¼ë¡œ ì¤„ì¼ í•„ìš”ê°€ ìˆìŒ
+	//dragDisplay->InventoryComponentRef = InventoryComponentRef;
+	//dragDisplay->InventorySlotNumber = InventorySlotNumber;
+	////dragDisplay->UpdateItemSlotWidget();
+
+	////drag drop operation
+	////?? : new objectì— outerë¥¼ ì„¤ì •í•˜ì§€ ì•Šì•˜ìœ¼ë¯€ë¡œ 
+	//// ê¸´ ì‹œê°„ë™ì•ˆ ë“œë˜ê·¸ë¥¼ ì§„í–‰í•˜ê³  ìˆìœ¼ë©´ Garbage Collectionë˜ëŠ” ìœ„í—˜ì€ ì—†ì„ì§€?
+	////í˜¹ì‹œ ë‚˜ì¤‘ì— ë¬¸ì œ ìƒê¸°ë©´ ì—¬ê¸° ê³ ì¹˜ëŠ” ê²Œ ì¢‹ì„ì§€ë„ ëª¨ë¦„
+	//TObjectPtr<UDragDropOperation> dragdropOper = NewObject<UDragDropOperation>(); // outer?
+	//dragdropOper->Payload = this;
+	//dragdropOper->DefaultDragVisual = dragDisplay;
+	//dragdropOper->Pivot = EDragPivot::CenterCenter;
+
+	//OutOperation = dragdropOper;
 }
 
 bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-	if (!IsValid(InOperation))
-	{
-		//Àß¸øµÈ InOperation
-		return false;
-	}
+	//if (!IsValid(InOperation))
+	//{
+	//	//ì˜ëª»ëœ InOperation
+	//	return false;
+	//}
 
-	TObjectPtr<UItemSlotWidget> droppedItemSlot = Cast<UItemSlotWidget>(InOperation->Payload);
+	//TObjectPtr<UItemSlotWidget> droppedItemSlot = Cast<UItemSlotWidget>(InOperation->Payload);
 
-	if (!IsValid(droppedItemSlot))
-	{
-		//dropped item slot nullptr
-		return false;
-	}
+	//if (!IsValid(droppedItemSlot))
+	//{
+	//	//dropped item slot nullptr
+	//	return false;
+	//}
 
-	int32 dropped_SlotNumber = droppedItemSlot->InventorySlotNumber;
-	TObjectPtr<UInventoryComponent> dropped_InventoryComponent = droppedItemSlot->InventoryComponentRef;
+	//int32 dropped_SlotNumber = droppedItemSlot->InventorySlotNumber;
+	//TObjectPtr<UInventoryComponent> dropped_InventoryComponent = droppedItemSlot->InventoryComponentRef;
 
-	if (IsValid(dropped_InventoryComponent) && IsValid(InventoryComponentRef))
-	{
-		//bool bSucceed = UInventoryComponent::SwapItemBetweenInventory(
-		//	dropped_InventoryComponent, dropped_SlotNumber,
-		//	InventoryComponentRef, InventorySlotNumber);
+	////if (IsValid(dropped_InventoryComponent) && IsValid(InventoryComponentRef))
+	////{
+	////	//bool bSucceed = UInventoryComponent::SwapItemBetweenInventory(
+	////	//	dropped_InventoryComponent, dropped_SlotNumber,
+	////	//	InventoryComponentRef, InventorySlotNumber);
 
-		//if (bSucceed)
-		//{
-		//	//TODO : ÀÎº¥Åä¸® ¾÷µ¥ÀÌÆ®?
-		//	return true;
-		//}
-	}
+	////	//if (bSucceed)
+	////	//{
+	////	//	//TODO : ì¸ë²¤í† ë¦¬ ì—…ë°ì´íŠ¸?
+	////	//	return true;
+	////	//}
+	////}
 
 	return false;
 }

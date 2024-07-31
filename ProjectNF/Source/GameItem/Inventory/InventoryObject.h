@@ -8,12 +8,12 @@
 #include "InventoryObject.generated.h"
 
 /**
- * °´Ã¼º°·Î Á¸ÀçÇÏ´Â ÀÎº¥Åä¸® ¿ÀºêÁ§Æ®
- * À¯´ÖÀÇ ÀÎº¥Åä¸® 0~9¹øÀº ÀåºñÄ­À¸·Î »ç¿ë?
- * À¯´ÖÀÇ ÀÎº¥Åä¸® 10~??¹øÀº º¸°ü¿ë ÀÎº¥Åä¸®·Î »ç¿ë?
- * Ã¢°í´Â ÀÚÃ¼ÀûÀ¸·Î Å« ÀÎº¥Åä¸®¸¦ »ç¿ë?
+ * ê°ì²´ë³„ë¡œ ì¡´ìž¬í•˜ëŠ” ì¸ë²¤í† ë¦¬ ì˜¤ë¸Œì íŠ¸
+ * ìœ ë‹›ì˜ ì¸ë²¤í† ë¦¬ 0~9ë²ˆì€ ìž¥ë¹„ì¹¸ìœ¼ë¡œ ì‚¬ìš©?
+ * ìœ ë‹›ì˜ ì¸ë²¤í† ë¦¬ 10~??ë²ˆì€ ë³´ê´€ìš© ì¸ë²¤í† ë¦¬ë¡œ ì‚¬ìš©?
+ * ì°½ê³ ëŠ” ìžì²´ì ìœ¼ë¡œ í° ì¸ë²¤í† ë¦¬ë¥¼ ì‚¬ìš©?
  * 
- * Enemy´Â ±×³É dropÅ×ÀÌºí µîÀ» »ç¿ëÇÏ¿© ¾ÆÀÌÅÛ µå¶ø¸¸ ÇÔ?
+ * EnemyëŠ” ê·¸ëƒ¥ dropí…Œì´ë¸” ë“±ì„ ì‚¬ìš©í•˜ì—¬ ì•„ì´í…œ ë“œëžë§Œ í•¨?
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryItemsChanged);
@@ -29,28 +29,28 @@ public:
 	UInventoryObject();
 
 protected:
-	//ÀÎº¥Åä¸®¿¡ µé¾î°£ ¾ÆÀÌÅÛ
+	//ì¸ë²¤í† ë¦¬ì— ë“¤ì–´ê°„ ì•„ì´í…œ
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	TArray<FItemSlotData> Items;
 
-	//ÀÎº¥Åä¸® »çÀÌÁî
+	//ì¸ë²¤í† ë¦¬ ì‚¬ì´ì¦ˆ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	int32 InventorySize = 30;
 
 public:
 
 	/*-------------*/
-	//ÀÎº¥Åä¸® ¾ÆÀÌÅÛ Á¤º¸°¡ º¯°æµÇ¸é ÇØ¾ßÇÒ ÀÏ
-	//1 ÀÎº¥Åä¸® UI Á¤º¸¸¦ º¯°æÇØ¾ßÇÔ.
-	//2 ¸Ê ÀÌµ¿? °ÔÀÓ ÀúÀå µîÀ» °í·ÁÇØ Á¤º¸ ÀúÀåÀ» ºÒ·¯¿ÍÁÖ¾î¾ßÇÔ?
-	//3 ±âÅ¸ µîµî
-	//ÁÖÀÇ : ÀÎº¥Åä¸® UI »èÁ¦µÈ µÚ¿¡ ¹®Á¦°¡ »ý±â¸é ÀÌ ºÎºÐ¿¡ bindµÈ ºÎºÐÀ» ¾ø¾Ö¾ßÇÔ.
+	//ì¸ë²¤í† ë¦¬ ì•„ì´í…œ ì •ë³´ê°€ ë³€ê²½ë˜ë©´ í•´ì•¼í•  ì¼
+	//1 ì¸ë²¤í† ë¦¬ UI ì •ë³´ë¥¼ ë³€ê²½í•´ì•¼í•¨.
+	//2 ë§µ ì´ë™? ê²Œìž„ ì €ìž¥ ë“±ì„ ê³ ë ¤í•´ ì •ë³´ ì €ìž¥ì„ ë¶ˆëŸ¬ì™€ì£¼ì–´ì•¼í•¨?
+	//3 ê¸°íƒ€ ë“±ë“±
+	//ì£¼ì˜ : ì¸ë²¤í† ë¦¬ UI ì‚­ì œëœ ë’¤ì— ë¬¸ì œê°€ ìƒê¸°ë©´ ì´ ë¶€ë¶„ì— bindëœ ë¶€ë¶„ì„ ì—†ì• ì•¼í•¨.
 	/*-------------*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FOnInventoryItemsChanged OnInventoryItemsChanged;
 
-	//TODO : ¾ÆÁ÷ InventoryObject »ý¼ºÇÏ°í ÀÌ¸¦ SetÇÏ´Â ±â´ÉÀ» ¾È¸¸µë. ÀÎº¥Åä¸®´Â ¾ÆÁ÷ µ¿ÀÛÇÏÁö ¾ÊÀ» °ÍÀÓ.
-	//Item Sheet Data¸¦ ¾ò¾î¿À´Â °ÍÀ» ¿äÃ».
+	//TODO : ì•„ì§ InventoryObject ìƒì„±í•˜ê³  ì´ë¥¼ Setí•˜ëŠ” ê¸°ëŠ¥ì„ ì•ˆë§Œë“¬. ì¸ë²¤í† ë¦¬ëŠ” ì•„ì§ ë™ìž‘í•˜ì§€ ì•Šì„ ê²ƒìž„.
+	//Item Sheet Dataë¥¼ ì–»ì–´ì˜¤ëŠ” ê²ƒì„ ìš”ì²­.
 	UPROPERTY()
 	FOnRequestItemSheetData OnRequestItemSheetData;
 
@@ -58,30 +58,33 @@ public:
 
 	void InitInventory();
 
-	//ÀÎº¥Åä¸®¿¡ ºó °ø°£ÀÌ ÀÖ´ÂÁö?
+	void LoadInventory(const TArray<FItemSlotData>& InSlots);
+
+
+	//ì¸ë²¤í† ë¦¬ì— ë¹ˆ ê³µê°„ì´ ìžˆëŠ”ì§€?
 	bool HasInventoryEmptySpace() const;
-	//ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛÀÌ µé¾î°¥ ÃæºÐÇÑ °ø°£ÀÌ ÀÖ´ÂÁö?
+	//ì¸ë²¤í† ë¦¬ì— ì•„ì´í…œì´ ë“¤ì–´ê°ˆ ì¶©ë¶„í•œ ê³µê°„ì´ ìžˆëŠ”ì§€?
 	bool HasEnoughSpaceForItem(const FItemSlotData& InData) const;
-	//Æ¯Á¤ ¾ÆÀÌÅÛÀ» °¡Áö°í ÀÖ´ÂÁö?
+	//íŠ¹ì • ì•„ì´í…œì„ ê°€ì§€ê³  ìžˆëŠ”ì§€?
 	bool HasItemInInventory(const FName& ItemName) const;
-	//ÀÎº¥Åä¸®¿¡ ÀÖ´Â Æ¯Á¤ ¾ÆÀÌÅÛÀÇ °¹¼ö°¡ ÃæºÐÇÑÁö?
+	//ì¸ë²¤í† ë¦¬ì— ìžˆëŠ” íŠ¹ì • ì•„ì´í…œì˜ ê°¯ìˆ˜ê°€ ì¶©ë¶„í•œì§€?
 	bool HasEnoughQuantityOfItem(const FName& ItemName, const int32 Quantity) const;
 	
-	//Æ¯Á¤ À§Ä¡ÀÇ ¾ÆÀÌÅÛ Á¤º¸
+	//íŠ¹ì • ìœ„ì¹˜ì˜ ì•„ì´í…œ ì •ë³´
 	const FItemSlotData* GetInventoryItem(const int32 Index) const;
-	//Index À§Ä¡¿¡ ¾ÆÀÌÅÛ Á¤º¸ Set
+	//Index ìœ„ì¹˜ì— ì•„ì´í…œ ì •ë³´ Set
 	bool SetInventoryItem(const int32 Index, const FItemSlotData& InData);
-	//ÀÎº¥Åä¸®¿¡ ¾ÆÀÌÅÛÀ» ³Ö±â
+	//ì¸ë²¤í† ë¦¬ì— ì•„ì´í…œì„ ë„£ê¸°
 	int32 AddItemToInventory(const FItemSlotData& InData);
 
-	//Æ¯Á¤ À§Ä¡ÀÇ ¾ÆÀÌÅÛÀ» n°³ ¾²´Â ÇÔ¼ö
+	//íŠ¹ì • ìœ„ì¹˜ì˜ ì•„ì´í…œì„ nê°œ ì“°ëŠ” í•¨ìˆ˜
 	bool UseItemInInventory(const int32 ItemIndex, const int32 UseQuantity = 1);
-	//ÀÎº¥Åä¸® ¾îµò°¡¿¡ Æ¯Á¤ ¾ÆÀÌÅÛÀ» n°³ ¾²´Â ÇÔ¼ö
+	//ì¸ë²¤í† ë¦¬ ì–´ë”˜ê°€ì— íŠ¹ì • ì•„ì´í…œì„ nê°œ ì“°ëŠ” í•¨ìˆ˜
 	bool UseItemInInventory(const FName& ItemName, const int32 UseQuantity = 1);
 
-	//ÀÎº¥Åä¸® °ø°£ Ref
+	//ì¸ë²¤í† ë¦¬ ê³µê°„ Ref
 	TArray<FItemSlotData>& GetAllItems();
-	//ÀÎº¥Åä¸® Size
+	//ì¸ë²¤í† ë¦¬ Size
 	int32 GetInventorySize() const;
 
 

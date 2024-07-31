@@ -4,7 +4,7 @@
 #include "ItemStorage.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "InventoryComponent.h"
+//#include "InventoryComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
@@ -22,7 +22,7 @@ AItemStorage::AItemStorage()
 	Sphere->SetCollisionProfileName(FName("OverlapAll"));
 	Sphere->SetSphereRadius(128.0f);
 
-	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+	//InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 // Called when the game starts or when spawned

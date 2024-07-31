@@ -29,6 +29,8 @@
 
 #include "BaseAnimInstance.h"
 
+#include "Components/InventoryComponent.h"
+
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -63,6 +65,8 @@ ABaseCharacter::ABaseCharacter()
 	FarmPos = CreateDefaultSubobject<USceneComponent>(TEXT("FarmPos"));
 	FarmPos->SetupAttachment(GetRootComponent());
 	FarmPos->SetRelativeLocation(FVector(100.0f,0.0f,50.0f));
+
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
 }
 
@@ -138,7 +142,10 @@ void ABaseCharacter::BeginPlay()
 		//!! 애니메이션 블루 프린트에서 애니메이션 재생 기준으로 사용 중.
 	}
 
-
+	if (IsValid(InventoryComponent))
+	{
+		InventoryComponent->InitInventoryComponent();
+	}
 }
 
 // Called every frame

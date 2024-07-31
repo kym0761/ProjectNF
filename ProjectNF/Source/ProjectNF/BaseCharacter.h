@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class UCharacterState;
+class UInventoryComponent;
 
 /*
 *기본 캐릭터
@@ -40,6 +41,10 @@ protected:
 	//Farm 작업할 때 LineTrace 위치 지점.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> FarmPos;
+
+	//Inventory에 접근하기 위한 ActorComp
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 #pragma endregion
 

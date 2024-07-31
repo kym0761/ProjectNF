@@ -8,7 +8,7 @@
 
 class UImage;
 class UTextBlock;
-class UInventoryComponent;
+//class UInventoryComponent;
 
 
 /**
@@ -30,10 +30,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	int32 InventorySlotNumber;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInventoryComponent> InventoryComponentRef;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	//TObjectPtr<UInventoryComponent> InventoryComponentRef;
 
-	//Drag Dropø°º≠ æµ WidgetBP
+	//Drag DropÏóêÏÑú Ïì∏ WidgetBP
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", Meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UItemSlotWidget> ItemSlotBP;
 

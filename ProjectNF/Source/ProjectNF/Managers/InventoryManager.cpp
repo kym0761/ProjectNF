@@ -2,35 +2,65 @@
 
 
 #include "InventoryManager.h"
-#include "Inventory/InventoryObject.h"
+#include "DebugHelper.h"
+#include "Defines/Data.h"
 
 UInventoryManager::UInventoryManager()
 {
 }
 
-TObjectPtr<UInventoryObject> UInventoryManager::GetInventory(FString InventoryOwner)
+UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 {
 	if (InventoryOwner.IsEmpty())
 	{
 		//잘못된 인벤토리 접근법
+		//InventoryOwner가 ""임.
+		Debug::Print(DEBUG_TEXT("InventoryOwner String Empty"));
 		return nullptr;
 	}
 
-	//TODO : 인벤토리 Owner 자체가 존재하는지부터..
-	if (!InventoryMap.Contains(InventoryOwner))
+	Debug::Print(DEBUG_VATEXT(TEXT("Inventory Map Size = %d"), InventoryMap.Num()));
+
+	//InventoryOwner에 대한 인벤토리가 없다면 새로 생성해준다.
+	if (InventoryMap.Num() == 0 
+		|| !InventoryMap.Contains(InventoryOwner))
 	{
 		//TODO : 인벤토리 생성시, 지정된 크기 등으로 초기화? 
 		UInventoryObject* inventory = NewObject<UInventoryObject>(this);
 		inventory->InitInventory();
 
-		InventoryMap[InventoryOwner] = inventory;
+		InventoryMap.Add(InventoryOwner, inventory);
+		Debug::Print(DEBUG_VATEXT(TEXT("Inventory Created --> InventoryOwner : %s"), *InventoryOwner));
+		return InventoryMap[InventoryOwner];
+	}
+	else
+	{
+		Debug::Print(DEBUG_VATEXT(TEXT("Inventory Exist! --> InventoryOwner : %s"), *InventoryOwner));
+		return InventoryMap[InventoryOwner];
 	}
 
 
-	return InventoryMap[InventoryOwner];
 }
 
 void UInventoryManager::InitManager()
 {
 	//?
+}
+
+void UInventoryManager::LoadInventories(const TArray<FInventorySaveData>& InventorySaveData)
+{
+	for (auto& data : InventorySaveData)
+	{
+		FString inventoryID = data.InventoryID;
+
+		UInventoryObject* inventoryObj = NewObject<UInventoryObject>(this);		
+		inventoryObj->LoadInventory(data.Items);
+
+		InventoryMap.Add(inventoryID, inventoryObj);
+	}
+}
+
+const TMap<FString, UInventoryObject*>& UInventoryManager::GetAllInventories() const
+{
+	return InventoryMap;
 }
