@@ -26,9 +26,6 @@ public class GameManagers : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
         PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameObjectPool" });
-        PublicIncludePaths.AddRange(new string[] { "GameObjectPool" });
-
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" , "GameTime" });
         PublicIncludePaths.AddRange(new string[] { "GameDefines", "GameTime" });
 

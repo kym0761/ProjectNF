@@ -52,15 +52,6 @@
 			]
 		},
 		{
-			"Name": "GameObjectPool",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
-			]
-		},
-		{
 			"Name": "GameDefines",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",

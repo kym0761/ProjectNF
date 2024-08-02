@@ -16,7 +16,6 @@ public class ProjectNFEditorTarget : TargetRules
         ExtraModuleNames.Add("GameFarm");
         ExtraModuleNames.Add("GameItem");
         ExtraModuleNames.Add("GameTime");
-        ExtraModuleNames.Add("GameObjectPool");
         ExtraModuleNames.Add("GameDefines");
         ExtraModuleNames.Add("CustomDebugging");
         ExtraModuleNames.Add("GameManagers");

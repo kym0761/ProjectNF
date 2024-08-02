@@ -11,7 +11,7 @@
  * Pool 가능한 오브젝트를 보관하는 청크 클래스. TQueue 사용함.
  */
 UCLASS()
-class GAMEOBJECTPOOL_API UPoolChunk : public UObject
+class GAMEMANAGERS_API UPoolChunk : public UObject
 {
 	GENERATED_BODY()
 	
