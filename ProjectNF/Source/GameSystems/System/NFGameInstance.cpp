@@ -13,6 +13,9 @@
 #include "Managers/DataManager.h"
 #include "Managers/GameManager.h"
 #include "Managers/ObjectManager.h"
+
+#include "TestClass.h" //Test
+
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
 TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
@@ -26,8 +29,7 @@ TObjectPtr<UObjectManager> UNFGameInstance::GObjectManager = nullptr;
 UNFGameInstance::UNFGameInstance()
 {
 	PlayerName = TEXT("TempName");
-	PlayerNumber = 1;
-
+	SaveSlotNumber = 123;
 }
 
 UNFGameInstance* UNFGameInstance::GetNFGameInstance()
@@ -43,56 +45,76 @@ UNFGameInstance* UNFGameInstance::GetNFGameInstance()
 
 void UNFGameInstance::Save()
 {
-	TObjectPtr<UNFSaveGame> saveGame = 
+	TestClass::Func();
+
+	UNFSaveGame* saveGame = 
 		Cast<UNFSaveGame>(
 			UGameplayStatics::CreateSaveGameObject(UNFSaveGame::StaticClass()));
 
 	if (!IsValid(saveGame))
 	{
 		//saveGame 만들기 실패
-		Debug::Print(DEBUG_TEXT("SaveGame Making Failed.."));
+		Debug::Print(DEBUG_TEXT("세이브 실패"));
 		return;
 	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("세이브 성공"));
+	}
 
+	//세이브에 플레이어 이름을 넣는다.
 	saveGame->PlayerName = PlayerName;
-	saveGame->SaveSlotUserIndex = PlayerNumber;
 
 	//인벤토리 데이터 세이브
 	SaveInventory(saveGame);
 
+	SaveFarmlandTile(saveGame);
 
-	UGameplayStatics::SaveGameToSlot(saveGame, PlayerName, PlayerNumber);
+	FString slotName = TEXT("Save") + FString::FromInt(SaveSlotNumber);
+
+	//GameInstance에 있는 SlotNumber를 사용한다.
+	UGameplayStatics::SaveGameToSlot(saveGame, slotName, 0);
 
 }
 
-void UNFGameInstance::Load()
+void UNFGameInstance::Load(int32 SlotNumber)
 {
-	FString saveSlotName = TEXT("TempName");
-	int32 userIndex = 1;
+	FString slotName = TEXT("Save") + FString::FromInt(SlotNumber);
 
-	TObjectPtr<UNFSaveGame> saveGame =
+	UNFSaveGame* saveGame =
 		Cast<UNFSaveGame>(
-			UGameplayStatics::LoadGameFromSlot(saveSlotName, userIndex));
+			UGameplayStatics::LoadGameFromSlot(slotName, 0));
+
 
 	if (!IsValid(saveGame))
 	{
 		//load 실패
-		Debug::Print(DEBUG_TEXT("SaveGame Loading Failed.."));
+		Debug::Print(DEBUG_TEXT("로딩 실패"));
 
-		//Load를 실패했어도 GameInstance는 초기화가 되어야함.
+		//로드를 실패했어도 GameInstance는 초기화가 되어야함.
 		InitNFGameInstance();
+
+		//로드를 실패했어도, 일단 GameInstance의 SlotNumber는 기억해야함.
+		SaveSlotNumber = SlotNumber;
 
 		return;
 	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("Load 성공"));
+	}
 
+	//처음 로드할 때, 플레이어 이름과 Save의 SlotNumber를 먼저 넣음
 	PlayerName = saveGame->PlayerName;
-	PlayerNumber = saveGame->SaveSlotUserIndex;
+	SaveSlotNumber = SlotNumber;
 
 	//GameInstance를 init한 후 Loading.
 	InitNFGameInstance();
 
 	//인벤토리 Load
 	LoadInventory(saveGame);
+
+	LoadFarmlandTile(saveGame);
 }
 
 void UNFGameInstance::SaveInventory(UNFSaveGame* SaveGame)
@@ -125,9 +147,52 @@ void UNFGameInstance::LoadInventory(UNFSaveGame* SaveGame)
 
 }
 
+void UNFGameInstance::SaveFarmlandTile(UNFSaveGame* SaveGame)
+{
+	//GridManager에 저장된 FarmlandTile의 데이터를 SaveGame에 저장함
+
+	auto& farmlandTileMap = GridManager->GetCropMap();
+
+	TArray<FCropSaveData> saveArray;
+
+	for (auto& i : farmlandTileMap)
+	{
+		FGrid& grid = i.Key;
+		FCropData& cropData = i.Value;
+
+		FCropSaveData cropSaveData;
+
+		cropSaveData.CropData = cropData;
+		cropSaveData.GridPosition = grid;
+
+		saveArray.Add(cropSaveData);
+	}
+
+	SaveGame->CropSave = saveArray;
+}
+
+void UNFGameInstance::LoadFarmlandTile(UNFSaveGame* SaveGame)
+{
+	//SaveGame에 저장된 데이터를 GridManager로 옮김.
+
+	auto& farmlandTiles = SaveGame->CropSave;
+
+	TMap<FGrid, FCropData> farmlandTileMap;
+
+	for (auto& i : farmlandTiles)
+	{
+		farmlandTileMap.Add(i.GridPosition, i.CropData);
+	}
+
+	GridManager->SetCropMap(farmlandTileMap);
+}
+
 void UNFGameInstance::InitManagers()
 {
 	Debug::Print(DEBUG_TEXT("InitManagers Called."));
+
+	// Manager를 추가할 때마다 이 부분을 추가해야함
+
 
 	if (!IsValid(GridManager_BP) ||
 		!IsValid(ElectricLinkManager_BP) ||
@@ -138,9 +203,10 @@ void UNFGameInstance::InitManagers()
 		!IsValid(ObjectManager_BP)
 		)
 	{
-		Debug::Print(DEBUG_TEXT("Manager blueprint Are Not Set."));
+		Debug::Print(DEBUG_TEXT("Manager 블루프린트 중에 Set되지 않은 것이 존재함. BP_GameInstance를 확인할 것."));
 		return;
 	}
+
 
 	//매니저 최초 생성 및 초기화
 	{
@@ -198,8 +264,13 @@ void UNFGameInstance::InitManagers()
 	GameManager->InitManager();
 	ObjectManager->InitManager();
 
-	Debug::Print(DEBUG_TEXT("Instance's Managers Init Completed."));
+	Debug::Print(DEBUG_TEXT("인스턴스의 InitManagers()이 완료됨."));
 
+	//ObjManager에 ObjPoolManager의 Spawn & Despawn을 연동함.
+	ObjectManager->RequestObjectPoolSpawn.Clear();
+	ObjectManager->RequestObjectPoolSpawn.BindDynamic(ObjectPoolManager, &UObjectPoolManager::SpawnInPool);
+	ObjectManager->RequestObjectPoolDespawn.Clear();
+	ObjectManager->RequestObjectPoolDespawn.BindDynamic(ObjectPoolManager, &UObjectPoolManager::DespawnToPool);
 }
 
 void UNFGameInstance::InitNFGameInstance()

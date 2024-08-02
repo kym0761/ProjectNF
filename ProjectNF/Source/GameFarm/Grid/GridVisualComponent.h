@@ -21,4 +21,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DrawSingleGrid(const FVector& Location);
 
+	UFUNCTION(BlueprintCallable)
+	void DrawGridVisuals(const TArray<FVector>& ToDraws);
+
+	UPROPERTY()
+	TSet<FVector> LocationCache;
+
 };

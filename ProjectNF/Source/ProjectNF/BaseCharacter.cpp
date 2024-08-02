@@ -260,10 +260,15 @@ void ABaseCharacter::UseFarmTool()
 	}
 
 	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-	farmtile->OnRequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
+	farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
+	//작물 아이템을 Spawn 요청하는 기능 Bind
+	farmtile->RequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
 
+	farmtile->RequestUpdateCropData.BindDynamic(gridManager, &UGridManager::UpdateCropInfo);
+	farmtile->RequestRemoveCropData.BindDynamic(gridManager, &UGridManager::RemoveCropInfo);
 
-	farmtile->OnRequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
+	//캐릭터에 의해 farmtile 생성시 gridmanager에 최초 반영
+	farmtile->RequestUpdateCropData.ExecuteIfBound(farmtile);
 }
 
 void ABaseCharacter::DoWhat()
@@ -284,8 +289,7 @@ void ABaseCharacter::DoPlanting()
 	FVector start = FarmPos->GetComponentLocation();
 	FVector end = start + FVector::DownVector * 2000.0f;
 
-	//일단 WorldStatic이면 farmTile을 설치한다.
-	//추후에 땅의 Physical Material? 을 통해 흙부분에서만 Farmtile을 설치하게 만들 수도 있음.
+	//trace하여 farmtile을 찾는다.
 	bool traceResult
 		= GetWorld()->LineTraceSingleByChannel(
 			hit,
@@ -312,19 +316,35 @@ void ABaseCharacter::DoPlanting()
 
 	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());
 
-	if (IsValid(farmtile))
+	if (!IsValid(farmtile))
 	{
-		//farmtile의 정보를 set해준다.
+		Debug::Print(DEBUG_TEXT("farmtile is not exist."));
+		return;
+	}
 
-		auto cropData = FCropData();
+	const FCropData& cropDataInTile = farmtile->GetCropData();
+	if (!cropDataInTile.CropName.IsNone())
+	{
+		Debug::Print(DEBUG_TEXT("Something is Already Planted."));
+		return;
+	}
+
+
+
+	//farmtile의 정보를 set해준다.
+	//임시로 Crop01 데이터를 넣어준다.
+	auto cropData = FCropData();
+
+	{
 		cropData.bWatered = false;
 		cropData.CropName = "Crop01";
 		cropData.CurrentGrowth = 0;
-
-		farmtile->SetInfo(cropData);
-
-		Debug::Print(DEBUG_TEXT("Crop Planting OK"));
 	}
+	
+	farmtile->SetInfo(cropData);
+
+	Debug::Print(DEBUG_TEXT("Crop Planting OK"));
+
 
 }
 

@@ -16,13 +16,14 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
+	OnMontageEnded.Clear();
 	OnMontageEnded.AddDynamic(this, &UBaseAnimInstance::OnCombatMontageEnded);
 }
 
 void UBaseAnimInstance::OnCombatMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 
-	//¸ùÅ¸ÁÖÀÇ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ½Ã°£ÀÌ ´Ù µÇ¾î ³¡³µ´Ù¸é, ÄŞº¸ ÃÊ±âÈ­ÇÑ´Ù.
+	//ëª½íƒ€ì£¼ì˜ ì• ë‹ˆë©”ì´ì…˜ì´ ì‹œê°„ì´ ë‹¤ ë˜ì–´ ëë‚¬ë‹¤ë©´, ì½¤ë³´ ì´ˆê¸°í™”í•œë‹¤.
 	if (!bInterrupted)
 	{
 		bAttackPlayOK = true;
@@ -42,19 +43,19 @@ void UBaseAnimInstance::OnCombatMontageEnded(UAnimMontage* Montage, bool bInterr
 
 void UBaseAnimInstance::AnimNotify_AttackStart()
 {
-	//¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛÇÒ ¶§ °ø°İÀ» Ãß°¡·Î ´õ ¸øÇÏ°Ô ¸·À½
+	//ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘í•  ë•Œ ê³µê²©ì„ ì¶”ê°€ë¡œ ë” ëª»í•˜ê²Œ ë§‰ìŒ
 	bAttackPlayOK = false;
 }
 
 void UBaseAnimInstance::AnimNotify_AttackComboOk()
 {
-	//ÄŞº¸ °ø°İÀÌ °¡´ÉÇÑ Å¸ÀÌ¹Ö¿¡ °ø°İÀ» ÇÒ ¼ö ÀÖ°Ô Ç®¾îÁÜ
+	//ì½¤ë³´ ê³µê²©ì´ ê°€ëŠ¥í•œ íƒ€ì´ë°ì— ê³µê²©ì„ í•  ìˆ˜ ìˆê²Œ í’€ì–´ì¤Œ
 	bAttackPlayOK = true;
 }
 
 void UBaseAnimInstance::AnimNotify_AttackEnd()
 {
-	//¾Ö´Ï¸ŞÀÌ¼ÇÀÌ °ÅÀÇ ³¡³ª´Â ½ÃÁ¡¿¡´Â ÄŞº¸ °ø°İÀÌ ºÒ°¡´ÉÇÏ°í ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Á¾·áµÇ±æ ±â´Ù·Á¾ßÇÑ´Ù.
+	//ì• ë‹ˆë©”ì´ì…˜ì´ ê±°ì˜ ëë‚˜ëŠ” ì‹œì ì—ëŠ” ì½¤ë³´ ê³µê²©ì´ ë¶ˆê°€ëŠ¥í•˜ê³  ì• ë‹ˆë©”ì´ì…˜ì´ ì¢…ë£Œë˜ê¸¸ ê¸°ë‹¤ë ¤ì•¼í•œë‹¤.
 
 	bAttackPlayOK = false;
 
@@ -62,7 +63,7 @@ void UBaseAnimInstance::AnimNotify_AttackEnd()
 
 void UBaseAnimInstance::PlayAttackMontage()
 {
-	//°ø°İÇã°¡°¡ ³ªÁö ¾ÊÀ¸¸é ºÒ°¡´É
+	//ê³µê²©í—ˆê°€ê°€ ë‚˜ì§€ ì•Šìœ¼ë©´ ë¶ˆê°€ëŠ¥
 	if (!bAttackPlayOK)
 	{
 		return;

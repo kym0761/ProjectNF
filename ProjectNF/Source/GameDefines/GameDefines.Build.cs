@@ -11,5 +11,7 @@ public class GameDefines : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
 
         PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
+
+        PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging"});
     }
 }

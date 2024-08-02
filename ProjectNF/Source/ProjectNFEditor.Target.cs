@@ -19,5 +19,7 @@ public class ProjectNFEditorTarget : TargetRules
         ExtraModuleNames.Add("GameObjectPool");
         ExtraModuleNames.Add("GameDefines");
         ExtraModuleNames.Add("CustomDebugging");
+        ExtraModuleNames.Add("GameManagers");
+        ExtraModuleNames.Add("GameSystems");
     }
 }

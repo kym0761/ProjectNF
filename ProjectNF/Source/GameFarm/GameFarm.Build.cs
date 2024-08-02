@@ -22,25 +22,13 @@ public class GameFarm : ModuleRules
 
         PrivateIncludePaths.AddRange(new string[] { "GameFarm" });
 
+        //Add Modules
 
-        PrivateDependencyModuleNames.AddRange(new string[] {  "GameObjectPool", "GameItem" });
-        PrivateIncludePaths.AddRange(new string[] { "GameObjectPool", "GameItem" });
-
-        PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
-        PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
-
-
-        //PublicIncludePathModuleNames.AddRange(new string[] { "ProjectNF" });
-        //PublicIncludePaths.AddRange(new string[] { "ProjectNF" });
-        //PrivateIncludePathModuleNames.AddRange(new string[] { "ProjectNF" });
-        //PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
-
-
-        //PrivateDependencyModuleNames.AddRange(new string[] { "ProjectNF" });
-        //PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
-
-
-        PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
         PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
+
+        PublicDependencyModuleNames.AddRange(new string[] { "GameDefines","GameObjectPool", "GameItem" });
+        PublicIncludePaths.AddRange(new string[] { "GameDefines","GameObjectPool", "GameItem" });
+
     }
 }

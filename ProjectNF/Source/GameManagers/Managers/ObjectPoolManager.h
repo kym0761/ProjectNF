@@ -16,7 +16,7 @@ class UPoolChunk;
  * 언리얼 액터들은 Level이 바뀌면 전부 사라지기 때문에 Level이 바뀌면 Reset해주어야함.
  */
 UCLASS(BlueprintType, Blueprintable)
-class PROJECTNF_API UObjectPoolManager : public UObject, public IManageable
+class GAMEMANAGERS_API UObjectPoolManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 

@@ -46,8 +46,10 @@ FReply UItemSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const
 {
 	Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
 
-	//drag였는지, 아니면 클릭이었는지에 따라 행동이 달라야할 수 있음
-	//drag면 
+	//drag였는지, 아니면 클릭이었는지에 따라 행동이 달라야함.
+
+	//클릭이었으면 아이템 사용 요청
+	//drag였으면 아이템 슬롯끼리 정보 교체
 
 	return FReply::Handled();
 }

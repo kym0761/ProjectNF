@@ -2,13 +2,13 @@
 
 using UnrealBuildTool;
 
-public class ProjectNF : ModuleRules
+public class GameSystems : ModuleRules
 {
-	public ProjectNF(ReadOnlyTargetRules Target) : base(Target)
+	public GameSystems(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"UMG" , "AssetRegistry" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -20,24 +20,23 @@ public class ProjectNF : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
-        //모듈 자체의 경로 추가
-        PrivateIncludePaths.AddRange(new string[] { "ProjectNF" });
-
-        //Add Custom Modules in Source Folder.
+        PrivateIncludePaths.AddRange(new string[] { "GameSystems" });
 
         PrivateIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
         PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
         PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
 
+        //Add Custom Modules in Source Folder.
+        PublicDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle" });
+        PublicIncludePaths.AddRange(new string[] {  "GameFarm", "GameItem", "GamePuzzle" });
+
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
         PublicIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameFarm", "GameItem", "GamePuzzle", "GameTime" });
-        PublicIncludePaths.AddRange(new string[] {  "GameFarm", "GameItem", "GamePuzzle" ,"GameTime" });
+        PublicDependencyModuleNames.AddRange(new string[] { "GameManagers" });
+        PublicIncludePaths.AddRange(new string[] { "GameManagers" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameSystems", "GameManagers" });
-        PublicIncludePaths.AddRange(new string[] { "GameSystems", "GameManagers" });
-
-
+        PublicIncludePathModuleNames.AddRange(new string[] { "GameTime" });
+        PublicIncludePaths.AddRange(new string[] { "GameTime" });
     }
 }

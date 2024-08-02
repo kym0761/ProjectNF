@@ -12,9 +12,11 @@ class UStaticMeshComponent;
 class UBoxComponent;
 class AItemPickup;
 
-DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FCropSheetData, FOnRequestCropSheetData, const FName&, CropID);
-DECLARE_DYNAMIC_DELEGATE_RetVal_ThreeParams(AActor*, FOnRequestSpawnItemPickup, FString, ToSpawnClassName, const FVector&, Location, const FRotator&, Rotator);
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FCropSheetData, FRequestCropSheetData, const FName&, CropID);
+DECLARE_DYNAMIC_DELEGATE_RetVal_ThreeParams(AActor*, FRequestSpawnItemPickup, FString, ToSpawnClassName, const FVector&, Location, const FRotator&, Rotator);
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FRequestUpdateCropData, AFarmlandTile*, TargetFarmlandTile);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FRequestRemoveCropData, AFarmlandTile*, TargetFarmlandTile);
 /*
 * Grid를 점유하고 작물을 키울 땅 타일
 * 작물의 정보와 성장 정도에 따라 땅 Mesh 위에 작물 Mesh가 나타날 것
@@ -28,32 +30,39 @@ public:
 	// Sets default values for this actor's properties
 	AFarmlandTile();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
+protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UBoxComponent> Box;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStaticMeshComponent> TileMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UStaticMeshComponent> CropMesh;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Crop")
 	FCropData CropData;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category ="Crop", Meta=(AllowPrivateAccess = true))
-	//TSubclassOf<AItemPickup> ItemPickup_BP;
-
 public:
 
 	//CropSheetData를 얻는 것을 요청.
 	UPROPERTY()
-	FOnRequestCropSheetData OnRequestCropSheetData;
+	FRequestCropSheetData RequestCropSheetData;
 
 	//ItemPickup을 Spawn하는 것을 요청.
 	UPROPERTY()
-	FOnRequestSpawnItemPickup OnRequestSpawnItemPickup;
+	FRequestSpawnItemPickup RequestSpawnItemPickup;
 
+	//FarmlandTile을 추가할 때 요청.
+	UPROPERTY()
+	FRequestUpdateCropData RequestUpdateCropData;
+
+	//FarmlandTile을 제거할 때 요청.
+	UPROPERTY()
+	FRequestRemoveCropData RequestRemoveCropData;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -66,4 +75,6 @@ public:
 	void SetInfo(FCropData InCropData);
 
 	virtual void Interact_Implementation(APawn* InteractCauser);
+
+	FCropData GetCropData() const;
 };

@@ -16,7 +16,7 @@ struct FInventorySaveData;
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class PROJECTNF_API UInventoryManager : public UObject, public IManageable
+class GAMEMANAGERS_API UInventoryManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 	

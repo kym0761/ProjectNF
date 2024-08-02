@@ -10,7 +10,7 @@
  * 이 게임모드 Base는 GameInstance를 Init하는 기능을 가지고 있음.
  */
 UCLASS()
-class PROJECTNF_API ANFGameModeBase : public AGameModeBase
+class GAMESYSTEMS_API ANFGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
@@ -24,5 +24,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void StartPlay() override;
+
+	void CreateAllSavedCrop();
 
 };

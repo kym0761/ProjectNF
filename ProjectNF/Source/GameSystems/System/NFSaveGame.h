@@ -11,32 +11,26 @@
  * 
  */
 UCLASS()
-class PROJECTNF_API UNFSaveGame : public USaveGame
+class GAMESYSTEMS_API UNFSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 	
 public:
 	UNFSaveGame();
 
-
-	//slot info
+	//저장할 게임 데이터
 public:
 
-	UPROPERTY(VisibleAnywhere, Category = "Save")
-	FString SaveSlotName;
-
-	UPROPERTY(VisibleAnywhere, Category = "Save")
-	int32 SaveSlotUserIndex;
-
-
-	//game data to save
-public:
-
+	//플레이어 이름
 	UPROPERTY(VisibleAnywhere, Category = "Save")
 	FString PlayerName;
 	
-
+	//인벤토리 정보
 	UPROPERTY()
 	TArray<FInventorySaveData> InventorySave;
+
+	// Crop 데이터
+	UPROPERTY()
+	TArray<FCropSaveData> CropSave;
 
 };

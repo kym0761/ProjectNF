@@ -22,10 +22,10 @@ public class GameObjectPool : ModuleRules
 
         PrivateIncludePaths.AddRange(new string[] { "GameObjectPool" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "GameDefines" });
-        PrivateIncludePaths.AddRange(new string[] { "GameDefines" });
+        PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
+        PublicIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
+        PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
         PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
 
     }

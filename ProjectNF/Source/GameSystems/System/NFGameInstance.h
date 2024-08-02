@@ -24,7 +24,7 @@ class UNFSaveGame;
  * 
  */
 UCLASS()
-class PROJECTNF_API UNFGameInstance : public UGameInstance
+class GAMESYSTEMS_API UNFGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
@@ -37,9 +37,9 @@ protected:
 	UPROPERTY()
 	FString PlayerName;
 	
-	//?
+	//세이브할 때 사용할 SlotNumber
 	UPROPERTY()
-	int32 PlayerNumber;
+	int32 SaveSlotNumber;
 
 public:
 
@@ -53,13 +53,15 @@ public:
 	void Save();
 
 	UFUNCTION(BlueprintCallable)
-	void Load();
+	void Load(int32 SlotNumber);
 
 protected:
 
 	void SaveInventory(UNFSaveGame* SaveGame);
 	void LoadInventory(UNFSaveGame* SaveGame);
 
+	void SaveFarmlandTile(UNFSaveGame* SaveGame);
+	void LoadFarmlandTile(UNFSaveGame* SaveGame);
 
 #pragma endregion
 
@@ -136,7 +138,7 @@ public:
 	static 	TObjectPtr<UInventoryManager> GetInventoryManager();
 	static 	TObjectPtr<UDataManager> GetDataManager();
 	static 	TObjectPtr<UGameManager> GetGameManager();
-	static TObjectPtr<UObjectManager> GetObjectManager();
+	static  TObjectPtr<UObjectManager> GetObjectManager();
 
 	void InitManagers();
 #pragma endregion

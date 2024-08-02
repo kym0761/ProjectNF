@@ -11,7 +11,9 @@ UObjectPoolManager::UObjectPoolManager()
 
 void UObjectPoolManager::InitManager()
 {
-	ObjectPoolMap.Empty();
+	ClearObjectPooling();
+
+	//ObjectPoolMap.Empty();
 }
 
 AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation)
@@ -109,7 +111,7 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 void UObjectPoolManager::ClearObjectPooling()
 {
 	//ObjectPool에 있는 액터들은 비활성화 상태긴해도 World가 사라지기 전에는 계속 존재함
-	//만약 World가 존재하는 상황에서 ObjectPoolMap을 비워도 오브젝트들이 사라지지 않기 때문에 Clear를 따로 만듬.
+	//만약 World를 변경하지 않는 상태에서 ObjectPoolMap을 비워도 오브젝트들이 사라지지 않기 때문에 Clear를 따로 만듬.
 
 	for (auto pi : ObjectPoolMap)
 	{

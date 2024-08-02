@@ -7,8 +7,11 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryItemsChanged);
+class UInventoryObject;
 
+/*
+* 실제 인벤토리는 GameInstance
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTNF_API UInventoryComponent : public UActorComponent
 {
@@ -18,6 +21,9 @@ public:
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
+	//인벤토리 생성 및 접근을 위한 ID
+	//1) 캐릭터는 캐릭터 이름을 ID로 한다
+	//2) 아이템 창고는 설치할 때 ItemNumberID를 ID로 한다..?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FString InventoryID;
 
@@ -41,13 +47,9 @@ public:
 
 protected:
 
-	////인벤토리에 들어간 아이템
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	//TArray<FItemSlotData> Items;
-
-	////인벤토리 사이즈
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	//int32 InventorySize;
+	//실제 Inventory Ref
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	UInventoryObject* InventoryObjectRef;
 
 	//마우스로 아이템을 나누거나 할 때 사용할 수 있는 임시 공간
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
@@ -61,29 +63,7 @@ public:
 
 	void InitInventoryComponent();
 
-//public:
-//
-//	bool CheckInventoryHasSpace() const;
-//	const FItemSlotData* GetInventoryItem(const int32 Index) const;
-//	bool SetInventoryItem(const int32 Index, const FItemSlotData& InData);
-//
-//	int32 AddItemToInventory(const FItemSlotData& InData);
-//	bool UseItemInInventory(const int32 ItemIndex);
-//	bool UseItemsInInventory(const FName& ItemName, const int32 Quantity);
-//	bool CheckItemInInventory(const FName& ItemName) const;
-//	bool CheckItemWithQuantityInInventory(const FName& ItemName, const int32 Quantity) const;
-//	int32 GetItemQuantity(const FName& ItemName) const;
-//
-//	TArray<FItemSlotData> GetAllItems() const;
-//
-//	void SetInventorySize(const int32 Val);
-//	int32 GetInventorySize() const;
-//
-//	void ExpandInventory(const int32 ExpandSize);
-//
-//	static bool SwapItemBetweenInventory(TObjectPtr<UInventoryComponent> From, const int32 FromSlotIndex, TObjectPtr<UInventoryComponent> To, const int32 ToSlotIndex);
-//
-//protected:
-//
-//	void InitializeInventory();
+	UInventoryObject* GetInventoryObjectRef();
+
+
 };

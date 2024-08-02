@@ -6,8 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "InventoryWidget.generated.h"
 
-class UInventoryWidget;
-class UQuickSlotWidget;
+//class UInventoryWidget;
+//class UQuickSlotWidget;
+
+class UItemSlotWidget;
 
 /**
  * 
@@ -22,8 +24,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, Meta = (BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryWidget> WBP_Inventory;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (BindWidget, AllowPrivateAccess = "true"))
-	TObjectPtr<UQuickSlotWidget> WBP_QuickSlot;
+	//UPROPERTY(BlueprintReadWrite, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	//TObjectPtr<UQuickSlotWidget> WBP_QuickSlot;
 
 public:
 

@@ -24,5 +24,6 @@ public class GameTime : ModuleRules
 
         PublicIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
         PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
+        PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
     }
 }

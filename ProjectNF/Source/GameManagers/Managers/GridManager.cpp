@@ -5,6 +5,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DebugHelper.h"
 
+#include "FarmActors/FarmlandTile.h"
+
 UGridManager::UGridManager()
 {
 
@@ -83,4 +85,60 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 void UGridManager::InitManager()
 {
 	//?
+}
+
+void UGridManager::SetCropMap(const TMap<FGrid, FCropData>& SavedMap)
+{
+	CropMap = SavedMap;
+}
+
+TMap<FGrid, FCropData>& UGridManager::GetCropMap()
+{
+	return CropMap;
+}
+
+void UGridManager::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
+{
+	if (!IsValid(TargetFarmlandTile))
+	{
+		Debug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
+		return;
+	}
+
+	FGrid grid = WorldToGrid(TargetFarmlandTile->GetActorLocation());
+	
+	FCropData cropData = TargetFarmlandTile->GetCropData();
+
+	if (CropMap.Contains(grid))
+	{
+		Debug::Print(DEBUG_TEXT("정보 변경"));
+		CropMap[grid] = cropData;
+	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("새로 생성"));
+		CropMap.Add(grid, cropData);
+	}
+}
+
+void UGridManager::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
+{
+	if (!IsValid(TargetFarmlandTile))
+	{
+		Debug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
+		return;
+	}
+
+	FGrid grid = WorldToGrid(TargetFarmlandTile->GetActorLocation());
+	FCropData cropData = TargetFarmlandTile->GetCropData();
+
+	if (CropMap.Contains(grid))
+	{
+		Debug::Print(DEBUG_TEXT("정보 삭제"));
+		CropMap.Remove(grid);
+	}
+	else
+	{
+		Debug::Print(DEBUG_TEXT("없는 것을 삭제하려 함."));
+	}
 }

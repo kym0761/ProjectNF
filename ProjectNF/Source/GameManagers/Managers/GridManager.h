@@ -8,11 +8,13 @@
 #include "Defines/Interfaces/ManagerInterfaces.h"
 #include "GridManager.generated.h"
 
+
+class AFarmlandTile;
 /**
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class PROJECTNF_API UGridManager : public UObject, public IManageable
+class GAMEMANAGERS_API UGridManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 
@@ -25,6 +27,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
 		float CellSize = 200.0f;
 
+	//게임 내 농작물 키울때마다 업데이트가 될 farmlandtile의 정보를 보관하는 TMap
+	UPROPERTY()
+	TMap<FGrid, FCropData> CropMap;
+
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -35,4 +41,12 @@ public:
 	bool IsSomethingExistOnGrid(const FGrid& Grid) const;
 
 	virtual void InitManager() override;
+
+	void SetCropMap(const TMap<FGrid, FCropData>& SavedMap);
+	TMap<FGrid, FCropData>& GetCropMap();
+
+	UFUNCTION()
+	void UpdateCropInfo(AFarmlandTile* TargetFarmlandTile);
+	UFUNCTION()
+	void RemoveCropInfo(AFarmlandTile* TargetFarmlandTile);
 };

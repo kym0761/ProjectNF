@@ -11,7 +11,7 @@
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class PROJECTNF_API UGameManager : public UObject, public IManageable
+class GAMEMANAGERS_API UGameManager : public UObject, public IManageable
 {
 	GENERATED_BODY()
 	

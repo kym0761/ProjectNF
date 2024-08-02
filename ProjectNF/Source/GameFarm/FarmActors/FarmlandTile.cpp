@@ -32,7 +32,7 @@ AFarmlandTile::AFarmlandTile()
 void AFarmlandTile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -44,20 +44,28 @@ void AFarmlandTile::Tick(float DeltaTime)
 
 void AFarmlandTile::SetInfo(FCropData InCropData)
 {
-	FCropSheetData cropsheetData;
-
-	if (!OnRequestCropSheetData.IsBound())
+	if (!RequestCropSheetData.IsBound())
 	{
 		Debug::Print(DEBUG_TEXT("OnRequest is Not Bounded."));
 		return;
 	}
-	cropsheetData = OnRequestCropSheetData.Execute(InCropData.CropName);
+
+	FCropSheetData cropsheetData;
+	cropsheetData = RequestCropSheetData.Execute(InCropData.CropName);
 
 	if (cropsheetData.IsEmpty())
 	{
 		Debug::Print(DEBUG_TEXT("Empty Crop Sheet Data"));
+
+		CropData = InCropData;
+		RequestUpdateCropData.ExecuteIfBound(this);
+		CropMesh->SetStaticMesh(nullptr);
 		return;
 	}
+
+	//정상 아이템이라 판단되면 CropData를 Set함.
+	CropData = InCropData;
+	RequestUpdateCropData.ExecuteIfBound(this);
 
 	int32 growthInterval = cropsheetData.MaxGrowth / 3;
 	int32 growthLevel = FMath::Clamp(CropData.CurrentGrowth / growthInterval, 0, 3);
@@ -77,10 +85,6 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 		CropMesh->SetStaticMesh(cropsheetData.Mesh3);
 		break;
 	}
-
-	//정상 아이템이라 판단되면 CropData를 Set함.
-	CropData = InCropData;
-
 }
 
 void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
@@ -88,15 +92,15 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 	//다 자란 작물을 뽑기?
 	//level이 3이 되면 mesh를 삭제한다.
 
-	//TODO : 다작 작물이면 level을 2로 떨굴 수 있게 growthLevel을 떨궈야함.
+	//TODO : 다작 작물이면 level을 2로 떨굴 수 있게 CurrentGrowth을 떨궈야함.
 
-	if (!OnRequestCropSheetData.IsBound())
+	if (!RequestCropSheetData.IsBound())
 	{
 		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 		return;
 	}
 
-	FCropSheetData cropsheetData = OnRequestCropSheetData.Execute(CropData.CropName);
+	FCropSheetData cropsheetData = RequestCropSheetData.Execute(CropData.CropName);
 
 	if (cropsheetData.IsEmpty())
 	{
@@ -110,17 +114,16 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 	if (growthLevel == 3)
 	{
 		//초기화
-		CropMesh->SetStaticMesh(nullptr);
-		CropData = FCropData();
+		SetInfo(FCropData());
 
 		//Item Drop
-		if (!OnRequestSpawnItemPickup.IsBound())
+		if (!RequestSpawnItemPickup.IsBound())
 		{
 			Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 			return;
 		}
 		
-		OnRequestSpawnItemPickup.Execute(TEXT("ItemPickup"), GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
+		RequestSpawnItemPickup.Execute(TEXT("ItemPickup"), GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
 
 	}
 	else
@@ -128,5 +131,10 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 		Debug::Print(DEBUG_TEXT("Crop Level is not 3."));
 	}
 
+}
+
+FCropData AFarmlandTile::GetCropData() const
+{
+	return CropData;
 }
 
