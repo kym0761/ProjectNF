@@ -8,8 +8,8 @@
 #include "Managers/GridManager.h"
 #include "Managers/ObjectManager.h"
 #include "Managers/DataManager.h"
-
-#include "FarmActors/FarmlandTile.h"
+#include "Managers/ElectricLinkManager.h"
+#include "GameFarm/FarmlandTile.h"
 #include "DebugHelper.h"
 
 
@@ -24,6 +24,9 @@ void ANFGameModeBase::BeginPlay()
 
 
 	CreateAllSavedCrop();
+
+	//level 시작시 electric manager 다시 시동
+	UNFGameInstance::GetElectricLinkManager()->InitManager();
 }
 
 void ANFGameModeBase::StartPlay()

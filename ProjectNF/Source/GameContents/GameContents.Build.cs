@@ -2,13 +2,13 @@
 
 using UnrealBuildTool;
 
-public class GameSystems : ModuleRules
+public class GameContents : ModuleRules
 {
-	public GameSystems(ReadOnlyTargetRules Target) : base(Target)
+	public GameContents(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" ,"UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -20,17 +20,14 @@ public class GameSystems : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
-        PrivateIncludePaths.AddRange(new string[] { "GameSystems" });
+        PrivateIncludePaths.AddRange(new string[] { "GameContents" });
 
+        //Add Modules
         PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
         PublicIncludePaths.AddRange(new string[] { "CustomDebugging" });
 
-        //Add Custom Modules in Source Folder.
-
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
-        PublicIncludePaths.AddRange(new string[] { "GameDefines"});
+        PublicIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameContents", "GamePuzzle" });
-        PublicIncludePaths.AddRange(new string[] { "GameContents", "GamePuzzle" });
     }
 }

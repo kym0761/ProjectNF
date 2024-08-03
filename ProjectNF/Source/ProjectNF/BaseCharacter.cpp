@@ -17,7 +17,7 @@
 
 #include "CharacterState/CharacterState.h"
 
-#include "FarmActors/FarmlandTile.h"
+#include "GameFarm/FarmlandTile.h"
 
 #include "Defines/Data.h"
 #include "Managers/GridManager.h"
@@ -30,6 +30,7 @@
 #include "BaseAnimInstance.h"
 
 #include "Components/InventoryComponent.h"
+#include "Stat/StatComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -68,6 +69,7 @@ ABaseCharacter::ABaseCharacter()
 
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
+	StatComponent = CreateDefaultSubobject<UStatComponent>(TEXT("StatComponent"));
 }
 
 void ABaseCharacter::Move(const FInputActionValue& Value)
@@ -135,7 +137,6 @@ void ABaseCharacter::BeginPlay()
 	//Character의 State를 Beginplay에서 생성
 	{
 		CharacterState = NewObject<UCharacterState>(this);
-
 		CharacterState->SetStateType(ECharacterStateType::NORMAL);
 
 		//!! 블루프린트에서 기능 테스트 용도로 사용함.

@@ -10,15 +10,19 @@ public class ProjectNFEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
-		ExtraModuleNames.Add("ProjectNF");
 
-        ExtraModuleNames.Add("GamePuzzle");
-        ExtraModuleNames.Add("GameFarm");
-        ExtraModuleNames.Add("GameItem");
-        ExtraModuleNames.Add("GameTime");
-        ExtraModuleNames.Add("GameDefines");
+        //Main
+        ExtraModuleNames.Add("ProjectNF");
+
+        //Debugging & Data Defines
         ExtraModuleNames.Add("CustomDebugging");
-        ExtraModuleNames.Add("GameManagers");
+        ExtraModuleNames.Add("GameDefines");
+
+        //Gamesystems And Managers
         ExtraModuleNames.Add("GameSystems");
+
+        //Contents
+        ExtraModuleNames.Add("GamePuzzle");
+        ExtraModuleNames.Add("GameContents");
     }
 }

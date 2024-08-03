@@ -14,7 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 class UCharacterState;
 class UInventoryComponent;
-
+class UStatComponent;
 /*
 *기본 캐릭터
 */
@@ -45,6 +45,9 @@ protected:
 	//Inventory에 접근하기 위한 ActorComp
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInventoryComponent> InventoryComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UStatComponent> StatComponent;
 
 #pragma endregion
 
