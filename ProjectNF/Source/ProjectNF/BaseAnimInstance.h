@@ -6,6 +6,9 @@
 #include "Animation/AnimInstance.h"
 #include "BaseAnimInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartAbility);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEndAbility);
+
 /**
  * 
  */
@@ -23,6 +26,7 @@ protected:
 	const int32 ComboNumberMin = 1;
 	const int32 comboNumberMax = 6;
 
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Attack", meta = (AllowPrivateAccess = "true"))
 	int32 ComboNumber;
 
@@ -32,6 +36,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Anim", meta = (AllowPrivateAccess = "true"))
 	bool bAttackPlayOK;
 	
+	UPROPERTY()
+	FString AbilitySuffix;
+
+	UPROPERTY()
+	FOnStartAbility OnStartAbility;
+
+	UPROPERTY()
+	FOnEndAbility OnEndAbility;
 
 protected:
 

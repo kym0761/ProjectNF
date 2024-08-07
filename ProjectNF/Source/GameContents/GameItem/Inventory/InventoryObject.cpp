@@ -43,14 +43,14 @@ bool UInventoryObject::HasInventoryEmptySpace() const
 bool UInventoryObject::HasEnoughSpaceForItem(const FItemSlotData& InData) const
 {
 
-	if (!OnRequestItemSheetData.IsBound())
+	if (!RequestItemSheetData.IsBound())
 	{
 		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
 		return false;
 	}
 
 	// 데이터 테이블에서 올바른 아이템 정보를 가져와야함.
-	FItemSheetData itemSheetData = OnRequestItemSheetData.Execute(InData.ItemName);
+	FItemSheetData itemSheetData = RequestItemSheetData.Execute(InData.ItemName);
 	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
@@ -160,10 +160,11 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 	if (InData.IsEmpty())
 	{
 		//빈 데이터는 넣지 않음.
+		Debug::Print(DEBUG_TEXT("빈 데이터"));
 		return -1;
 	}
 
-	if (!OnRequestItemSheetData.IsBound())
+	if (!RequestItemSheetData.IsBound())
 	{
 		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
 		return -1;
@@ -171,7 +172,7 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 
 
 	// 데이터 테이블에서 올바른 아이템 정보를 가져와야함.
-	FItemSheetData itemSheetData = OnRequestItemSheetData.Execute(InData.ItemName);
+	FItemSheetData itemSheetData = RequestItemSheetData.Execute(InData.ItemName);
 	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
@@ -182,7 +183,7 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 
 	FItemSlotData leftover = InData;
 
-	for (int i = 0; i < Items.Num(); i++)
+	for (int i = FreeInventoryStart; i < Items.Num(); i++)
 	{
 		if (!Items[i].IsSameItem(leftover))
 		{
@@ -210,14 +211,17 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 
 	//여기까지 왔다면, leftover의 양이 남아있거나, 혹은 같은 슬롯을 찾지 못함.
 	//빈 공간 있으면 정보를 넣는다.
-	for (int i = 0; i < Items.Num(); i++)
+	for (int i = FreeInventoryStart; i < Items.Num(); i++)
 	{
 		if (Items[i].IsEmpty())
-		{
-			SetInventoryItem(i, leftover); 
-			
+		{ 
+			Items[i].ItemName = leftover.ItemName;
+			Items[i].Quantity = leftover.Quantity;
+			leftover.Quantity = 0;
+
+			//SetInventoryItem(i, leftover);
 			//setInventoryItem에는 이미 OnInventoryItemsChanged가 있음
-			//OnInventoryItemsChanged.Broadcast();
+			OnInventoryItemsChanged.Broadcast();
 			
 			return 0;
 		}

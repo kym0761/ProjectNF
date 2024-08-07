@@ -19,7 +19,7 @@ class GAMEDEFINES_API UCharacterAction : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interface Class. You must Use This When you Inherit Interface.
+//플레이어가 가능한 Action.
 class GAMEDEFINES_API ICharacterAction
 {
 	GENERATED_BODY()

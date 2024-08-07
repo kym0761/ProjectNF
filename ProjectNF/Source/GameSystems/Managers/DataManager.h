@@ -41,16 +41,22 @@ protected:
 
 public:
 
+	//데이터 테이블 -> 구조체에 맞는 Map으로
 	template <typename T>
 	void IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UDataTable* SheetTable);
 
 	//item
-	bool GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out);
+	UFUNCTION()
+	FItemSheetData GetItemData(const FName& ItemID);
 	bool IsValidItem(const FName& ItemID) const;
 
 	//crop
 	UFUNCTION()
-	FCropSheetData GetCropDataFromSheet(const FName& CropID);
+	FCropSheetData GetCropData(const FName& CropID);
+	bool IsValidCrop(const FName& CropID) const;
+
+	//UFUNCTION()
+	//FCropSheetData GetCropDataFromSheet(const FName& CropID);
 
 public:
 
@@ -84,8 +90,6 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UD
 
 	//for (auto i : TargetDataMap)
 	//{
-	//	FString str = FString::Printf(TEXT("key : %s"), *i.Key.ToString());
-
-	//	Debug::Print(DEBUG_STRING(str));
+	//	Debug::Print(DEBUG_VATEXT(TEXT("DataManager's Key : %s"),*i.Key.ToString()));
 	//}
 }

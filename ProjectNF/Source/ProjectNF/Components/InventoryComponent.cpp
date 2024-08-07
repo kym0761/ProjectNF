@@ -71,3 +71,10 @@ UInventoryObject* UInventoryComponent::GetInventoryObjectRef()
 	return InventoryObjectRef;
 }
 
+bool UInventoryComponent::AddItemToInventory(FItemSlotData SlotData)
+{
+	int32 leftover = InventoryObjectRef->AddItemToInventory(SlotData);
+
+	return (leftover == 0) ? true : false;
+}
+

@@ -8,7 +8,7 @@
 
 class UImage;
 class UTextBlock;
-//class UInventoryComponent;
+class UInventoryComponent;
 
 
 /**
@@ -30,8 +30,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	int32 InventorySlotNumber;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	//TObjectPtr<UInventoryComponent> InventoryComponentRef;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInventoryComponent> InventoryComponentRef;
 
 	////Drag Drop에서 쓸 WidgetBP
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", Meta = (AllowPrivateAccess = "true"))
@@ -59,5 +59,9 @@ protected:
 	bool DropFunction(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation);
 
 public:
+
+	void SetSlotInfo(UInventoryComponent* RefVal, int32 SlotNum);
+
+	void UpdateSlot();
 
 };

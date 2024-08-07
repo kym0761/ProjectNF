@@ -9,10 +9,12 @@ void UMainHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto testWidget = UNFGameInstance::GetObjectManager()
-		->CreateWidgetFromName(TEXT("CreateTest"), GetOwningPlayer());
-
-	testWidget->AddToViewport();
-
-	Debug::Print(DEBUG_TEXT("HUD Construct"));
+	////BP_로 만든 UMG도 Spawn가능
+	//{
+	//	auto testWidget = UNFGameInstance::GetObjectManager()
+	//		->CreateWidgetFromName(TEXT("CreateTest"), GetOwningPlayer());
+	//	testWidget->AddToViewport();
+	//	Debug::Print(DEBUG_TEXT("HUD Construct"));
+	//}
+	
 }

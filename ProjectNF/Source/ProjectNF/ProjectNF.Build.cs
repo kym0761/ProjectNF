@@ -32,12 +32,14 @@ public class ProjectNF : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
         PublicIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameContents", "GamePuzzle" });
-        PublicIncludePaths.AddRange(new string[] { "GameContents", "GamePuzzle"  });
+        PublicDependencyModuleNames.AddRange(new string[] { "GamePuzzle" });
+        PublicIncludePaths.AddRange(new string[] { "GamePuzzle"  });
 
         PublicDependencyModuleNames.AddRange(new string[] { "GameSystems"});
         PublicIncludePaths.AddRange(new string[] { "GameSystems" });
 
-
+        PublicDependencyModuleNames.AddRange(new string[] { "GameContents" });
+        CircularlyReferencedDependentModules.AddRange(new string[] { "GameContents" });
+        PublicIncludePaths.AddRange(new string[] { "GameContents" });
     }
 }

@@ -4,7 +4,8 @@
 #include "InventoryManager.h"
 #include "DebugHelper.h"
 #include "Defines/Data.h"
-
+#include "System/NFGameInstance.h"
+#include "Managers/DataManager.h"
 UInventoryManager::UInventoryManager()
 {
 }
@@ -28,6 +29,9 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 		//TODO : 인벤토리 생성시, 지정된 크기 등으로 초기화? 
 		UInventoryObject* inventory = NewObject<UInventoryObject>(this);
 		inventory->InitInventory();
+
+		auto dataManager = UNFGameInstance::GetDataManager();
+		inventory->RequestItemSheetData.BindDynamic(dataManager, &UDataManager::GetItemData);
 
 		InventoryMap.Add(InventoryOwner, inventory);
 		Debug::Print(DEBUG_VATEXT(TEXT("Inventory Created --> InventoryOwner : %s"), *InventoryOwner));
@@ -57,6 +61,10 @@ void UInventoryManager::LoadInventories(const TArray<FInventorySaveData>& Invent
 		inventoryObj->LoadInventory(data.Items);
 
 		InventoryMap.Add(inventoryID, inventoryObj);
+
+		auto dataManager = UNFGameInstance::GetDataManager();
+
+		inventoryObj->RequestItemSheetData.BindDynamic(dataManager, &UDataManager::GetItemData);
 	}
 }
 

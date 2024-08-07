@@ -17,7 +17,7 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryItemsChanged);
-DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FItemSheetData, FOnRequestItemSheetData, const FName&, ItemID);
+DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FItemSheetData, FRequestItemSheetData, const FName&, ItemID);
 
 UCLASS()
 class GAMECONTENTS_API UInventoryObject : public UObject
@@ -52,7 +52,12 @@ public:
 	//TODO : 아직 InventoryObject 생성하고 이를 Set하는 기능을 안만듬. 인벤토리는 아직 동작하지 않을 것임.
 	//Item Sheet Data를 얻어오는 것을 요청.
 	UPROPERTY()
-	FOnRequestItemSheetData OnRequestItemSheetData;
+	FRequestItemSheetData RequestItemSheetData;
+
+	//0~9 : 장비칸 예약
+	//10~19 : 퀵슬롯 예약
+	//20~(inventorySize-1) : 아이템을 가지고 다닐 수 있는 공간
+	int32 FreeInventoryStart = 20;
 
 public:
 

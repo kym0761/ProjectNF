@@ -22,7 +22,7 @@ class GAMEDEFINES_API UTriggerable : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interface Class. You must Use This When you Inherit Interface.
+//Trigger가 가능한 Actor 인터페이스
 class GAMEDEFINES_API ITriggerable
 {
 	GENERATED_BODY()
@@ -41,7 +41,7 @@ class GAMEDEFINES_API UBeTriggerable : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interface Class. You must Use This When you Inherit Interface.
+//Trigger를 당할 수 있는 Actor 인터페이스
 class GAMEDEFINES_API IBeTriggerable
 {
 	GENERATED_BODY()
@@ -60,7 +60,7 @@ class GAMEDEFINES_API UResetable : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interface Class. You must Use This When you Inherit Interface.
+//퍼즐의 Reset이 가능한 인터페이스
 class GAMEDEFINES_API IResetable
 {
 	GENERATED_BODY()
@@ -79,7 +79,7 @@ class GAMEDEFINES_API UCombustible : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interface Class. You must Use This When you Inherit Interface.
+//불이 붙을 수 있는 interface
 class GAMEDEFINES_API ICombustible
 {
 	GENERATED_BODY()

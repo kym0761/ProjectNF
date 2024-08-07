@@ -16,7 +16,7 @@ class UManageable : public UInterface
 	GENERATED_BODY()
 };
 
-//Actual Interactive Interface Class. You must Use This When you Inherit Interface.
+//매니저 객체에 넣을 인터페이스.
 class IManageable
 {
 	GENERATED_BODY()

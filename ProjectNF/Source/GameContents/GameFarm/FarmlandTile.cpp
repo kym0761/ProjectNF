@@ -123,8 +123,22 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 			return;
 		}
 		
-		RequestSpawnItemPickup.Execute(TEXT("ItemPickup"), GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator);
+		AItemPickup* itemPickup = Cast<AItemPickup>(RequestSpawnItemPickup.Execute(TEXT("ItemPickup"), GetActorLocation() + FVector(0, 0, 50), FRotator::ZeroRotator));
 
+		
+		if (!IsValid(itemPickup))
+		{
+			Debug::Print(DEBUG_TEXT("Warning. ItemPickup is Invalid."));
+		}
+
+		if (IsValid(itemPickup))
+		{
+			FItemSlotData slotData;
+			slotData.ItemName = FName(TEXT("200001"));
+			slotData.Quantity = 5;
+			itemPickup->SetItemPickupData(slotData);
+
+		}
 	}
 	else
 	{

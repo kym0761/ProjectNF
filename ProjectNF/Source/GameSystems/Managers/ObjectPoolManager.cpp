@@ -5,6 +5,10 @@
 #include "ObjectPooling/PoolChunk.h"
 #include "DebugHelper.h"
 
+#include "Kismet/GameplayStatics.h"
+
+#include "GameFramework/MovementComponent.h"
+
 UObjectPoolManager::UObjectPoolManager()
 {
 }
@@ -57,19 +61,28 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, UClass* PoolableB
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
 
-		//위지 설정 및 보이게하기
-		//TODO : 액터 관련 각종 활성화 로직
+		//PoolActor 활성화
+		//위치 설정
+		//Visibility 활성
+		//Collision 활성
+		//Movement Component가 있을 시 활성화
 		poolableActor = Cast<AActor>(ObjectPoolable);
 		poolableActor->SetActorLocationAndRotation(Location, Rotation);
 		poolableActor->SetActorHiddenInGame(false);
+		poolableActor->SetActorEnableCollision(true);
 
+		UMovementComponent* movement= poolableActor->FindComponentByClass<UMovementComponent>();
+		if (IsValid(movement))
+		{
+			movement->Activate();
+		}
 	}
 
 	//pool 오브젝트의 beginplay를 대신한다.
 	//실제로 else 코드 쪽에서 꺼내 사용한 오브젝트는 beginplay가 동작안함.
 	IObjectPoolable::Execute_PoolBeginPlay(poolableActor);
 
-	return nullptr;
+	return poolableActor;
 }
 
 void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
@@ -96,11 +109,19 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 	ObjectPoolMap[classkey]->GetPoolObjectQueue().Enqueue(objectPoolable);
 
 	//Pool에 넣은 것은 안보이게 한다.
-	//TODO : 액터 관련 각종 비활성화
-	//문제 : 안보이기만 하고 Physics가 켜져있음. 다만 오브젝트 풀링 기능 자체에 문제가 있는게 아니므로 일단 Ok
-	//해결방안? : 일단 닿지 않을 위치로 이동시킨다.
+	//보이지 않게 한다
+	//닿지 않을 위치로 이동시킨다.
+	//collision을 끈다.
+	//movement component가 있다면 비활성화한다.
 	PoolableActor->SetActorHiddenInGame(true);
 	PoolableActor->SetActorLocationAndRotation(FVector(-10000, -10000, 1000000), FRotator::ZeroRotator); //닿지 않을 만한 위치로 이동
+	PoolableActor->SetActorEnableCollision(false);
+
+	UMovementComponent* movement = PoolableActor->FindComponentByClass<UMovementComponent>();
+	if (IsValid(movement))
+	{
+		movement->Deactivate();
+	}
 
 	IObjectPoolable::Execute_PoolEndPlay(PoolableActor);
 

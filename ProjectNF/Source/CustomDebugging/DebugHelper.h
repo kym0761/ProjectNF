@@ -49,7 +49,7 @@ namespace Debug
 			GEngine->AddOnScreenDebugMessage(InKey, 3.0f, Color, Msg);
 		}
 
-		UE_LOG(LogTemp, Log, TEXT("%s"), *Msg);
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
 	}
 
 };

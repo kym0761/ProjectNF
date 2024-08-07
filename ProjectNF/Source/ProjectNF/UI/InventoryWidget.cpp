@@ -8,12 +8,21 @@
 #include "Managers/ObjectManager.h"
 #include "DebugHelper.h"
 #include "Components/InventoryComponent.h"
+#include "GameItem/Inventory/InventoryObject.h"
+
 void UInventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
 	//플레이어가 가지고 있는 인벤토리 Component를 읽는다.
-	InventoryComponentRef = GetOwningPlayerPawn()->FindComponentByClass<UInventoryComponent>();
+
+	SetInventoryComponentRef(GetOwningPlayerPawn()->FindComponentByClass<UInventoryComponent>());
+
+	if (!IsValid(InventoryComponentRef))
+	{
+		Debug::Print(DEBUG_TEXT("Inventory Comp Ref is Invalid."));
+		return;
+	}
 
 	InventoryGridPanel->ClearChildren();
 	
@@ -23,7 +32,7 @@ void UInventoryWidget::NativeConstruct()
 	{
 		//Create
 		UItemSlotWidget* slot = Cast<UItemSlotWidget>(UNFGameInstance::GetObjectManager()
-			->CreateWidgetFromName(TEXT("ItemSlotWidget"), this));
+			->CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 		if (!IsValid(slot))
 		{
@@ -38,19 +47,22 @@ void UInventoryWidget::NativeConstruct()
 		ItemSlotWidgets.Add(slot);
 
 		//TODO : Slot 초기화
-		int32 slotNum = startOffset + i;
-
+		int32 slotNum = i;
+		slot->SetSlotInfo(InventoryComponentRef, slotNum);
 	}
 
 
 	//TODO: 이 슬롯들 전부 장비로서 연결해야함.
 	
-	//WeaponSlot;
-	//ArmorSlot;
-	//ShieldSlot;
-	//AccessorySlot01;
-	//AccessorySlot02;
+	//각각 0,1,2,3,4 index
 
+	WeaponSlot->SetSlotInfo(InventoryComponentRef,0);
+	ArmorSlot->SetSlotInfo(InventoryComponentRef, 1);
+	ShieldSlot->SetSlotInfo(InventoryComponentRef,2);
+	AccessorySlot01->SetSlotInfo(InventoryComponentRef, 3);
+	AccessorySlot02->SetSlotInfo(InventoryComponentRef, 4);
+
+	UpdateInventoryUI();
 }
 
 void UInventoryWidget::ToggleInventory()
@@ -59,4 +71,26 @@ void UInventoryWidget::ToggleInventory()
 
 
 
+}
+
+void UInventoryWidget::SetInventoryComponentRef(UInventoryComponent* RefVal)
+{
+	InventoryComponentRef = RefVal;
+
+	InventoryComponentRef->GetInventoryObjectRef()
+		->OnInventoryItemsChanged.AddDynamic(this, &UInventoryWidget::UpdateInventoryUI);
+}
+
+void UInventoryWidget::UpdateInventoryUI()
+{
+	for (auto i : ItemSlotWidgets)
+	{
+		i->UpdateSlot();
+	}
+
+	WeaponSlot->UpdateSlot();
+	ArmorSlot->UpdateSlot();
+	ShieldSlot->UpdateSlot();
+	AccessorySlot01->UpdateSlot();
+	AccessorySlot02->UpdateSlot();
 }

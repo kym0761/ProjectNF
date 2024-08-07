@@ -35,7 +35,7 @@ bool FItemSlotData::IsSameItem(const FItemSlotData& Other) const
 
 bool FItemSlotData::IsEmpty() const
 {
-	return ItemName.IsNone() || ItemName.GetStringLength() == 0 || Quantity == 0;
+	return ItemName.IsNone() || ItemName.GetStringLength() == 0;
 }
 
 void FItemSlotData::SetEmpty()

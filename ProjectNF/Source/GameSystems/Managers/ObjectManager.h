@@ -11,6 +11,10 @@
 
 DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn, UObject*, WorldContext, UClass*, PoolableClass, const FVector&, Location, const FRotator&, Rotation);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FRequestObjectPoolDespawn, AActor*, PoolableActor);
+
+
+class UNiagaraSystem;
+class UNiagaraComponent;
 /**
  * ActorSpawnFactory다.
  */
@@ -37,12 +41,15 @@ protected:
 	* BP_ObjectManager에서 등록해 사용한다.
 	* Key : "ClassName" ,Value : BP_SomeActor
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
 	TMap<FString, TSubclassOf<AActor>> BlueprintMap;
 
 	//Widget Blueprints
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
 	TMap<FString, TSubclassOf<UUserWidget>> WidgetBlueprintMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
+	TMap<FString, TObjectPtr<UNiagaraSystem>> NiagaraSystemMap;
 
 public:
 
@@ -50,6 +57,9 @@ public:
 	//사용법 : LoadBlueprints<AActor>(ActorMap, AActor::StaticClass(), folderPathArray(ex: /Game/PathName), TEXT("BP_"));
 	template<typename T>
 	void LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths, const FString& PrefixToRemove);
+
+	//나이아가라는 TSubclassOf<>가 아니라서 따로 만듬.
+	void LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths);
 
 #pragma endregion
 
@@ -63,11 +73,14 @@ public:
 
 	//UMG를 생성
 	UFUNCTION()
-	UUserWidget* CreateWidgetFromName(FString ToCreateWidgetName, UObject* WidgetOwner);
+	UUserWidget* CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner);
 
 	void Despawn(AActor* DespawnTarget);
 
 	virtual void InitManager() override;
+
+
+	UNiagaraComponent* SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
 
 };
 

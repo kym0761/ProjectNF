@@ -65,5 +65,5 @@ public:
 
 	UInventoryObject* GetInventoryObjectRef();
 
-
+	bool AddItemToInventory(FItemSlotData SlotData);
 };

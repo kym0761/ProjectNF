@@ -32,6 +32,8 @@
 #include "Components/InventoryComponent.h"
 #include "Stat/StatComponent.h"
 
+#include "Blueprint/UserWidget.h"
+
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
@@ -124,7 +126,7 @@ void ABaseCharacter::MouseLeft(const FInputActionValue& Value)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -147,6 +149,9 @@ void ABaseCharacter::BeginPlay()
 	{
 		InventoryComponent->InitInventoryComponent();
 	}
+
+	//HUD = UNFGameInstance::GetObjectManager()->CreateWidgetFromName(TEXT("HUD"), Cast<APlayerController>(GetController()));
+	//HUD->AddToViewport();
 }
 
 // Called every frame
@@ -261,7 +266,7 @@ void ABaseCharacter::UseFarmTool()
 	}
 
 	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-	farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
+	farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropData);
 	//작물 아이템을 Spawn 요청하는 기능 Bind
 	farmtile->RequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
 

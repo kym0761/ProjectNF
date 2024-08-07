@@ -4,6 +4,15 @@
 #include "ItemPickup.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BillboardComponent.h"
+
+#include "Components/InventoryComponent.h"
+
+#include "DebugHelper.h"
+
+#include "System/NFGameInstance.h"
+#include "Managers/ObjectPoolManager.h"
+#include "Managers/DataManager.h"
 
 // Sets default values
 AItemPickup::AItemPickup()
@@ -11,20 +20,26 @@ AItemPickup::AItemPickup()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	SetRootComponent(Mesh);
+	ItemVisual = CreateDefaultSubobject<UBillboardComponent>(TEXT("ItemVisual"));
+	SetRootComponent(ItemVisual);
+	ItemVisual->SetHiddenInGame(false);
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->InitSphereRadius(64.0f);
 	Sphere->SetupAttachment(RootComponent);
 
+	//ItemVisual->SetEnableGravity(true);
 }
 
 // Called when the game starts or when spawned
 void AItemPickup::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	{
+		auto itemData = UNFGameInstance::GetDataManager()->GetItemData(PickupItemData.ItemName);
+		ItemVisual->SetSprite(itemData.Thumbnail);
+	}
 }
 
 // Called every frame
@@ -36,10 +51,35 @@ void AItemPickup::Tick(float DeltaTime)
 
 void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 {
+	Debug::Print(DEBUG_TEXT("ItemPickup Interact Ok."));
+	//pawnì˜ ì¸ë²¤í† ë¦¬ì— ì ‘ê·¼
 
-	//pawnÀÇ ÀÎº¥Åä¸®¿¡ Á¢±Ù
+	//ì¸ë²¤í† ë¦¬ê°€ ìžˆìœ¼ë©´, ì¸ë²¤í† ë¦¬ ì•ˆì— PickupItemData ì •ë³´ë¥¼ ë„£ìŒ.
 
-	//ÀÎº¥Åä¸®°¡ ÀÖÀ¸¸é, ÀÎº¥Åä¸® ¾È¿¡ PickupItemData Á¤º¸¸¦ ³ÖÀ½.
 
+	auto inventoryComponent = InteractCauser->FindComponentByClass<UInventoryComponent>();
+	if (!IsValid(inventoryComponent))
+	{
+		Debug::Print(DEBUG_TEXT("No Inventory comp."));
+	}
+
+	bool bAdded = inventoryComponent->AddItemToInventory(PickupItemData);
+
+	if (bAdded)
+	{
+		Debug::Print(DEBUG_TEXT("Item Added to Inventory."));
+		UNFGameInstance::GetObjectPoolManager()->DespawnToPool(this);
+	}
+
+}
+
+void AItemPickup::SetItemPickupData(FItemSlotData SlotData)
+{
+	PickupItemData = SlotData;
+	Debug::Print(DEBUG_VATEXT(TEXT("Set Item Pickup Data : %s, %d"), *PickupItemData.ItemName.ToString(), PickupItemData.Quantity));
+
+	auto itemData = UNFGameInstance::GetDataManager()->GetItemData(PickupItemData.ItemName);
+
+	ItemVisual->SetSprite(itemData.Thumbnail);
 }
 

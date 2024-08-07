@@ -97,6 +97,15 @@ protected:
 
 #pragma endregion
 
+#pragma region UI
+
+protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UUserWidget> HUD;
+
+#pragma endregion
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

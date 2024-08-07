@@ -11,7 +11,7 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
-
+class UBillboardComponent;
 /*
 * pickup 사용 예시
 * 1 : 인벤토리 슬롯을 땅에 드래그하여 땅에 떨궜을 때 (혹은 밖에 꺼내기 등)
@@ -31,13 +31,15 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UStaticMeshComponent> Mesh;
+	TObjectPtr<UBillboardComponent> ItemVisual;
 
 	//Needed For Detection.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Item", Meta = (AllowPrivateAccess = true))
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", Meta = (AllowPrivateAccess = true))
 	FItemSlotData PickupItemData;
 
 protected:
@@ -49,5 +51,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void Interact_Implementation(APawn* InteractCauser) override;
+
+	void SetItemPickupData(FItemSlotData SlotData);
 
 };

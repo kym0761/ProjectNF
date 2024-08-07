@@ -7,24 +7,23 @@ UDataManager::UDataManager()
 {
 }
 
-bool UDataManager::GetItemDataFromDataTable(const FName& ItemID, FItemSheetData& Out)
+FItemSheetData UDataManager::GetItemData(const FName& ItemID)
 {
 	//빈 아이템 ID
 	if (ItemID.IsNone())
 	{
 		Debug::Print(DEBUG_TEXT("Empty ItemID"));
-		return false;
+		return FItemSheetData();
 	}
 
 	//존재하지 않는 아이템 데이터
 	if (!ItemSheetDataMap.Contains(ItemID))
 	{
 		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
-		return false;
+		return FItemSheetData();
 	}
 
-	Out = ItemSheetDataMap[ItemID];
-	return true;
+	return ItemSheetDataMap[ItemID];
 }
 
 bool UDataManager::IsValidItem(const FName& ItemID) const
@@ -39,32 +38,35 @@ bool UDataManager::IsValidItem(const FName& ItemID) const
 	return false;
 }
 
-FCropSheetData UDataManager::GetCropDataFromSheet(const FName& CropID)
+FCropSheetData UDataManager::GetCropData(const FName& CropID)
 {
-	//빈 Crop ID
+	//빈 작물 ID
 	if (CropID.IsNone())
 	{
 		Debug::Print(DEBUG_TEXT("Empty CropID"));
 		return FCropSheetData();
 	}
 
-	//Data Table이 아직 없음
-	if (!IsValid(CropSheetTable))
+	//존재하지 않는 아이템 데이터
+	if (!CropSheetDataMap.Contains(CropID))
 	{
-		Debug::Print(DEBUG_TEXT("Crop Sheet Table Not Set"));
+		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
 		return FCropSheetData();
 	}
 
+	return CropSheetDataMap[CropID];
+}
 
-	//존재하는 아이템이면 결과 도출 및 true
-	FCropSheetData* cropSheetData = CropSheetTable->FindRow<FCropSheetData>(CropID, "");
-	if (cropSheetData != nullptr)
+bool UDataManager::IsValidCrop(const FName& CropID) const
+{
+	//Map에 존재하면 작물 존재함
+	if (CropSheetDataMap.Contains(CropID))
 	{
-		return *cropSheetData;
+		return true;
 	}
 
-	//존재하지 않는 아이템 정보
-	return FCropSheetData();
+	//존재하지 않음
+	return false;
 }
 
 void UDataManager::InitManager()

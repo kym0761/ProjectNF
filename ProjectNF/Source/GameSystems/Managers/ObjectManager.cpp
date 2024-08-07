@@ -10,8 +10,59 @@
 
 #include "Blueprint/UserWidget.h"
 
+#include "Niagara/Classes/NiagaraSystem.h"
+
+#include "NiagaraFunctionLibrary.h"
+
+
 UObjectManager::UObjectManager()
 {
+}
+
+void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths)
+{
+	FAssetRegistryModule& assetRegistryModule
+		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+
+	TargetMap.Empty();
+
+	TArray<FAssetData> assetData;
+
+	FARFilter filter; //5.4부터인가 클래스 필터 처리가 사라짐 ㅡ,ㅡ;
+
+	filter.bRecursivePaths = true; //폴더 recursive 옵션
+	filter.PackagePaths = FolderPaths; //긁을 target이 되는 폴더
+
+	assetRegistryModule.Get().GetAssets(filter, assetData);
+
+	for (auto asset : assetData)
+	{
+		FString name = asset.GetAsset()->GetName();
+		FString path = asset.GetObjectPathString();
+
+		UNiagaraSystem* findClass = LoadObject<UNiagaraSystem>(nullptr, *path);
+
+		//찾은 클래스가 유효한지 확인
+		if (IsValid(findClass))
+		{
+			//NS_ 빼고 key로 만들어 Map에 넣음.
+			name.RemoveFromStart(TEXT("NS_"));
+			TargetMap.Add(name, findClass);
+		}
+	}
+
+	for (auto& i : TargetMap)
+	{
+		if (IsValid(i.Value))
+		{
+			Debug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
+		}
+		else
+		{
+			Debug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
+		}
+	}
+
 }
 
 AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation)
@@ -62,10 +113,10 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 	return actor;
 }
 
-UUserWidget* UObjectManager::CreateWidgetFromName(FString ToCreateWidgetName, UObject* WidgetOwner)
+UUserWidget* UObjectManager::CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner)
 {
 	auto widgetClass = WidgetBlueprintMap[ToCreateWidgetName];
-	UUserWidget* widget = CreateWidget<UUserWidget>(GetWorld(), widgetClass);
+	UUserWidget* widget = CreateWidget<UUserWidget>(WidgetOwner, widgetClass);
 
 	return widget;
 }
@@ -117,4 +168,37 @@ void UObjectManager::InitManager()
 	widgetBlueprintPaths.Add(TEXT("/Game/UI"));
 	LoadBlueprints<UUserWidget>(WidgetBlueprintMap, UUserWidget::StaticClass(), widgetBlueprintPaths, TEXT("WBP_"));
 
+
+	//Niagara
+	TArray<FName> niagaraPaths;
+	niagaraPaths.Add(TEXT("/Game/Niagaras"));
+	LoadNiagaras(NiagaraSystemMap, niagaraPaths);
+}
+
+UNiagaraComponent* UObjectManager::SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation)
+{
+
+	if (!GEngine)
+	{
+		Debug::Print(DEBUG_TEXT("No GEngine."));
+		return nullptr;
+	}
+
+	UWorld* world = GEngine->GetCurrentPlayWorld();
+	
+	if (!IsValid(world))
+	{
+		Debug::Print(DEBUG_TEXT("No World."));
+		return nullptr;
+	}
+
+	if (!NiagaraSystemMap.Contains(ToSpawnNiagaraName))
+	{
+		Debug::Print(DEBUG_TEXT("No Valid Niagara Name."));
+		return nullptr;
+	}
+
+	auto toSpawn = NiagaraSystemMap[ToSpawnNiagaraName];
+
+	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, NiagaraSystemMap[ToSpawnNiagaraName], Location, Rotation);
 }

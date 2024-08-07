@@ -8,10 +8,13 @@
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Blueprint/DragDropOperation.h"
 #include "DebugHelper.h"
-//#include "InventoryComponent.h"
+
+#include "Components/InventoryComponent.h"
+#include "GameItem/Inventory/InventoryObject.h"
 
 #include "System/NFGameInstance.h"
 #include "Managers/ObjectManager.h"
+#include "Managers/DataManager.h"
 
 void UItemSlotWidget::NativeConstruct()
 {
@@ -61,19 +64,11 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 {
 	Debug::Print(DEBUG_TEXT("Item Slot Drag Function"));
 
-
-
-	//if (!IsValid(InventoryComponentRef))
-	//{
-	//	//drag에 필요한 InventoryRef가 없음
-	//	return;
-	//}
-
-	////if (!InventoryComponentRef->GetAllItems().IsValidIndex(InventorySlotNumber))
-	////{
-	////	//Slot Number가 올바르지않음
-	////	return;
-	////}
+	if (!IsValid(InventoryComponentRef))
+	{
+		//drag에 필요한 InventoryRef가 없음
+		return;
+	}
 
 	////TODO : Item Database에서 item 정보를 가져와야함.
 	////이유 : Item Image 세팅 등에 필요함
@@ -90,9 +85,9 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 	}
 
 	////TODO : function으로 줄일 필요가 있음
-	//dragDisplay->InventoryComponentRef = InventoryComponentRef;
-	//dragDisplay->InventorySlotNumber = InventorySlotNumber;
-	////dragDisplay->UpdateItemSlotWidget();
+	dragDisplay->InventoryComponentRef = InventoryComponentRef;
+	dragDisplay->InventorySlotNumber = InventorySlotNumber;
+	dragDisplay->UpdateSlot();
 
 	//drag drop operation
 	TObjectPtr<UDragDropOperation> dragdropOper = NewObject<UDragDropOperation>(); // outer?
@@ -124,31 +119,61 @@ bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropE
 		return false;
 	}
 
-	//int32 dropped_SlotNumber = droppedItemSlot->InventorySlotNumber;
-	//TObjectPtr<UInventoryComponent> dropped_InventoryComponent = droppedItemSlot->InventoryComponentRef;
+	int32 dropped_SlotNumber = droppedItemSlot->InventorySlotNumber;
+	TObjectPtr<UInventoryComponent> dropped_InventoryComponent = droppedItemSlot->InventoryComponentRef;
 
-	////if (IsValid(dropped_InventoryComponent) && IsValid(InventoryComponentRef))
-	////{
-	////	//bool bSucceed = UInventoryComponent::SwapItemBetweenInventory(
-	////	//	dropped_InventoryComponent, dropped_SlotNumber,
-	////	//	InventoryComponentRef, InventorySlotNumber);
-
-	////	//if (bSucceed)
-	////	//{
-	////	//	//TODO : 인벤토리 업데이트?
-	////	//	return true;
-	////	//}
-	////}
-
-	//임시로 droppedItemSlot이 정상적으로 동작하면 true로 설정.
-	if(IsValid(droppedItemSlot))
+	if (IsValid(InventoryComponentRef) && IsValid(dropped_InventoryComponent))
 	{
-		Debug::Print(DEBUG_TEXT("Test OK."));
-		return true;
+		auto a = InventoryComponentRef->GetInventoryObjectRef();
+		auto b = dropped_InventoryComponent->GetInventoryObjectRef();
+
+		bool bSucceed = UInventoryObject::SwapItemBetweenInventory(a, InventorySlotNumber, b, dropped_SlotNumber);
+
+		//TODO?: 현재 인벤토리 갱신은 모든 slot에게서 일어남
+		//			필요한 slot만 갱신되도록 하는 방법은?
+		return bSucceed;
+	}
+
+
+	Debug::Print(DEBUG_TEXT("Test Fail."));
+	return false;
+}
+
+void UItemSlotWidget::SetSlotInfo(UInventoryComponent* RefVal, int32 SlotNum)
+{
+	InventoryComponentRef = RefVal;
+	InventorySlotNumber = SlotNum;
+
+	UpdateSlot();
+}
+
+void UItemSlotWidget::UpdateSlot()
+{
+	auto inventoryObj = InventoryComponentRef->GetInventoryObjectRef();
+
+	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
+
+	FItemSheetData itemSheetData =
+		UNFGameInstance::GetDataManager()->GetItemData(itemSlot.ItemName);
+
+	if (itemSheetData.Thumbnail == nullptr)
+	{
+		SlotImage->SetColorAndOpacity(FLinearColor(1, 1, 1, 0.33f));
+		SlotImage->SetBrushFromTexture(nullptr);
+	}
+	else
+	{
+		SlotImage->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
+		SlotImage->SetBrushFromTexture(itemSheetData.Thumbnail);
 	}
 	
 
-	//
-	Debug::Print(DEBUG_TEXT("Test Fail."));
-	return false;
+	if (itemSlot.Quantity == 0)
+	{
+		SlotItemNum->SetText(FText::FromString(TEXT("")));
+	}
+	else
+	{
+		SlotItemNum->SetText(FText::FromString(FString::FromInt(itemSlot.Quantity)));
+	}
 }

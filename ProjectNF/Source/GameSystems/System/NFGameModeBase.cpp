@@ -52,7 +52,7 @@ void ANFGameModeBase::CreateAllSavedCrop()
 		auto farmtile = Cast<AFarmlandTile>(objManager->Spawn(TEXT("FarmlandTile"), gridManager->GridToWorld(grid)));
 		
 		//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-		farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropDataFromSheet);
+		farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropData);
 		//작물 아이템을 Spawn 요청하는 기능 Bind
 		farmtile->RequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
 

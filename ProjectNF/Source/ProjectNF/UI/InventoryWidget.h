@@ -54,4 +54,8 @@ public:
 	virtual void NativeConstruct() override;
 
 	void ToggleInventory();
+	void SetInventoryComponentRef(UInventoryComponent* RefVal);
+
+	UFUNCTION()
+	void UpdateInventoryUI();
 };

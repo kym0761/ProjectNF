@@ -76,7 +76,8 @@ void APuzzleButton::Tick(float DeltaTime)
 
 void APuzzleButton::OnButtonBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	//TODO : Interact를 위한 overlap 컴포넌트가 닿으면 Actor를 인식해서 버튼이 밟힌 듯이 움직인다.
+	//일단 플레이어에 대한 Overlap을 비활성화하고, 게임 플레이에 필요한 overlap 컴포넌트를 무시하도록 설정할 것.
 
 
 	UCharacterMovementComponent* characterMovement = OtherActor->FindComponentByClass<UCharacterMovementComponent>();
@@ -164,7 +165,7 @@ void APuzzleButton::Trigger()
 
 	for (auto i : TriggerTargets)
 	{
-		auto beTriggerable = Cast<IBeTriggerable>(i);
+		IBeTriggerable* beTriggerable = Cast<IBeTriggerable>(i);
 
 		if (beTriggerable)
 		{
