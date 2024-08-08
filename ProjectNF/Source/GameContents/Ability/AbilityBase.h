@@ -30,6 +30,11 @@ protected:
 	UPROPERTY()
 	FTimerHandle AbilityDoingTimer;
 
+	//원하는 이펙트의 이름을 입력하면 이펙트가 동작한다. (NS_는 뺀다.)
+	UPROPERTY(EditDefaultsOnly, Category = "Ability", Meta = (AllowPrivateAccess = "true"))
+	FString EffectName;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

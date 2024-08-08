@@ -106,6 +106,9 @@ void UBaseAnimInstance::PlayAttackMontage()
 	Montage_Play(BaseCombatMontage);
 	Montage_JumpToSection(comboName, BaseCombatMontage);
 
+	//애니메이션 시작할 때 공격을 추가로 더 못하게 막음
+	bAttackPlayOK = false;
+
 	//mesh를 찾고, 알맞는 Ability찾은 뒤에 Mesh에 붙임.
 	auto mesh = TryGetPawnOwner()->FindComponentByClass<USkeletalMeshComponent>();
 	if (mesh)

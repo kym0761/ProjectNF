@@ -75,6 +75,8 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UD
 
 	auto rowNames = SheetTable->GetRowNames();
 
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("rowNames num : %d"), rowNames.Num()));
+
 	for (auto rowName : rowNames)
 	{
 		T* sheetData = SheetTable->FindRow<T>(rowName, "");
@@ -88,8 +90,8 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UD
 	}
 
 
-	//for (auto i : TargetDataMap)
-	//{
-	//	Debug::Print(DEBUG_VATEXT(TEXT("DataManager's Key : %s"),*i.Key.ToString()));
-	//}
+	for (auto i : TargetDataMap)
+	{
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("DataManager's Key : %s"),*i.Key.ToString()));
+	}
 }

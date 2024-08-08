@@ -32,6 +32,9 @@ void AAbilityAOE::InitAbility_Implementation(AActor* AbilityOwnerVal)
 
 void AAbilityAOE::StartAbility_Implementation()
 {
+	//AOE 공격 시작하면 사용자로부터 떨어짐.
+	AttachToActor(GetParentActor(),FAttachmentTransformRules::KeepWorldTransform);
+
 	TArray<AActor*> overlappedActors;
 	Sphere->GetOverlappingActors(overlappedActors);
 
@@ -40,7 +43,7 @@ void AAbilityAOE::StartAbility_Implementation()
 		FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlapped By AOE : %s"), *i->GetName()));
 	}
 
-	UNFGameInstance::GetObjectManager()->SpawnNiagaraSystem(TEXT("TestEffect"), GetActorLocation());
+	UNFGameInstance::GetObjectManager()->SpawnNiagaraSystem(EffectName, GetActorLocation());
 }
 
 void AAbilityAOE::EndAbility_Implementation()

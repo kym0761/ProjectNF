@@ -116,7 +116,7 @@ void UObjectManager::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UC
 		FString name = asset.GetAsset()->GetName();
 		FString path = asset.GetObjectPathString(); // /Game/Blueprint/BP_~~
 
-		FMyDebug::Print(DEBUG_VATEXT(TEXT("asset path : %s"), *path));
+		//FMyDebug::Print(DEBUG_VATEXT(TEXT("asset path : %s"), *path));
 
 #if WITH_EDITOR
 		//실제 빌드된 패키지에서는 _C가 자동으로 붙기 때문에 이 기능은 에디터에서만 동작해야한다.
@@ -148,6 +148,13 @@ void UObjectManager::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UC
 
 			//빌드된 패키지에서는 블루프린트 이름에 _C가 자동으로 붙는다.
 			name.RemoveFromEnd(TEXT("_C"));
+
+			if (TargetMap.Contains(name))
+			{
+				//같은 이름의 블루프린트가 있었으므로, 해당 BP_의 이름을 바꾸어야함.
+				FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name NS : %s"), *name));
+			}
+
 			TargetMap.Add(name, findClass);
 
 

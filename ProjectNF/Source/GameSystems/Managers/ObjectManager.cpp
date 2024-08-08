@@ -48,6 +48,13 @@ void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& Tar
 		{
 			//NS_ 빼고 key로 만들어 Map에 넣음.
 			name.RemoveFromStart(TEXT("NS_"));
+
+			if (TargetMap.Contains(name))
+			{
+				//같은 이름의 나이아가라가 있었으므로, 해당 NS_의 이름을 바꾸어야함.
+				FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name NS : %s"), *name));
+			}
+
 			TargetMap.Add(name, findClass);
 		}
 	}
