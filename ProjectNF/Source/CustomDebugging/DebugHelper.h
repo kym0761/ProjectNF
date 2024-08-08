@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+
 /*
 * 디버깅 코드가 어디있는지 확인하기 위해 만든 디버깅 매크로
 * 필요없어진 디버깅 코드를 비활성화하기 유용함.
@@ -32,24 +33,18 @@
 /**
  *
  */
-namespace Debug
+
+class CUSTOMDEBUGGING_API FMyDebug
 {
-	static bool bDebugPlay = true;
+private:
 
+	static bool bDebugPlay;
 
-	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)
-	{
-		if (!bDebugPlay)
-		{
-			return;
-		}
+public:
 
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(InKey, 3.0f, Color, Msg);
-		}
+	FMyDebug();
+	~FMyDebug();
 
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg);
-	}
+	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1);
 
 };

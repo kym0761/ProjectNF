@@ -19,7 +19,7 @@ void UCharacterState::StateAction()
 	ICharacterAction* characterActionInterface = Cast<ICharacterAction>(StateOwner);
 	if (!characterActionInterface)
 	{
-		Debug::Print(DEBUG_TEXT("character action interface is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("character action interface is Invalid."));
 		return;
 	}
 

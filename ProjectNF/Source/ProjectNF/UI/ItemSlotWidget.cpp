@@ -62,7 +62,7 @@ FReply UItemSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const
 
 void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
-	Debug::Print(DEBUG_TEXT("Item Slot Drag Function"));
+	FMyDebug::Print(DEBUG_TEXT("Item Slot Drag Function"));
 
 	if (!IsValid(InventoryComponentRef))
 	{
@@ -80,7 +80,7 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 	if (!IsValid(dragDisplay))
 	{
 		//drag display 생성 실패
-		Debug::Print(DEBUG_TEXT("Create Drag Display Failed."));
+		FMyDebug::Print(DEBUG_TEXT("Create Drag Display Failed."));
 			return;
 	}
 
@@ -101,12 +101,12 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 
 bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-	Debug::Print(DEBUG_TEXT("Item Slot Drop Function"));
+	FMyDebug::Print(DEBUG_TEXT("Item Slot Drop Function"));
 
 	if (!IsValid(InOperation))
 	{
 		//잘못된 InOperation
-		Debug::Print(DEBUG_TEXT("InOperation is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("InOperation is Invalid."));
 		return false;
 	}
 
@@ -115,7 +115,7 @@ bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropE
 	if (!IsValid(droppedItemSlot))
 	{
 		//dropped item slot nullptr
-		Debug::Print(DEBUG_TEXT("droppedItemSlot is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("droppedItemSlot is Invalid."));
 		return false;
 	}
 
@@ -135,7 +135,7 @@ bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropE
 	}
 
 
-	Debug::Print(DEBUG_TEXT("Test Fail."));
+	FMyDebug::Print(DEBUG_TEXT("Test Fail."));
 	return false;
 }
 

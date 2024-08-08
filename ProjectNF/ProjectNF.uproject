@@ -5,6 +5,15 @@
 	"Description": "",
 	"Modules": [
 		{
+			"Name": "GameDefines",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject"
+			]
+		},
+		{
 			"Name": "ProjectNF",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
@@ -31,15 +40,6 @@
 				"Engine",
 				"CoreUObject",
 				"UMG"
-			]
-		},
-		{
-			"Name": "GameDefines",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
 			]
 		},
 		{

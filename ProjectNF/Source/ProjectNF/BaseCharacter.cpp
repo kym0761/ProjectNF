@@ -188,13 +188,13 @@ void ABaseCharacter::Attack()
 {
 	//근접 공격?
 
-	Debug::Print(DEBUG_TEXT("Attack"));
+	FMyDebug::Print(DEBUG_TEXT("Attack"));
 
 	auto animInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
 	if (!IsValid(animInstance))
 	{
-		Debug::Print(DEBUG_TEXT("AnimInstance Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("AnimInstance Invalid."));
 		return;
 	}
 
@@ -225,7 +225,7 @@ void ABaseCharacter::UseFarmTool()
 	if (!traceResult)
 	{
 		//trace failed
-		Debug::Print(DEBUG_TEXT("trace failed"));		
+		FMyDebug::Print(DEBUG_TEXT("trace failed"));
 		return;
 	}
 
@@ -233,7 +233,7 @@ void ABaseCharacter::UseFarmTool()
 	if (!IsValid(gridManager))
 	{
 		//gridmanager nullptr
-		Debug::Print(DEBUG_TEXT("gridManager nullptr"));
+		FMyDebug::Print(DEBUG_TEXT("gridManager nullptr"));
 		return;
 	}
 
@@ -243,7 +243,7 @@ void ABaseCharacter::UseFarmTool()
 	if (bExistOnGrid)
 	{
 		//누가 점유중이라 못함
-		Debug::Print(DEBUG_TEXT("already occupying"));
+		FMyDebug::Print(DEBUG_TEXT("already occupying"));
 		return;
 	}
 
@@ -253,7 +253,7 @@ void ABaseCharacter::UseFarmTool()
 
 	if (!IsValid(farmtile))
 	{
-		Debug::Print(DEBUG_TEXT("Spawn Object Failed."));
+		FMyDebug::Print(DEBUG_TEXT("Spawn Object Failed."));
 		return;
 	}
 
@@ -261,7 +261,7 @@ void ABaseCharacter::UseFarmTool()
 	auto dataManager = UNFGameInstance::GetDataManager();
 	if (!IsValid(dataManager))
 	{
-		Debug::Print(DEBUG_TEXT("Data Manager is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Data Manager is Invalid."));
 		return;
 	}
 
@@ -281,7 +281,7 @@ void ABaseCharacter::DoWhat()
 {
 	//뭐할지 안 정해짐
 
-	Debug::Print(DEBUG_TEXT("DoWhat"));
+	FMyDebug::Print(DEBUG_TEXT("DoWhat"));
 
 }
 
@@ -306,7 +306,7 @@ void ABaseCharacter::DoPlanting()
 	if (!traceResult)
 	{
 		//trace failed
-		Debug::Print(DEBUG_TEXT("trace failed"));
+		FMyDebug::Print(DEBUG_TEXT("trace failed"));
 		return;
 	}
 
@@ -314,7 +314,7 @@ void ABaseCharacter::DoPlanting()
 	if (!IsValid(gridManager))
 	{
 		//gridmanager nullptr
-		Debug::Print(DEBUG_TEXT("gridManager nullptr"));
+		FMyDebug::Print(DEBUG_TEXT("gridManager nullptr"));
 		return;
 	}
 
@@ -324,14 +324,14 @@ void ABaseCharacter::DoPlanting()
 
 	if (!IsValid(farmtile))
 	{
-		Debug::Print(DEBUG_TEXT("farmtile is not exist."));
+		FMyDebug::Print(DEBUG_TEXT("farmtile is not exist."));
 		return;
 	}
 
 	const FCropData& cropDataInTile = farmtile->GetCropData();
 	if (!cropDataInTile.CropName.IsNone())
 	{
-		Debug::Print(DEBUG_TEXT("Something is Already Planted."));
+		FMyDebug::Print(DEBUG_TEXT("Something is Already Planted."));
 		return;
 	}
 
@@ -349,7 +349,7 @@ void ABaseCharacter::DoPlanting()
 	
 	farmtile->SetInfo(cropData);
 
-	Debug::Print(DEBUG_TEXT("Crop Planting OK"));
+	FMyDebug::Print(DEBUG_TEXT("Crop Planting OK"));
 
 
 }

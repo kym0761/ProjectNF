@@ -12,14 +12,14 @@ FItemSheetData UDataManager::GetItemData(const FName& ItemID)
 	//빈 아이템 ID
 	if (ItemID.IsNone())
 	{
-		Debug::Print(DEBUG_TEXT("Empty ItemID"));
+		FMyDebug::Print(DEBUG_TEXT("Empty ItemID"));
 		return FItemSheetData();
 	}
 
 	//존재하지 않는 아이템 데이터
 	if (!ItemSheetDataMap.Contains(ItemID))
 	{
-		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
+		FMyDebug::Print(DEBUG_TEXT("Invalid Item ID"));
 		return FItemSheetData();
 	}
 
@@ -43,14 +43,14 @@ FCropSheetData UDataManager::GetCropData(const FName& CropID)
 	//빈 작물 ID
 	if (CropID.IsNone())
 	{
-		Debug::Print(DEBUG_TEXT("Empty CropID"));
+		FMyDebug::Print(DEBUG_TEXT("Empty CropID"));
 		return FCropSheetData();
 	}
 
 	//존재하지 않는 아이템 데이터
 	if (!CropSheetDataMap.Contains(CropID))
 	{
-		Debug::Print(DEBUG_TEXT("Invalid Item ID"));
+		FMyDebug::Print(DEBUG_TEXT("Invalid Item ID"));
 		return FCropSheetData();
 	}
 

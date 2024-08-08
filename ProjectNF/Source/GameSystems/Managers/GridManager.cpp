@@ -35,7 +35,7 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 {
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
 	}
 	
 	//GetCurrentPlayWorld()는 Outer와 상관없이 현재 게임의 World를 얻을 수 있다.
@@ -69,14 +69,14 @@ bool UGridManager::IsSomethingExistOnGrid(const FGrid& Grid) const
 
 		if (hitResult)
 		{
-			Debug::Print(DEBUG_VATEXT(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
 			return true;
 		}
 
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("world is nullptr"));
+		FMyDebug::Print(DEBUG_TEXT("world is nullptr"));
 	}
 
 	return false;
@@ -101,7 +101,7 @@ void UGridManager::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 {
 	if (!IsValid(TargetFarmlandTile))
 	{
-		Debug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
 		return;
 	}
 
@@ -111,12 +111,12 @@ void UGridManager::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 
 	if (CropMap.Contains(grid))
 	{
-		Debug::Print(DEBUG_TEXT("정보 변경"));
+		FMyDebug::Print(DEBUG_TEXT("정보 변경"));
 		CropMap[grid] = cropData;
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("새로 생성"));
+		FMyDebug::Print(DEBUG_TEXT("새로 생성"));
 		CropMap.Add(grid, cropData);
 	}
 }
@@ -125,7 +125,7 @@ void UGridManager::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
 {
 	if (!IsValid(TargetFarmlandTile))
 	{
-		Debug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
 		return;
 	}
 
@@ -134,11 +134,11 @@ void UGridManager::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
 
 	if (CropMap.Contains(grid))
 	{
-		Debug::Print(DEBUG_TEXT("정보 삭제"));
+		FMyDebug::Print(DEBUG_TEXT("정보 삭제"));
 		CropMap.Remove(grid);
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("없는 것을 삭제하려 함."));
+		FMyDebug::Print(DEBUG_TEXT("없는 것을 삭제하려 함."));
 	}
 }

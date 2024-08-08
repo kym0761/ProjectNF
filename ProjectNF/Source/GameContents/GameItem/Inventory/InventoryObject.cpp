@@ -45,7 +45,7 @@ bool UInventoryObject::HasEnoughSpaceForItem(const FItemSlotData& InData) const
 
 	if (!RequestItemSheetData.IsBound())
 	{
-		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
+		FMyDebug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
 		return false;
 	}
 
@@ -54,7 +54,7 @@ bool UInventoryObject::HasEnoughSpaceForItem(const FItemSlotData& InData) const
 	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
-		Debug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
+		FMyDebug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
 		return false;
 	}
 
@@ -136,7 +136,7 @@ const FItemSlotData* UInventoryObject::GetInventoryItem(const int32 Index) const
 	}
 
 	//실패.
-	Debug::Print(DEBUG_TEXT("Invalid Item Index Requested.."));
+	FMyDebug::Print(DEBUG_TEXT("Invalid Item Index Requested.."));
 	return nullptr;
 }
 
@@ -160,13 +160,13 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 	if (InData.IsEmpty())
 	{
 		//빈 데이터는 넣지 않음.
-		Debug::Print(DEBUG_TEXT("빈 데이터"));
+		FMyDebug::Print(DEBUG_TEXT("빈 데이터"));
 		return -1;
 	}
 
 	if (!RequestItemSheetData.IsBound())
 	{
-		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
+		FMyDebug::Print(DEBUG_TEXT("OnRequest is Not Bound"));
 		return -1;
 	}
 
@@ -176,7 +176,7 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 	if (itemSheetData.IsEmpty())
 	{
 		//올바른 아이템 정보가 아님.
-		Debug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
+		FMyDebug::Print(DEBUG_TEXT("Item Sheet Data is Not Correct"));
 		return -1;
 	}
 

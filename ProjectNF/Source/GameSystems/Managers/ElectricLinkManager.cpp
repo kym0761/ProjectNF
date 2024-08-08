@@ -27,7 +27,7 @@ void UElectricLinkManager::SearchAllLinks()
 
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
 		return;
 	}
 
@@ -35,7 +35,7 @@ void UElectricLinkManager::SearchAllLinks()
 
 	if (!IsValid(world))
 	{
-		Debug::Print(DEBUG_TEXT("World is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("World is Invalid."));
 		return;
 	}
 
@@ -120,7 +120,7 @@ void UElectricLinkManager::InitManager()
 {
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("GEngine is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
 		return;
 	}
 
@@ -130,7 +130,7 @@ void UElectricLinkManager::InitManager()
 	UWorld* world = GEngine->GetCurrentPlayWorld();
 	if (!IsValid(world))
 	{
-		Debug::Print(DEBUG_TEXT("world is invalid."));
+		FMyDebug::Print(DEBUG_TEXT("world is invalid."));
 		return;
 	}
 

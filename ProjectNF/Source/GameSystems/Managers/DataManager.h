@@ -69,7 +69,7 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UD
 {
 	if (!IsValid(SheetTable))
 	{
-		Debug::Print(DEBUG_TEXT("SheetTable Not set"));
+		FMyDebug::Print(DEBUG_TEXT("SheetTable Not set"));
 		return;
 	}
 
@@ -80,7 +80,7 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, const UD
 		T* sheetData = SheetTable->FindRow<T>(rowName, "");
 		if (!sheetData)
 		{
-			Debug::Print(DEBUG_TEXT("Warning! : sheet Data nullptr"));
+			FMyDebug::Print(DEBUG_TEXT("Warning! : sheet Data nullptr"));
 			continue;
 		}
 

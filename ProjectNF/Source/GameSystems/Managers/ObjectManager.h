@@ -89,6 +89,8 @@ public:
 template<typename T>
 void UObjectManager::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths, const FString& PrefixToRemove)
 {
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("loading path : %s"), *FolderPaths[0].ToString()));
+
 	FAssetRegistryModule& assetRegistryModule 
 		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 
@@ -105,18 +107,51 @@ void UObjectManager::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UC
 
 	for (auto asset : assetData)
 	{
-		FString name = asset.GetAsset()->GetName();
-		FString path = asset.GetObjectPathString();
-		path = path + TEXT("_C"); //BP인식을 하려면 _C 붙여야함.
+		if (!IsValid(asset.GetAsset()))
+		{
+			FMyDebug::Print(DEBUG_TEXT("GetAsset() is Invalid."));
+			continue;
+		}
 
-		UClass* findClass = FindObject<UClass>(nullptr, *path);
+		FString name = asset.GetAsset()->GetName();
+		FString path = asset.GetObjectPathString(); // /Game/Blueprint/BP_~~
+
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("asset path : %s"), *path));
+
+#if WITH_EDITOR
+		//실제 빌드된 패키지에서는 _C가 자동으로 붙기 때문에 이 기능은 에디터에서만 동작해야한다.
+		path = path + TEXT("_C"); //BP인식을 하려면 _C 붙여야함.
+#endif
+
+		UClass* findClass = StaticLoadClass(TargetClass,nullptr, *path);
+
+		if (!IsValid(findClass))
+		{
+			FMyDebug::Print(DEBUG_TEXT("failed to get findclass"));
+			continue;
+		}
+		else if (IsValid(findClass) && findClass->IsChildOf(TargetClass))
+		{
+			FMyDebug::Print(DEBUG_TEXT("findclass is child of TargetClass"));
+		}
+		else
+		{
+			FMyDebug::Print(DEBUG_TEXT("findclass is !! Not !! child of TargetClass"));
+			continue;
+		}
 
 		//찾은 클래스가 Target Class인지 확인
-		if (IsValid(findClass) && findClass->IsChildOf(TargetClass))
+		if (IsValid(findClass))
 		{
 			//BP_ 빼고 key로 만들어 Map에 넣음.
 			name.RemoveFromStart(PrefixToRemove);
+
+			//빌드된 패키지에서는 블루프린트 이름에 _C가 자동으로 붙는다.
+			name.RemoveFromEnd(TEXT("_C"));
 			TargetMap.Add(name, findClass);
+
+
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("key : %s / Val : %s"), *name, *findClass->GetName()));
 		}
 	}
 

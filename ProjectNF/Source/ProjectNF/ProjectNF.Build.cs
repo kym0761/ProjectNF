@@ -25,7 +25,7 @@ public class ProjectNF : ModuleRules
 
         //Add Custom Modules in Source Folder.
 
-        PrivateIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
+        //PrivateIncludePathModuleNames.AddRange(new string[] { "CustomDebugging" });
         PrivateIncludePaths.AddRange(new string[] { "CustomDebugging" });
         PublicDependencyModuleNames.AddRange(new string[] { "CustomDebugging" });
 

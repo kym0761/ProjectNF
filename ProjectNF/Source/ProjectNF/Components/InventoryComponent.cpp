@@ -25,20 +25,8 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Debug::Print(DEBUG_TEXT("Inventory Component BeginPlay()"));
+	FMyDebug::Print(DEBUG_TEXT("Inventory Component BeginPlay()"));
 
-}
-
-void UInventoryComponent::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	////InventorySize의 값이 변경됐을 때 인벤토리의 크기를 다시 재조정한다.
-	//FProperty* prop = PropertyChangedEvent.Property;
-	//if (prop->GetName() == TEXT("InventorySize"))
-	//{
-	//	//InitializeInventory();
-	//}
 }
 
 
@@ -52,7 +40,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UInventoryComponent::InitInventoryComponent()
 {
-	Debug::Print(DEBUG_TEXT("Inventory Component Init()"));
+	FMyDebug::Print(DEBUG_TEXT("Inventory Component Init()"));
 
 	auto inventoryManager = UNFGameInstance::GetInventoryManager();
 
@@ -62,7 +50,7 @@ void UInventoryComponent::InitInventoryComponent()
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("Inventory Manager is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Inventory Manager is Invalid."));
 	}
 }
 

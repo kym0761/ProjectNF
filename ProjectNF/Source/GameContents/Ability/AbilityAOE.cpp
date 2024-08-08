@@ -19,7 +19,9 @@ void AAbilityAOE::InitAbility_Implementation(AActor* AbilityOwnerVal)
 {
 	if (!IsValid(AbilityOwnerVal))
 	{
-		Debug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
+
+		//Debug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
 		return;
 	}
 
@@ -35,7 +37,7 @@ void AAbilityAOE::StartAbility_Implementation()
 
 	for (auto i : overlappedActors)
 	{
-		Debug::Print(DEBUG_VATEXT(TEXT("Overlapped By AOE : %s"), *i->GetName()));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlapped By AOE : %s"), *i->GetName()));
 	}
 
 	UNFGameInstance::GetObjectManager()->SpawnNiagaraSystem(TEXT("TestEffect"), GetActorLocation());

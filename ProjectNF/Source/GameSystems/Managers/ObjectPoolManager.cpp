@@ -26,7 +26,7 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, UClass* PoolableB
 	bool bCheckObjectPoolable = PoolableBP->GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
-		Debug::Print(DEBUG_TEXT("not ObjectPoolable"));
+		FMyDebug::Print(DEBUG_TEXT("not ObjectPoolable"));
 		return nullptr;
 	}
 
@@ -52,12 +52,12 @@ AActor* UObjectPoolManager::SpawnInPool(UObject* WorldContext, UClass* PoolableB
 		FActorSpawnParameters spawnParam;
 		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		Debug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
+		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 		poolableActor = WorldContext->GetWorld()->SpawnActor<AActor>(PoolableBP, Location, Rotation, spawnParam);
 	}
 	else //PoolChunk에 비활성화 Actor가 있다면, 해당 Chunk에서 하나 꺼내 사용한다.
 	{
-		Debug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
+		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
 
@@ -91,7 +91,7 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 	IObjectPoolable* objectPoolable = Cast<IObjectPoolable>(PoolableActor);
 	if (!objectPoolable)
 	{
-		Debug::Print(DEBUG_TEXT("Not ObjectPoolable Actor."));
+		FMyDebug::Print(DEBUG_TEXT("Not ObjectPoolable Actor."));
 		return;
 	}
 
@@ -100,7 +100,7 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 	//PoolChunk가 존재하는지 확인. 청크가 없으면 추가한다.
 	if (!ObjectPoolMap.Contains(classkey))
 	{
-		Debug::Print(DEBUG_TEXT("no Pool Chunk. make Pool Chunk To Despawn."));
+		FMyDebug::Print(DEBUG_TEXT("no Pool Chunk. make Pool Chunk To Despawn."));
 		auto poolChunk = NewObject<UPoolChunk>(this);
 		ObjectPoolMap.Add(classkey, poolChunk);
 	}
@@ -125,7 +125,7 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 
 	IObjectPoolable::Execute_PoolEndPlay(PoolableActor);
 
-	Debug::Print(DEBUG_TEXT("ObjectPoolable Actor Despawned."));
+	FMyDebug::Print(DEBUG_TEXT("ObjectPoolable Actor Despawned."));
 
 }
 

@@ -65,7 +65,7 @@ T* UObjectPoolManager::SpawnFromPool(UObject* WorldContext, TSubclassOf<T> Poola
 	bool bCheckObjectPoolable = PoolableBP.GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
 	{
-		Debug::Print(DEBUG_TEXT("not ObjectPoolable"));
+		FMyDebug::Print(DEBUG_TEXT("not ObjectPoolable"));
 		return nullptr;
 	}
 
@@ -88,12 +88,12 @@ T* UObjectPoolManager::SpawnFromPool(UObject* WorldContext, TSubclassOf<T> Poola
 	//PoolChunk가 비었다면 그냥 새로 생성
 	if (objectPoolQueue.IsEmpty())
 	{
-		Debug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
+		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 		poolableActor = WorldContext->GetWorld()->SpawnActor<T>(PoolableBP, Location, Rotation);
 	}
 	else //PoolChunk에 비활성화 Actor가 있다면, 해당 Chunk에서 하나 꺼내 사용한다.
 	{
-		Debug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
+		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
 

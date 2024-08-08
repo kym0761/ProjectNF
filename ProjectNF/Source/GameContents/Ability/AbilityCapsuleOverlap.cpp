@@ -25,7 +25,7 @@ void AAbilityCapsuleOverlap::InitAbility_Implementation(AActor* AbilityOwnerVal)
 {
 	if (!IsValid(AbilityOwnerVal))
 	{
-		Debug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
 		return;
 	}
 
@@ -53,5 +53,5 @@ void AAbilityCapsuleOverlap::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 		return;
 	}
 
-	Debug::Print(DEBUG_VATEXT(TEXT("Overlapped By Ability : %s"), *OtherActor->GetName()));
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlapped By Ability : %s"), *OtherActor->GetName()));
 }

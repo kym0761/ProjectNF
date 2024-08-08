@@ -14,8 +14,6 @@
 #include "Managers/GameManager.h"
 #include "Managers/ObjectManager.h"
 
-#include "TestClass.h" //Test
-
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
 TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
@@ -45,7 +43,6 @@ UNFGameInstance* UNFGameInstance::GetNFGameInstance()
 
 void UNFGameInstance::Save()
 {
-	TestClass::Func();
 
 	UNFSaveGame* saveGame = 
 		Cast<UNFSaveGame>(
@@ -54,12 +51,12 @@ void UNFGameInstance::Save()
 	if (!IsValid(saveGame))
 	{
 		//saveGame 만들기 실패
-		Debug::Print(DEBUG_TEXT("세이브 실패"));
+		FMyDebug::Print(DEBUG_TEXT("세이브 실패"));
 		return;
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("세이브 성공"));
+		FMyDebug::Print(DEBUG_TEXT("세이브 성공"));
 	}
 
 	//세이브에 플레이어 이름을 넣는다.
@@ -89,7 +86,7 @@ void UNFGameInstance::Load(int32 SlotNumber)
 	if (!IsValid(saveGame))
 	{
 		//load 실패
-		Debug::Print(DEBUG_TEXT("로딩 실패"));
+		FMyDebug::Print(DEBUG_TEXT("로딩 실패"));
 
 		//로드를 실패했어도 GameInstance는 초기화가 되어야함.
 		InitNFGameInstance();
@@ -101,7 +98,7 @@ void UNFGameInstance::Load(int32 SlotNumber)
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("Load 성공"));
+		FMyDebug::Print(DEBUG_TEXT("Load 성공"));
 	}
 
 	//처음 로드할 때, 플레이어 이름과 Save의 SlotNumber를 먼저 넣음
@@ -189,7 +186,7 @@ void UNFGameInstance::LoadFarmlandTile(UNFSaveGame* SaveGame)
 
 void UNFGameInstance::InitManagers()
 {
-	Debug::Print(DEBUG_TEXT("InitManagers Called."));
+	FMyDebug::Print(DEBUG_TEXT("InitManagers Called."));
 
 	// Manager를 추가할 때마다 이 부분을 추가해야함
 
@@ -203,7 +200,7 @@ void UNFGameInstance::InitManagers()
 		!IsValid(ObjectManager_BP)
 		)
 	{
-		Debug::Print(DEBUG_TEXT("Manager 블루프린트 중에 Set되지 않은 것이 존재함. BP_GameInstance를 확인할 것."));
+		FMyDebug::Print(DEBUG_TEXT("Manager 블루프린트 중에 Set되지 않은 것이 존재함. BP_GameInstance를 확인할 것."));
 		return;
 	}
 
@@ -264,7 +261,7 @@ void UNFGameInstance::InitManagers()
 	GameManager->InitManager();
 	ObjectManager->InitManager();
 
-	Debug::Print(DEBUG_TEXT("인스턴스의 InitManagers()이 완료됨."));
+	FMyDebug::Print(DEBUG_TEXT("인스턴스의 InitManagers()이 완료됨."));
 
 	//ObjManager에 ObjPoolManager의 Spawn & Despawn을 연동함.
 	ObjectManager->RequestObjectPoolSpawn.Clear();

@@ -161,7 +161,7 @@ void APuzzleButton::ButtonDown()
 
 void APuzzleButton::Trigger()
 {
-	Debug::Print(DEBUG_TEXT("Trigger"));
+	FMyDebug::Print(DEBUG_TEXT("Trigger"));
 
 	for (auto i : TriggerTargets)
 	{

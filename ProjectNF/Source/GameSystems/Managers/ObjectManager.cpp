@@ -42,6 +42,7 @@ void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& Tar
 
 		UNiagaraSystem* findClass = LoadObject<UNiagaraSystem>(nullptr, *path);
 
+
 		//찾은 클래스가 유효한지 확인
 		if (IsValid(findClass))
 		{
@@ -55,11 +56,11 @@ void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& Tar
 	{
 		if (IsValid(i.Value))
 		{
-			Debug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
 		}
 		else
 		{
-			Debug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
 		}
 	}
 
@@ -69,20 +70,20 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 {
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("No GEngine."));
+		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return nullptr;
 	}
 
 	UWorld* world = GEngine->GetCurrentPlayWorld();
 	if (!IsValid(world))
 	{
-		Debug::Print(DEBUG_TEXT("No World."));
+		FMyDebug::Print(DEBUG_TEXT("No World."));
 		return nullptr;
 	}
 
 	if (!BlueprintMap.Contains(ToSpawnClassName))
 	{
-		Debug::Print(DEBUG_TEXT("No Valid Blueprint Name."));
+		FMyDebug::Print(DEBUG_TEXT("No Valid Blueprint Name."));
 		return nullptr;
 	}
 
@@ -98,7 +99,7 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 		}
 		else
 		{
-			Debug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
+			FMyDebug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
 		}
 	}
 	else
@@ -125,14 +126,14 @@ void UObjectManager::Despawn(AActor* DespawnTarget)
 {
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("No GEngine."));
+		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return;
 	}
 
 	UWorld* world = GEngine->GetCurrentPlayWorld();
 	if (!IsValid(world))
 	{
-		Debug::Print(DEBUG_TEXT("No World."));
+		FMyDebug::Print(DEBUG_TEXT("No World."));
 		return;
 	}
 
@@ -144,7 +145,7 @@ void UObjectManager::Despawn(AActor* DespawnTarget)
 		}
 		else
 		{
-			Debug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
+			FMyDebug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
 		}
 
 	}
@@ -180,7 +181,7 @@ UNiagaraComponent* UObjectManager::SpawnNiagaraSystem(FString ToSpawnNiagaraName
 
 	if (!GEngine)
 	{
-		Debug::Print(DEBUG_TEXT("No GEngine."));
+		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return nullptr;
 	}
 
@@ -188,13 +189,13 @@ UNiagaraComponent* UObjectManager::SpawnNiagaraSystem(FString ToSpawnNiagaraName
 	
 	if (!IsValid(world))
 	{
-		Debug::Print(DEBUG_TEXT("No World."));
+		FMyDebug::Print(DEBUG_TEXT("No World."));
 		return nullptr;
 	}
 
 	if (!NiagaraSystemMap.Contains(ToSpawnNiagaraName))
 	{
-		Debug::Print(DEBUG_TEXT("No Valid Niagara Name."));
+		FMyDebug::Print(DEBUG_TEXT("No Valid Niagara Name."));
 		return nullptr;
 	}
 

@@ -51,7 +51,7 @@ void AItemPickup::Tick(float DeltaTime)
 
 void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 {
-	Debug::Print(DEBUG_TEXT("ItemPickup Interact Ok."));
+	FMyDebug::Print(DEBUG_TEXT("ItemPickup Interact Ok."));
 	//pawn의 인벤토리에 접근
 
 	//인벤토리가 있으면, 인벤토리 안에 PickupItemData 정보를 넣음.
@@ -60,14 +60,14 @@ void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 	auto inventoryComponent = InteractCauser->FindComponentByClass<UInventoryComponent>();
 	if (!IsValid(inventoryComponent))
 	{
-		Debug::Print(DEBUG_TEXT("No Inventory comp."));
+		FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
 	}
 
 	bool bAdded = inventoryComponent->AddItemToInventory(PickupItemData);
 
 	if (bAdded)
 	{
-		Debug::Print(DEBUG_TEXT("Item Added to Inventory."));
+		FMyDebug::Print(DEBUG_TEXT("Item Added to Inventory."));
 		UNFGameInstance::GetObjectPoolManager()->DespawnToPool(this);
 	}
 
@@ -76,7 +76,7 @@ void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 void AItemPickup::SetItemPickupData(FItemSlotData SlotData)
 {
 	PickupItemData = SlotData;
-	Debug::Print(DEBUG_VATEXT(TEXT("Set Item Pickup Data : %s, %d"), *PickupItemData.ItemName.ToString(), PickupItemData.Quantity));
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("Set Item Pickup Data : %s, %d"), *PickupItemData.ItemName.ToString(), PickupItemData.Quantity));
 
 	auto itemData = UNFGameInstance::GetDataManager()->GetItemData(PickupItemData.ItemName);
 

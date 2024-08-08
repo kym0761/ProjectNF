@@ -20,7 +20,7 @@ void UInventoryWidget::NativeConstruct()
 
 	if (!IsValid(InventoryComponentRef))
 	{
-		Debug::Print(DEBUG_TEXT("Inventory Comp Ref is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Inventory Comp Ref is Invalid."));
 		return;
 	}
 
@@ -36,7 +36,7 @@ void UInventoryWidget::NativeConstruct()
 
 		if (!IsValid(slot))
 		{
-			Debug::Print(DEBUG_TEXT("create slot failed"));
+			FMyDebug::Print(DEBUG_TEXT("create slot failed"));
 			continue;
 		}
 

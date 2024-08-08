@@ -16,11 +16,11 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 	{
 		//잘못된 인벤토리 접근법
 		//InventoryOwner가 ""임.
-		Debug::Print(DEBUG_TEXT("InventoryOwner String Empty"));
+		FMyDebug::Print(DEBUG_TEXT("InventoryOwner String Empty"));
 		return nullptr;
 	}
 
-	Debug::Print(DEBUG_VATEXT(TEXT("Inventory Map Size = %d"), InventoryMap.Num()));
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Map Size = %d"), InventoryMap.Num()));
 
 	//InventoryOwner에 대한 인벤토리가 없다면 새로 생성해준다.
 	if (InventoryMap.Num() == 0 
@@ -34,12 +34,12 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 		inventory->RequestItemSheetData.BindDynamic(dataManager, &UDataManager::GetItemData);
 
 		InventoryMap.Add(InventoryOwner, inventory);
-		Debug::Print(DEBUG_VATEXT(TEXT("Inventory Created --> InventoryOwner : %s"), *InventoryOwner));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Created --> InventoryOwner : %s"), *InventoryOwner));
 		return InventoryMap[InventoryOwner];
 	}
 	else
 	{
-		Debug::Print(DEBUG_VATEXT(TEXT("Inventory Exist! --> InventoryOwner : %s"), *InventoryOwner));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Exist! --> InventoryOwner : %s"), *InventoryOwner));
 		return InventoryMap[InventoryOwner];
 	}
 

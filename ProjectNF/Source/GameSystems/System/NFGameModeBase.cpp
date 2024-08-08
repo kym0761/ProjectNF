@@ -36,7 +36,7 @@ void ANFGameModeBase::StartPlay()
 
 void ANFGameModeBase::CreateAllSavedCrop()
 {
-	Debug::Print(DEBUG_TEXT("Crop Load to Unreal Map"));
+	FMyDebug::Print(DEBUG_TEXT("Crop Load to Unreal Map"));
 
 	auto objManager = UNFGameInstance::GetObjectManager();
 	auto gridManager = UNFGameInstance::GetGridManager();

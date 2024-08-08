@@ -27,7 +27,7 @@ void UBaseAnimInstance::NativeInitializeAnimation()
 		AbilitySuffix.RemoveFromStart(TEXT("BP_"));
 		AbilitySuffix.RemoveFromEnd(TEXT("_C"));
 
-		Debug::Print(DEBUG_VATEXT(TEXT("Suffix : %s"), *AbilitySuffix));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Suffix : %s"), *AbilitySuffix));
 	}
 
 	OnMontageEnded.Clear();
@@ -46,11 +46,11 @@ void UBaseAnimInstance::OnCombatMontageEnded(UAnimMontage* Montage, bool bInterr
 
 	if (bInterrupted)
 	{
-		Debug::Print(DEBUG_TEXT("OnMontageEnded, interrupted"));
+		FMyDebug::Print(DEBUG_TEXT("OnMontageEnded, interrupted"));
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("OnMontageEnded, not interrupted"));
+		FMyDebug::Print(DEBUG_TEXT("OnMontageEnded, not interrupted"));
 	}
 
 }
@@ -124,16 +124,24 @@ void UBaseAnimInstance::PlayAttackMontage()
 		//어빌리티 초기화
 		if (IsValid(ability))
 		{
-			ability->AttachToComponent(mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-			ability->InitAbility(TryGetPawnOwner());
+			//init 전에 OnStart, OnEnd를 Bind해주어야 일부 스킬 중에 즉발적으로 동작하고 사라지는 액터에 문제가 생기지 않음.
 
 			OnStartAbility.Clear();
 			OnEndAbility.Clear();
 			OnStartAbility.AddDynamic(ability, &AAbilityBase::StartAbility);
 			OnEndAbility.AddDynamic(ability, &AAbilityBase::EndAbility);
+
+			ability->AttachToComponent(mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+			ability->InitAbility(TryGetPawnOwner());
 		}
 	}
 	
 	//공격 행동 명령이 전부 끝나면 Combo++한다.
 	ComboNumber++;
+
+	if (ComboNumber > comboNumberMax)
+	{
+		ComboNumber = 0;
+	}
+
 }

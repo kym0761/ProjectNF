@@ -3,7 +3,6 @@
 
 #include "FireStand.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/WidgetComponent.h"
 #include "Components/BoxComponent.h"
 #include "NiagaraComponent.h"
 //#include "NiagaraFunctionLibrary.h"
@@ -31,7 +30,7 @@ void AFireStand::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//½Ã°£Á¦ÇÑ È­·Î´ë¸é Widget »ı¼ºÀÌ ÇÊ¿ä
+	//ì‹œê°„ì œí•œ í™”ë¡œëŒ€ë©´ Widget ìƒì„±ì´ í•„ìš”
 
 }
 
@@ -54,7 +53,7 @@ void AFireStand::Tick(float DeltaTime)
 		{
 			if (FireEffect->IsActive())
 			{
-				FireEffect->Deactivate(); //de-active´Â ÀÌÆåÆ® emitter°¡ È°µ¿ÀÌ ¿Ï·áµÉ¶§ ÀÏ¾î³ª¼­ Áï½Ã active & deactive ÀüÈ¯ÀÌ µÇÁö ¾ÊÀ½.
+				FireEffect->Deactivate(); //de-activeëŠ” ì´í™íŠ¸ emitterê°€ í™œë™ì´ ì™„ë£Œë ë•Œ ì¼ì–´ë‚˜ì„œ ì¦‰ì‹œ active & deactive ì „í™˜ì´ ë˜ì§€ ì•ŠìŒ.
 			}
 		}
 
@@ -62,14 +61,14 @@ void AFireStand::Tick(float DeltaTime)
 	}
 
 
-	//TODO : ½Ã°£ Á¦ÇÑ È­·Î´ë¸é ½Ã°£ °è»ê ÇÊ¿ä
+	//TODO : ì‹œê°„ ì œí•œ í™”ë¡œëŒ€ë©´ ì‹œê°„ ê³„ì‚° í•„ìš”
 
 }
 
 void AFireStand::Trigger()
 {
-	//Æ®¸®°Å µ¿ÀÛ½Ã ´Ù¸¥ Æ®¸®°ÅµÉ ¾ÖµéÀ» µ¿ÀÛ½ÃÄÑÁÜ
-	//¿¹½Ã) ºÒÀÌ ºÙÀ¸¸é ¹®ÀÌ ¿­¸°´Ù.
+	//íŠ¸ë¦¬ê±° ë™ì‘ì‹œ ë‹¤ë¥¸ íŠ¸ë¦¬ê±°ë  ì• ë“¤ì„ ë™ì‘ì‹œì¼œì¤Œ
+	//ì˜ˆì‹œ) ë¶ˆì´ ë¶™ìœ¼ë©´ ë¬¸ì´ ì—´ë¦°ë‹¤.
 
 	for (auto i : TriggerTargets)
 	{
@@ -84,8 +83,8 @@ void AFireStand::Trigger()
 
 void AFireStand::BeTriggered(TObjectPtr<class APuzzleActorBase> TriggerActor, bool TriggerValue)
 {
-	//Æ®¸®°Å ´çÇßÀ» ¶§ÀÇ µ¿ÀÛ.. ¿¹½Ã) ¹öÆ° ´­·¯¼­ ºÒÀÌ ÄÑÁü
-	//FireStand´Â ºÒÀ» °­Á¦·Î ºÙ¿©¼­ BeTriggered¸¦ °ÅÄ¡Áö ¾Ê°íµµ ºÒÀ» ºÙÀÏ ¼öµµ ÀÖÀ½.
+	//íŠ¸ë¦¬ê±° ë‹¹í–ˆì„ ë•Œì˜ ë™ì‘.. ì˜ˆì‹œ) ë²„íŠ¼ ëˆŒëŸ¬ì„œ ë¶ˆì´ ì¼œì§
+	//FireStandëŠ” ë¶ˆì„ ê°•ì œë¡œ ë¶™ì—¬ì„œ BeTriggeredë¥¼ ê±°ì¹˜ì§€ ì•Šê³ ë„ ë¶ˆì„ ë¶™ì¼ ìˆ˜ë„ ìˆìŒ.
 
 	SendTriggerParams(TriggerActor, TriggerValue);
 
@@ -96,7 +95,7 @@ void AFireStand::BeTriggered(TObjectPtr<class APuzzleActorBase> TriggerActor, bo
 		Combust();
 	}
 
-	//´õ ÇÒ°Ô ÀÖ´ÂÁö?
+	//ë” í• ê²Œ ìˆëŠ”ì§€?
 }
 
 void AFireStand::Reset()
@@ -116,7 +115,7 @@ void AFireStand::Extinguish()
 
 void AFireStand::OverlapCombust()
 {
-	//ÀÌ FireStand ºÒÀÌ ºÙ¾îÀÖÀ» ¶§, ±ÙÃ³¿¡ ´ê°í ÀÖ´Â ´Ù¸¥ Combustible °´Ã¼°¡ ÀÖ´Ù¸é ±× ¾×ÅÍ¸¦ CombustÇØÁØ´Ù.
+	//ì´ FireStand ë¶ˆì´ ë¶™ì–´ìˆì„ ë•Œ, ê·¼ì²˜ì— ë‹¿ê³  ìˆëŠ” ë‹¤ë¥¸ Combustible ê°ì²´ê°€ ìˆë‹¤ë©´ ê·¸ ì•¡í„°ë¥¼ Combustí•´ì¤€ë‹¤.
 
 	TArray<AActor*> overlapActors;
 
@@ -143,10 +142,10 @@ void AFireStand::TurnOn()
 
 	bFireOn = true;
 
-	//TODO : ºÒ Á¦ÇÑ ½Ã°£ UI º¸ÀÌ±â
-	//TODO2 : TurnOff´Â ¹İ´ë·Î
+	//TODO : ë¶ˆ ì œí•œ ì‹œê°„ UI ë³´ì´ê¸°
+	//TODO2 : TurnOffëŠ” ë°˜ëŒ€ë¡œ
 
-	//ºÒÀÌ ÄÑÁö¸é¼­ Trigger µ¿ÀÛ
+	//ë¶ˆì´ ì¼œì§€ë©´ì„œ Trigger ë™ì‘
 	Trigger();
 
 	if (!CombustTimer.IsValid())
@@ -165,10 +164,10 @@ void AFireStand::TurnOff()
 
 	bFireOn = false;
 
-	//TODO: UI ¾Èº¸ÀÌ°Ô ÇÏ±â
-	//turnOn Âü°í
+	//TODO: UI ì•ˆë³´ì´ê²Œ í•˜ê¸°
+	//turnOn ì°¸ê³ 
 
-	//ºÒÀÌ ²¨Áö¸é¼­ Trigger µ¿ÀÛÀ¸·Î Deactive ¾Ë¸²
+	//ë¶ˆì´ êº¼ì§€ë©´ì„œ Trigger ë™ì‘ìœ¼ë¡œ Deactive ì•Œë¦¼
 	Trigger();
 	
 	if (CombustTimer.IsValid())

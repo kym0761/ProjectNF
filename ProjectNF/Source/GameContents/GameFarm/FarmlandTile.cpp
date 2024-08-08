@@ -46,7 +46,7 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 {
 	if (!RequestCropSheetData.IsBound())
 	{
-		Debug::Print(DEBUG_TEXT("OnRequest is Not Bounded."));
+		FMyDebug::Print(DEBUG_TEXT("OnRequest is Not Bounded."));
 		return;
 	}
 
@@ -55,7 +55,7 @@ void AFarmlandTile::SetInfo(FCropData InCropData)
 
 	if (cropsheetData.IsEmpty())
 	{
-		Debug::Print(DEBUG_TEXT("Empty Crop Sheet Data"));
+		FMyDebug::Print(DEBUG_TEXT("Empty Crop Sheet Data"));
 
 		CropData = InCropData;
 		RequestUpdateCropData.ExecuteIfBound(this);
@@ -96,7 +96,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 
 	if (!RequestCropSheetData.IsBound())
 	{
-		Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
+		FMyDebug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 		return;
 	}
 
@@ -104,7 +104,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 
 	if (cropsheetData.IsEmpty())
 	{
-		Debug::Print(DEBUG_TEXT("cropSheetData is empty"));
+		FMyDebug::Print(DEBUG_TEXT("cropSheetData is empty"));
 		return;
 	}
 
@@ -119,7 +119,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 		//Item Drop
 		if (!RequestSpawnItemPickup.IsBound())
 		{
-			Debug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
+			FMyDebug::Print(DEBUG_TEXT("OnRequest is Not Bound."));
 			return;
 		}
 		
@@ -128,7 +128,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 		
 		if (!IsValid(itemPickup))
 		{
-			Debug::Print(DEBUG_TEXT("Warning. ItemPickup is Invalid."));
+			FMyDebug::Print(DEBUG_TEXT("Warning. ItemPickup is Invalid."));
 		}
 
 		if (IsValid(itemPickup))
@@ -142,7 +142,7 @@ void AFarmlandTile::Interact_Implementation(APawn* InteractCauser)
 	}
 	else
 	{
-		Debug::Print(DEBUG_TEXT("Crop Level is not 3."));
+		FMyDebug::Print(DEBUG_TEXT("Crop Level is not 3."));
 	}
 
 }

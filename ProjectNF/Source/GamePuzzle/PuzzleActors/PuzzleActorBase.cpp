@@ -27,12 +27,12 @@ void APuzzleActorBase::PreEditChange(FProperty* PropertyAboutToChange)
 
 	//UE_LOG(LogTemp, Warning, TEXT("PreEditChange"));
 
-	//TriggerTargets°¡ º¯°æµÈ´Ù¸é, ÀÌÀü TriggerTargetsÀÇ °ªÀ» ÀúÀåÇÔ.
-	//PostEditChangeProperty¸¦ ÅëÇØ TriggerTargets º¯È­¿¡ µû¶ó
-	//triggerMapÀ» ¸¸µé¾îÁØ´Ù.
+	//TriggerTargetsê°€ ë³€ê²½ëœë‹¤ë©´, ì´ì „ TriggerTargetsì˜ ê°’ì„ ì €ì¥í•¨.
+	//PostEditChangePropertyë¥¼ í†µí•´ TriggerTargets ë³€í™”ì— ë”°ë¼
+	//triggerMapì„ ë§Œë“¤ì–´ì¤€ë‹¤.
 	if (PropertyAboutToChange->GetName() == GET_MEMBER_NAME_CHECKED(APuzzleActorBase, TriggerTargets))
 	{
-		Debug::Print(DEBUG_TEXT("You Revised TriggerTarget!"));
+		FMyDebug::Print(DEBUG_TEXT("You Revised TriggerTarget!"));
 		PrevTriggerTargets = TriggerTargets;
 	}
 
@@ -44,13 +44,13 @@ void APuzzleActorBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyCha
 
 	//UE_LOG(LogTemp, Warning, TEXT("PostEditChangeProperty IN %s"), *this->GetName());
 
-	//prevTriggerTargets°ú triggerTargetsÀÇ º¯È­¿¡ µû¶ó
-	//triggerTargets¿¡ »õ·Î µé¾î¿Â Actor¿¡ Á¢±ÙÇØ TriggerMap ¼¼ÆÃ
-	//prevTriggerTargets¿¡ ÀÖ¾úÁö¸¸ ÇöÀç triggerTargets¿¡¼­´Â ¾ø¾îÁø Actor¿¡´Â TriggerMap¿¡¼­ Á¦°ÅÇÑ´Ù.
+	//prevTriggerTargetsê³¼ triggerTargetsì˜ ë³€í™”ì— ë”°ë¼
+	//triggerTargetsì— ìƒˆë¡œ ë“¤ì–´ì˜¨ Actorì— ì ‘ê·¼í•´ TriggerMap ì„¸íŒ…
+	//prevTriggerTargetsì— ìˆì—ˆì§€ë§Œ í˜„ì¬ triggerTargetsì—ì„œëŠ” ì—†ì–´ì§„ Actorì—ëŠ” TriggerMapì—ì„œ ì œê±°í•œë‹¤.
 	if (PropertyChangedEvent.GetPropertyName() == GET_MEMBER_NAME_CHECKED(APuzzleActorBase, TriggerTargets))
 	{
 
-		//1. ÇöÀç array¿¡ ÀÖ´Â ¾×ÅÍ°¡ prev_array¿¡ ¾ø¾ú´Ù¸é, triggerMap¿¡ Ãß°¡
+		//1. í˜„ì¬ arrayì— ìˆëŠ” ì•¡í„°ê°€ prev_arrayì— ì—†ì—ˆë‹¤ë©´, triggerMapì— ì¶”ê°€
 		for (auto i : TriggerTargets)
 		{
 			if (!IsValid(i))
@@ -66,7 +66,7 @@ void APuzzleActorBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyCha
 			i->AddToTriggerMap(this);
 		}
 
-		//2. prev_array¿¡ ÀÖ´ø ¾×ÅÍ°¡ ÇöÀç array¿¡ ¾ø´Ù¸é, triggerMap¿¡¼­ Á¦°Å
+		//2. prev_arrayì— ìˆë˜ ì•¡í„°ê°€ í˜„ì¬ arrayì— ì—†ë‹¤ë©´, triggerMapì—ì„œ ì œê±°
 		for (auto i : PrevTriggerTargets)
 		{
 			if (!IsValid(i))
@@ -100,7 +100,7 @@ void APuzzleActorBase::SendTriggerParams(TObjectPtr<APuzzleActorBase> TriggerAct
 
 	if (!TriggerMap.Contains(key))
 	{
-		//Àß¸øµÈ TriggerActor
+		//ì˜ëª»ëœ TriggerActor
 		return;
 	}
 
@@ -111,17 +111,17 @@ bool APuzzleActorBase::CheckTriggersHaveActivated() const
 {
 	if (TriggerMap.Num() == 0)
 	{
-		//Æ®¸®°Å ÇØ ÁÙ °ÍµéÀÌ ¾øÀ¸¸é true ¹İÈ¯
+		//íŠ¸ë¦¬ê±° í•´ ì¤„ ê²ƒë“¤ì´ ì—†ìœ¼ë©´ true ë°˜í™˜
 		return true;
 	}
 
-	//ÀÛµ¿ÀÌ °¡´ÉÇÑ°¡? == triggermap ¾È¿¡ boolÀÌ false °ªÀÌ ¾øÀ¸¸é °¡´É.
+	//ì‘ë™ì´ ê°€ëŠ¥í•œê°€? == triggermap ì•ˆì— boolì´ false ê°’ì´ ì—†ìœ¼ë©´ ê°€ëŠ¥.
 
 	for (auto pi : TriggerMap)
 	{
 		if (pi.Value == false)
 		{
-			//ºÒ°¡´É
+			//ë¶ˆê°€ëŠ¥
 			return false;
 		}
 	}
@@ -133,13 +133,13 @@ bool APuzzleActorBase::CheckTriggersHaveActivated() const
 
 void APuzzleActorBase::AddToTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToAdd)
 {
-	//¿¡µğÅÍ¿¡¼­ Ãß°¡ ±â´É
+	//ì—ë””í„°ì—ì„œ ì¶”ê°€ ê¸°ëŠ¥
 	TriggerMap.Add(PuzzleActorToAdd->GetName(), false);
 }
 
 void APuzzleActorBase::RemoveFromTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToRemove)
 {
-	//¿¡µğÅÍ¿¡¼­ Á¦°Å ±â´É
+	//ì—ë””í„°ì—ì„œ ì œê±° ê¸°ëŠ¥
 	TriggerMap.Remove(PuzzleActorToRemove->GetName());
 }
 

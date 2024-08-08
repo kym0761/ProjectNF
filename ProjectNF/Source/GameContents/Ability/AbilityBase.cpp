@@ -35,7 +35,7 @@ void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal)
 
 	if (!IsValid(AbilityOwnerVal))
 	{
-		Debug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
 		return;
 	}
 
@@ -44,10 +44,10 @@ void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal)
 
 	//!! after DO : 일부 스킬은, InitAbility를 override하여 애니메이션 실행 및 어빌리티 동작을 실행할 수 있도록 해야함.
 
-	//일단 Base는 init하자마자 StartAbility()를 실행하고, 바로 EndAbility()를 동작한다. 
+	//일단 Base는 init하자마자 StartAbility()를 실행하고, 바로 EndAbility()를 동작한다. -> 예시일 뿐이지 절대 이렇게 만들지 말것.
 	//EndAbility()에서 Destroy하여 어빌리티가 맵에서 사라짐.
 
-	Debug::Print(DEBUG_TEXT("Ability Init OK."));
+	FMyDebug::Print(DEBUG_TEXT("Ability Init OK."));
 
 	StartAbility();
 
@@ -55,7 +55,7 @@ void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal)
 
 void AAbilityBase::StartAbility_Implementation()
 {
-	Debug::Print(DEBUG_VATEXT(TEXT(" Start Ability() --- Ability Owner : %s"), *AbilityOwner->GetName()));
+	FMyDebug::Print(DEBUG_VATEXT(TEXT(" Start Ability() --- Ability Owner : %s"), *AbilityOwner->GetName()));
 	EndAbility();
 
 	//어빌리티 시작하고 여러 케이스가 존재할 수 있음
@@ -89,7 +89,7 @@ void AAbilityBase::DoingAbility_Implementation()
 
 void AAbilityBase::EndAbility_Implementation()
 {
-	Debug::Print(DEBUG_VATEXT(TEXT(" End Ability() --- Ability Owner : %s"), *AbilityOwner->GetName()));
+	FMyDebug::Print(DEBUG_VATEXT(TEXT(" End Ability() --- Ability Owner : %s"), *AbilityOwner->GetName()));
 	Destroy();
 
 
