@@ -152,3 +152,51 @@ ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝�
 
 언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링이 가능한 액터들을 관리합니다.
 
+# Modules
+
+<img src="ExplainImages/Modules01.png" width="100%">
+
+이 프로젝트는 관리의 용이성을 위해
+
+CustomDebugging - 커스텀 디버깅 코드가 포함된 모듈
+GameDefines - 게임 구조체나 enum, Interface 등을 포함하는 모듈
+GameContents - 실제 게임 기능과 관련된 클래스들을 포함하는 모듈
+GamePuzzle - 퍼즐 기믹 기능 액터를 포함한 모듈
+GameSystem - Manager, GameInstance, GameMode 등을 포함하는 모듈
+MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모듈(사실 별 내용은 없다.)
+
+이런 방식으로 모듈을 나누어 프로젝트를 관리하고 있습니다.
+
+초기에는 모듈을 매우 작은 크기로 나누어 서로 참조를 하는 방식으로 프로젝트를 구성하여 시작했지만,
+
+점차 모듈 상호 간에 순환적 의존성을 띠는 경고가 나오기에 모듈의 숫자를 줄여 현재 구성으로 관리하는 것으로 변경했습니다.
+
+또한 사실 GameContents의 일부 코드는 GameSystem과 MainModule의 코드 일부를 참조하는 기능을 가지고 있었기에 계속 모듈 의존성 설정이 꼬이는 문제를 가지고 있었습니다.
+
+이 문제를 해결하기 위해 GameContents에서는 되도록이면 실제 GameInstance의 코드를 직접 참조하지 않고 델리게이트 패턴을 사용하도록 했습니다.
+
+## 델리게이트 패턴
+
+델리게이트 패턴은 델리게이트를 사용하여 객체의 기능을 델리게이트에게 위임하여 기능을 실행하는 디자인 패턴입니다.
+
+객체가 다른 객체의 코드와 결합하는 정도를 의존성(Dependency)으로 부르는데, 의존성이 높을수록 코드가 복잡해지고 관리하기 힘들어집니다.
+
+<img src="ExplainImages/DelegatePattern01.png" width="100%">
+
+특히 언리얼 엔진에서는 순환 의존성을 좋아하지 않기에 모듈 간의 순환 의존성이 생기면 고치라는 경고 메시지가 나타납니다.
+
+이를 고치기 위해 언리얼 엔진에서 제공하는 델리게이트를 사용할 수 있습니다.
+
+<img src="ExplainImages/DelegatePattern02.png" width="100%">
+
+예를 들면, ItemPickup의 외형을 아이템 정보에 맞게 수정하기 위해서는 ItemSheetData를 확인하여 Thumbnail을 읽어야합니다.
+
+그러나 UNFGameInstance::GetItemData()를 사용하기 위해서는, GameContents 모듈이 GameSystem 모듈을 Dependency 모듈로서 참조해야 사용이 가능합니다. 
+
+문제는 이미 GameModule에서는 GameContents를 Dependency 모듈로서 참조하고 있고, 서로 참조를 하면 순환 의존성이 발생할 수 있습니다.
+
+이를 해결하는 방법은 위의 스크린샷처럼 ItemPickup에서 델리게이트를 선언하고, GameSystem에서 해당 객체를 처음 생성시 델리게이트에 아이템 정보를 얻는 static 함수를 등록하는 것입니다.
+
+<img src="ExplainImages/DelegatePattern03.png" width="100%">
+
+ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄여 사용할 수 있습니다.
