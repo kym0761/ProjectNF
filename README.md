@@ -4,12 +4,14 @@
 2. [DebugHelper](#debughelper)
 3. [GameInstance](#gameinstance)
 4. [Managers](#managers)
-4-1. [DataManager](#datamanager)
-4-2. [GridManager](#gridmanager)
-4-3. [InventoryManager](#inventorymanager)
-4-4. [ObjectManager](#objectmanager)
-4-5. [ObjectPoolManager](#objectpoolmanager)
-4-5-1. [ObjectPool](#objectpool)
+5. [DataManager](#datamanager)
+6. [GridManager](#gridmanager)
+7. [InventoryManager](#inventorymanager)
+8. [ObjectManager](#objectmanager)
+9. [ObjectPoolManager](#objectpoolmanager)
+10. [ObjectPool](#objectpool)
+11. [Modules](#modules)
+12. [델리게이트패턴](#델리게이트-패턴)
 
 # ProjectNF
 
