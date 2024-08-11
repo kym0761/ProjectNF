@@ -96,6 +96,9 @@ FItemSheetData data = UNFGameInstance::GetItemData(TEXT("Item01"));
 
 존재하지 않으면 새로운 인벤토리를 만들고, 존재하는 InventoryObject가 있다면 접근을 허용합니다.
 
+게임 최초 시작시 플레이어의 인벤토리 오브젝트는 존재하지 않아 새로 생성하지만, 게임을 저장한 뒤 로드하여 재시작하는 경우,
+
+플레이어의 인벤토리는 존재하는 상태이므로, 인벤토리에 접근할 때 인벤토리 오브젝트를 새로 생성하지 않고도 접근이 가능합니다.
 
 ## ObjectManager
 
@@ -116,4 +119,36 @@ ObjectManager는 게임 시작시 각 종류에 맞는 블루프린트 등의 �
 UNFGameInstance::Spawn(TEXT("TestActor"),Location, Rotation);
 
 ``` 
+
+## ObjectPoolManager
+
+<img src="ExplainImages/ObjectPoolManager01.png" width="100%">
+
+ObjectPoolManager는 사용하고 금방 사라질 수 있는 오브젝트를 Destroy로 바로 제거하지 않고, 게임 공간에 그대로 유지하면서 비활성화 상태로 바꾼 뒤, 필요해질 때마다 기존의 오브젝트를 활성화하고 사용하는 방식인 오브젝트 풀링을 구현하여 관리한 매니저 클래스입니다.
+
+위의 코드대로, ObjectManager에서는 오브젝트 풀링이 가능한 오브젝트인지 확인 후, 오브젝트 풀링 오브젝트라면 ObjectPoolManager에서 Spawn을 맡깁니다.
+
+<img src="ExplainImages/ObjectPoolManager02.png" width="100%">
+
+ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝트가 있는지 확인하고, 남은 오브젝트가 존재하면 비활성화된 오브젝트를 가져와 사용하고, 없다면 새로 생성해주는 역할을 ObjectManager의 Spawn을 보조해줍니다.
+
+<img src="ExplainImages/ObjectPoolManager03.png" width="100%">
+
+예시 설명으로는, 위의 스크린샷처럼 바닥에 떨어진 ItemPickup 오브젝트들은 오브젝트 풀링이 가능한 오브젝트들입니다.
+
+아이템을 얻으면 시작적으로는 아이템이 사라진 것처럼 보이지만, 실제로는 플레이어가 닿지 않을 공간에 오브젝트를 이동시킨 후 비활성화합니다.
+
+후에 ItemPickup이 맵 공간 어딘가에 생성될 때는 ObjectPoolManager에서 관리된 비활성화된 오브젝트를 활성화하고 원하는 위치에 배치하여 마치 오브젝트가 생성된 것과 비슷한 효과를 얻을 수 있습니다.
+
+### ObjectPool
+
+<img src="ExplainImages/ObjectPool01.png" width="100%">
+
+오브젝트를 생성 및 제거할 때, 컴퓨터에 메모리 공간을 요청 및 회수를 요청하는데, 이러한 메모리 공간을 할당 받는 방식은 게임 성능에 영향을 끼칠 수 있습니다. 그러므로 재사용이 가능한 객체는 바로 제거해 메모리를 회수 시키지 않게하면서 활성화/비활성화를 하는 방식으로 관리하여 메모리 공간 할당에 의한 성능 저하를 방지할 수 있는 방법입니다.
+
+위의 스크린샷의 코드대로, TMap 클래스에서 Key로 UClass*를 사용해 BP_?? 같은 블루프린트 클래스 중에서도 오브젝트 풀링이 가능한 객체를 키값으로 사용합니다.
+
+<img src="ExplainImages/ObjectPool02.png" width="100%">
+
+언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링이 가능한 액터들을 관리합니다.
 
