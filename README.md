@@ -2,9 +2,14 @@
 
 1. [ProjectNF](#projectnf)
 2. [DebugHelper](#debughelper)
-
-5. [Drag Drop](#drag-drop)
-
+3. [GameInstance](#gameinstance)
+4. [Managers](#managers)
+4-1. [DataManager](#datamanager)
+4-2. [GridManager](#gridmanager)
+4-3. [InventoryManager](#inventorymanager)
+4-4. [ObjectManager](#objectmanager)
+4-5. [ObjectPoolManager](#objectpoolmanager)
+4-5-1. [ObjectPool](#objectpool)
 
 # ProjectNF
 
