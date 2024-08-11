@@ -5,7 +5,6 @@
 #include "DebugHelper.h"
 #include "Defines/Data.h"
 #include "System/NFGameInstance.h"
-#include "Managers/DataManager.h"
 UInventoryManager::UInventoryManager()
 {
 }
@@ -30,8 +29,7 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 		UInventoryObject* inventory = NewObject<UInventoryObject>(this);
 		inventory->InitInventory();
 
-		auto dataManager = UNFGameInstance::GetDataManager();
-		inventory->RequestItemSheetData.BindDynamic(dataManager, &UDataManager::GetItemData);
+		inventory->RequestItemSheetData.BindStatic(&UNFGameInstance::GetItemData);
 
 		InventoryMap.Add(InventoryOwner, inventory);
 		FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Created --> InventoryOwner : %s"), *InventoryOwner));
@@ -48,7 +46,7 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 
 void UInventoryManager::InitManager()
 {
-	//?
+	//할 것이 없는 것 같다.
 }
 
 void UInventoryManager::LoadInventories(const TArray<FInventorySaveData>& InventorySaveData)
@@ -61,14 +59,11 @@ void UInventoryManager::LoadInventories(const TArray<FInventorySaveData>& Invent
 		inventoryObj->LoadInventory(data.Items);
 
 		InventoryMap.Add(inventoryID, inventoryObj);
-
-		auto dataManager = UNFGameInstance::GetDataManager();
-
-		inventoryObj->RequestItemSheetData.BindDynamic(dataManager, &UDataManager::GetItemData);
+		inventoryObj->RequestItemSheetData.BindStatic(&UNFGameInstance::GetItemData);
 	}
 }
 
-const TMap<FString, UInventoryObject*>& UInventoryManager::GetAllInventories() const
+TMap<FString, UInventoryObject*>& UInventoryManager::GetAllInventories()
 {
 	return InventoryMap;
 }

@@ -29,13 +29,5 @@ public class GameContents : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
         PublicIncludePaths.AddRange(new string[] { "GameDefines" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "ProjectNF" });
-        CircularlyReferencedDependentModules.AddRange(new string[] { "ProjectNF" });
-        PublicIncludePaths.AddRange(new string[] { "ProjectNF" });
-
-        PublicDependencyModuleNames.AddRange(new string[] { "GameSystems" });
-        CircularlyReferencedDependentModules.AddRange(new string[] { "GameSystems" });
-        PublicIncludePaths.AddRange(new string[] { "GameSystems" });
-
     }
 }

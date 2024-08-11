@@ -15,6 +15,7 @@ class UInputAction;
 class UCharacterState;
 class UInventoryComponent;
 class UStatComponent;
+class USphereComponent;
 /*
 *기본 캐릭터
 */
@@ -41,6 +42,9 @@ protected:
 	//Farm 작업할 때 LineTrace 위치 지점.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USceneComponent> FarmPos;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USphereComponent> InteractSphere;
 
 	//Inventory에 접근하기 위한 ActorComp
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -75,6 +79,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> MouseLeftAction;
 
+	/** Look Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> InteractAction;
+
 	/** movement Function */
 	void Move(const FInputActionValue& Value);
 
@@ -83,6 +91,8 @@ protected:
 
 	/** MouseLeftAction Function */
 	void MouseLeft(const FInputActionValue& Value);
+
+	void DoInteract(const FInputActionValue& Value);
 
 #pragma endregion
 

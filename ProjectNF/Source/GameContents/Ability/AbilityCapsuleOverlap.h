@@ -30,14 +30,16 @@ protected:
 	virtual void BeginPlay() override;
 public:
 
-	virtual void InitAbility_Implementation(AActor* AbilityOwnerVal);
+	virtual void InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal = nullptr) override;
 
+	
 	//어빌리티 시작하기
-	virtual void StartAbility_Implementation();
+	virtual void StartAbility_Implementation() override;
 
 	//어빌리티 끝마치기
-	virtual void EndAbility_Implementation();
+	virtual void EndAbility_Implementation() override;
 
+	//Capsule과 오버랩된 액터와 상호작용함.
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,

@@ -5,13 +5,10 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "NFGameInstance.h"
-#include "Managers/GridManager.h"
-#include "Managers/ObjectManager.h"
-#include "Managers/DataManager.h"
-#include "Managers/ElectricLinkManager.h"
 #include "GameFarm/FarmlandTile.h"
 #include "DebugHelper.h"
 
+#include "GameItem/Item/ItemPickup.h"
 
 ANFGameModeBase::ANFGameModeBase()
 {
@@ -24,9 +21,10 @@ void ANFGameModeBase::BeginPlay()
 
 
 	CreateAllSavedCrop();
-
+	SetExistItemsInMap();
 	//level 시작시 electric manager 다시 시동
-	UNFGameInstance::GetElectricLinkManager()->InitManager();
+	UNFGameInstance::RestartLinkManager();
+
 }
 
 void ANFGameModeBase::StartPlay()
@@ -36,33 +34,54 @@ void ANFGameModeBase::StartPlay()
 
 void ANFGameModeBase::CreateAllSavedCrop()
 {
-	FMyDebug::Print(DEBUG_TEXT("Crop Load to Unreal Map"));
+	//이 게임 모드가 활성화된다면, 기존에 저장된 Crop데이터를 읽어 맵에 Spawn한다.
 
-	auto objManager = UNFGameInstance::GetObjectManager();
-	auto gridManager = UNFGameInstance::GetGridManager();
-	auto dataManager = UNFGameInstance::GetDataManager();
+	//FMyDebug::Print(DEBUG_TEXT("Crop Load to Unreal Map"));
 
-	auto& cropMap = gridManager->GetCropMap();
+	auto& cropMap = UNFGameInstance::GetCropMap();
 
 	for (auto& i : cropMap)
 	{
 		FGrid grid = i.Key;
 		FCropData cropData = i.Value;
 
-		auto farmtile = Cast<AFarmlandTile>(objManager->Spawn(TEXT("FarmlandTile"), gridManager->GridToWorld(grid)));
+		AFarmlandTile* farmtile = Cast<AFarmlandTile>(UNFGameInstance::Spawn(TEXT("FarmlandTile"), UNFGameInstance::GridToWorld(grid)));
 		
 		//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-		farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropData);
+		farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
 		//작물 아이템을 Spawn 요청하는 기능 Bind
-		farmtile->RequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
+		farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
 
-		farmtile->RequestUpdateCropData.BindDynamic(gridManager, &UGridManager::UpdateCropInfo);
-		farmtile->RequestRemoveCropData.BindDynamic(gridManager, &UGridManager::RemoveCropInfo);
+		farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
+		farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
 
 		//! GridManager의 정보가 우선이므로, 
 		//! Farmtile을 생성했을 때 이 farmtile의 정보로 gridManager를 세팅하려는 시도를 하면 안됨.
 
 		farmtile->SetInfo(cropData);
+	}
+
+}
+
+void ANFGameModeBase::SetExistItemsInMap()
+{
+	//맵에 미리 존재하는 액터들은 ObjectManager로 생성된 것이 아니기 때문에 GameMode에서 처리해준다.
+
+	TArray<AActor*> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AItemPickup::StaticClass(), actors);
+
+	for (auto i : actors)
+	{
+		AItemPickup* itemPickup = Cast<AItemPickup>(i);
+		if (!IsValid(itemPickup))
+		{
+			continue;
+		}
+		itemPickup->RequestItemData.BindStatic(&UNFGameInstance::GetItemData);
+		itemPickup->RequestDespawn.BindStatic(&UNFGameInstance::DespawnToPool);
+		itemPickup->RequestAddItem.BindStatic(&UNFGameInstance::AddItemToTargetInventory);
+
+		itemPickup->SetItemPickupData(itemPickup->GetPickupItemData());
 	}
 
 }

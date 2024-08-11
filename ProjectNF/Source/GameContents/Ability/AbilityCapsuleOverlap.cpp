@@ -19,9 +19,10 @@ void AAbilityCapsuleOverlap::BeginPlay()
 	Super::BeginPlay();
 
 	Capsule->OnComponentBeginOverlap.AddDynamic(this, &AAbilityCapsuleOverlap::OnBeginOverlap);
+
 }
 
-void AAbilityCapsuleOverlap::InitAbility_Implementation(AActor* AbilityOwnerVal)
+void AAbilityCapsuleOverlap::InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal)
 {
 	if (!IsValid(AbilityOwnerVal))
 	{
@@ -30,9 +31,8 @@ void AAbilityCapsuleOverlap::InitAbility_Implementation(AActor* AbilityOwnerVal)
 	}
 
 	AbilityOwner = AbilityOwnerVal;
-
-	//TODO : 플레이어가 공격 기능에 맞는 애니메이션을 작동시키고, 이 어빌리티를 무기에 붙여 notify에 맞춰 오버랩 가동한다.
-
+	AbilityData = AbilityDataVal;
+	//이 어빌리티에 AbilityTarget은 필요없음.
 }
 
 void AAbilityCapsuleOverlap::StartAbility_Implementation()
@@ -53,5 +53,20 @@ void AAbilityCapsuleOverlap::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 		return;
 	}
 
+	if (OtherActor == AbilityOwner)
+	{
+		return;
+	}
+
 	FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlapped By Ability : %s"), *OtherActor->GetName()));
+
+	if (RequestSpawnNiagara.IsBound())
+	{
+		RequestSpawnNiagara.Execute(AbilityData.AbilityNiagara, (OtherActor->GetActorLocation() + GetActorLocation())/ 2, FRotator::ZeroRotator);
+	}
+
+
+	//TODO : BeginOverlap 된 지점에 이펙트를 보이게 하기(현재 그냥 OtherActor 위치에 이펙트 나옴.) -> Overlap은 Hit Event가 안나옴
+	//TODO : 오버랩된 적에게 피해 주기
+
 }

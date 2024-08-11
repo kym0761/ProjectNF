@@ -7,7 +7,7 @@
 #include "System/NFGameInstance.h"
 #include "Managers/ObjectManager.h"
 #include "DebugHelper.h"
-#include "Components/InventoryComponent.h"
+#include "GameItem/Inventory/InventoryComponent.h"
 #include "GameItem/Inventory/InventoryObject.h"
 
 void UInventoryWidget::NativeConstruct()
@@ -31,8 +31,8 @@ void UInventoryWidget::NativeConstruct()
 	for (int32 i = startOffset; i < inventorySize; i++)
 	{
 		//Create
-		UItemSlotWidget* slot = Cast<UItemSlotWidget>(UNFGameInstance::GetObjectManager()
-			->CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+		UItemSlotWidget* slot = Cast<UItemSlotWidget>(
+			UNFGameInstance::CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 		if (!IsValid(slot))
 		{
@@ -49,6 +49,7 @@ void UInventoryWidget::NativeConstruct()
 		//TODO : Slot 초기화
 		int32 slotNum = i;
 		slot->SetSlotInfo(InventoryComponentRef, slotNum);
+
 	}
 
 
@@ -63,6 +64,7 @@ void UInventoryWidget::NativeConstruct()
 	AccessorySlot02->SetSlotInfo(InventoryComponentRef, 4);
 
 	UpdateInventoryUI();
+
 }
 
 void UInventoryWidget::ToggleInventory()

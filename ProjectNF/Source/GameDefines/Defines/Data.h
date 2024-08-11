@@ -515,3 +515,68 @@ public:
 };
 
 #pragma endregion
+
+#pragma region Languages
+
+USTRUCT(BlueprintType)
+struct GAMEDEFINES_API FLanguageSheetData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+
+	//데이터 테이블의 'Row Name'이 "ID"로 취급
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Language")
+	FText Eng;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Language")
+	FText Kor;
+
+	//필요에 따라 추가될 수도 있음.
+
+};
+
+#pragma endregion
+
+#pragma region Ability
+
+USTRUCT(BlueprintType)
+struct GAMEDEFINES_API FAbilitySheetData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+
+	//데이터 테이블의 'Row Name'이 "ID"로 취급
+
+	//이 어빌리티에 의해 발동할 Niagara 명칭
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	FString AbilityNiagara;
+
+	//이 어빌리티에 의해 추가로 걸릴 어빌리티의 종류 명칭
+	//예시) 힐을 받고나서 공격력 업!
+	//예시) 공격을 받고나서 독 데미지 디버프
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	TArray<FString> AddtionalAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float HealHP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float HealMP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float AttackUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float DefenceUp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability")
+	float Damage;
+
+	//필요에 따라 추가될 수도 있음.
+
+};
+
+#pragma endregion

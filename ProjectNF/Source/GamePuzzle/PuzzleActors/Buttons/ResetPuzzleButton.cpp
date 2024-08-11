@@ -10,9 +10,7 @@ AResetPuzzleButton::AResetPuzzleButton()
 
 void AResetPuzzleButton::BeginPlay()
 {
-	//APuzzleActorBase¿¡ ÀÖ´Â BeginPlay()´Â ´Ù¸¥ Puzzle ¾×ÅÍµéÀÇ WhoTriggerThis¸¦ µî·ÏÇÏ´Â ¿ªÇÒÀ» ÇÔ.
-	//¸¸¾à ResetButtonÀÌ ±× µ¿ÀÛÀ» ÇÏ°Ô µÈ´Ù¸é, Trigger ´ë»óÀÌ ResetButtonÀÇ Activate º¯¼öÀÇ °ª¿¡ µû¶ó µ¿ÀÛÀ» ÇÏ·Á´Â ¸ğ¼øÀÌ ÀÏ¾î³².
-	//±×·¯¹Ç·Î AActor::BeginPlay()¸¦ µ¿ÀÛÇÏ°Ô ÇØ¾ßÇÏ¹Ç·Î »õ·Ó°Ô Sphere ÀÌº¥Æ®¸¦ µî·ÏÇÔ.
+	//ë¦¬ì…‹ë²„íŠ¼ì€ AActorì˜ ê¸°ë³¸ BeginPlay()ê°€ ë™ì‘í•˜ë„ë¡ í•´ì•¼í•¨.
 
 	Super::Super::Super::BeginPlay();
 
@@ -22,20 +20,19 @@ void AResetPuzzleButton::BeginPlay()
 
 void AResetPuzzleButton::Tick(float DeltaTime)
 {
-	//Tick()µµ BeginPlay()¿Í ºñ½ÁÇÑ ÀÌÀ¯·Î AActor::Tick()À» µ¿ÀÛÇÏ°Ô ÇÔ.
+	//ë¦¬ì…‹ë²„íŠ¼ì€ AActorì˜ ê¸°ë³¸ Tick()ì´ ë™ì‘í•˜ë„ë¡ í•´ì•¼í•¨.
 	Super::Super::Super::Tick(DeltaTime);
 
 	if (bButtonActive)
 	{
 		FVector lerpVal = FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonDownPos, DeltaTime * 10);
 
-		//ButtonMesh¸¦ ÃµÃµÈ÷ ¾Æ·¡·Î?
+		//ë²„íŠ¼ ëˆŒë¦¬ê¸°
 		ButtonMesh->SetRelativeLocation(lerpVal);
 	}
 	else
 	{
-		//ButtonMesh¸¦ ÃµÃµÈ÷ À§·Î?
-
+		//ë²„íŠ¼ ë‹¤ì‹œ ì˜¬ë¼ì˜¤ê¸°
 		FVector lerpVal = FMath::Lerp(ButtonMesh->GetRelativeLocation(), ButtonUpPos, DeltaTime * 10);
 
 		ButtonMesh->SetRelativeLocation(lerpVal);
@@ -45,7 +42,7 @@ void AResetPuzzleButton::Tick(float DeltaTime)
 void AResetPuzzleButton::ButtonUp()
 {
 	bButtonActive = false;
-	//reset puzzleÀº who trigger me? ¿¡ Æ÷ÇÔµÇÁö ¾ÊÀ¸¹Ç·Î trigger¸¦ ´Ù½Ã ºÎ¸¦ ÇÊ¿ä ¾øÀ½.
+	//ë¦¬ì…‹ ë²„íŠ¼ì€ ì˜¬ë¼ì™”ì„ ë•Œ ëˆ„êµ°ê°€ë¥¼ ë‹¤ì‹œ íŠ¸ë¦¬ê±°í•´ì¤„ í•„ìš”ê°€ ì—†ìŒ.
 }
 
 void AResetPuzzleButton::Trigger()

@@ -70,7 +70,7 @@ protected:
 
 protected:
 
-	/*Blueprint Class*/
+	/*Manager Blueprint Classes*/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UGridManager> GridManager_BP;
@@ -93,7 +93,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Managers", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UObjectManager> ObjectManager_BP;
 
-protected:
+private:
 
 	//실제 Manager 오브젝트
 
@@ -130,7 +130,7 @@ private:
 	static TObjectPtr<UGameManager> GGameManager;
 	static TObjectPtr<UObjectManager> GObjectManager;
 
-public:
+protected:
 
 	static 	TObjectPtr<UGridManager> GetGridManager();
 	static 	TObjectPtr<UElectricLinkManager> GetElectricLinkManager();
@@ -140,11 +140,112 @@ public:
 	static 	TObjectPtr<UGameManager> GetGameManager();
 	static  TObjectPtr<UObjectManager> GetObjectManager();
 
+
 	void InitManagers();
 #pragma endregion
 
 public:
 
 	void InitNFGameInstance();
+
+
+public:
+
+	/*Static Functions*/
+
+	/*DataManager Functions*/
+	UFUNCTION()
+	static FItemSheetData GetItemData(const FName& ItemID);
+	
+	UFUNCTION()
+	static bool IsValidItem(const FName& ItemID);
+
+	UFUNCTION()
+	static FCropSheetData GetCropData(const FName& CropID);
+	
+	UFUNCTION()
+	static bool IsValidCrop(const FName& CropID);
+
+	UFUNCTION()
+	static FAbilitySheetData GetAbilityData(const FName& AbilityID);
+
+	UFUNCTION()
+	static bool IsValidAbility(const FName& AbilityID);
+
+	UFUNCTION()
+	static FLanguageSheetData GetLanguageData(const FName& LanguageID);
+	
+	UFUNCTION()
+	static bool IsValidLanguageData(const FName& LanguageID);
+
+
+	/*Electric Link Manager*/
+	
+	UFUNCTION()
+	static void RestartLinkManager();
+
+	/*GameManager*/
+	//TODO:
+
+	/*GridManager*/
+	UFUNCTION()
+	static FGrid WorldToGrid(const FVector& WorldLocation);
+
+	UFUNCTION()
+	static FVector GridToWorld(const FGrid& Grid);
+
+	UFUNCTION()
+	static bool IsSomethingExistOnGrid(const FGrid& Grid);
+
+	UFUNCTION()
+	static void SetCropMap(const TMap<FGrid, FCropData>& SavedMap);
+	
+	UFUNCTION()
+	static TMap<FGrid, FCropData>& GetCropMap();
+
+	UFUNCTION()
+	static void UpdateCropInfo(AFarmlandTile* TargetFarmlandTile);
+
+	UFUNCTION()
+	static void RemoveCropInfo(AFarmlandTile* TargetFarmlandTile);
+
+	/*InventoryManager*/
+	UFUNCTION()
+	static UInventoryObject* TryGetInventory(FString InventoryOwner);
+
+	UFUNCTION()
+	static void LoadInventories(const TArray<FInventorySaveData>& InventorySaveData);
+
+	UFUNCTION()
+	static TMap<FString, UInventoryObject*>& GetAllInventories();
+
+	//인벤토리에 아이템 넣기를 요청하는 기능으로, Inventory Manager에 있는 기능을 조금 추가함
+	UFUNCTION()
+	static bool AddItemToTargetInventory(AActor* InventoryOwner, const FItemSlotData& SlotData);
+
+	/*ObjectManager*/
+	UFUNCTION()
+	static AActor* Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
+
+	UFUNCTION()
+	static UUserWidget* CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner);
+
+	UFUNCTION()
+	static void Despawn(AActor* DespawnTarget);
+	
+	UFUNCTION()
+	static UNiagaraComponent* SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
+
+
+	/*Object Pool Manager*/
+
+	UFUNCTION()
+	static AActor* SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation);
+
+	UFUNCTION()
+	static void DespawnToPool(AActor* PoolableActor);
+
+	UFUNCTION()
+	static void ClearObjectPooling();
 
 };

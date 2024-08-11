@@ -8,6 +8,7 @@
 
 
 class UItemSlotWidget;
+class UItemTooltipWidget;
 class UGridPanel;
 class UInventoryComponent;
 /**
@@ -26,11 +27,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Meta = (BindWidget, AllowPrivateAccess = "true"))
 	TObjectPtr<UGridPanel> InventoryGridPanel;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (BindWidget, AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadWrite, Meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UItemSlotWidget>> ItemSlotWidgets;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (AllowPrivateAccess = "true"))
 	int32 ColumnNum = 10;
+
 
 protected:
 

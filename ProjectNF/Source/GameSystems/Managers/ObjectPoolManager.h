@@ -47,7 +47,7 @@ public:
 
 	void ClearObjectPooling();
 
-#pragma region NotUse
+#pragma region DoNotUse
 private:
 
 	//UFUNCTION()과 template가 호환되지 않아서 Delegate에 붙일 때 이 함수를 사용할 수 없음.

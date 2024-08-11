@@ -22,12 +22,12 @@ class GAMEPUZZLE_API UElectricLinkComponent : public USceneComponent
 public:
 	UElectricLinkComponent();
 
-	//ÀÌ °ªÀÌ true¸é, ¹«Á¶°Ç ActivateÇÑ´Ù
-	//ElectricPuzzleDevice¿¡¼­¸¸ °ªÀÌ º¯°æµÉ ¼ö ÀÖ´Ù.
+	//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ trueï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Activateï¿½Ñ´ï¿½
+	//ElectricPuzzleDeviceï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Link")
 	bool bRootLink;
 
-	//ÀÎÁ¢ÇÑ LinkComponents.
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ LinkComponents.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Link")
 	TSet<TObjectPtr<UElectricLinkComponent>> AdjacentLinkComps;
 
@@ -44,9 +44,9 @@ protected:
 	UPROPERTY()
 	FTimerHandle LinkJobTimer;
 
-	const float LinkJobInterval = 0.5f; //LinkJobÀ» ¸îÃÊ¿¡ 1¹øÇÒ °ÍÀÎ°¡?
+	const float LinkJobInterval = 0.5f; //LinkJobï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½?
 
-	const float ElectricEffectInterval = 0.12f; // tick¿¡¼­ Àü±â ÀÌÆåÆ® ¸îÃÊ¿¡ 1¹ø µ¿ÀÛ½ÃÅ³ °ÍÀÎ°¡?
+	const float ElectricEffectInterval = 0.12f; // tickï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ê¿ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½Û½ï¿½Å³ ï¿½ï¿½ï¿½Î°ï¿½?
 
 	const float ElectricityDistance = 1000.0f;
 

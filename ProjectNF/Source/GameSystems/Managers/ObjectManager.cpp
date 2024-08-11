@@ -2,18 +2,19 @@
 
 
 #include "ObjectManager.h"
-
-#include "System/NFGameInstance.h"
-#include "ObjectPoolManager.h"
+#include "Blueprint/UserWidget.h"
+#include "Niagara/Classes/NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "AssetRegistry/AssetRegistryModule.h"
 
-#include "Blueprint/UserWidget.h"
+#include "Defines/Interfaces/ObjectPoolInterfaces.h"
 
-#include "Niagara/Classes/NiagaraSystem.h"
+#include "System/NFGameInstance.h"
 
-#include "NiagaraFunctionLibrary.h"
-
+#include "GameContents/GameFarm/FarmlandTile.h"
+#include "GameContents/GameItem/Item/ItemPickup.h"
+#include "GameContents/Ability/AbilityBase.h"
 
 UObjectManager::UObjectManager()
 {
@@ -81,7 +82,7 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 		return nullptr;
 	}
 
-	UWorld* world = GEngine->GetCurrentPlayWorld();
+	UWorld* world = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
 	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No World."));
@@ -106,7 +107,7 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 		}
 		else
 		{
-			FMyDebug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
+			FMyDebug::Print(DEBUG_TEXT("RequestObjectPoolSpawn is not Bound."));
 		}
 	}
 	else
@@ -118,7 +119,61 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 		actor = world->SpawnActor<AActor>(toSpawn, Location, Rotation, spawnParam);
 	}
 
+	BindingActor(actor);
+
 	return actor;
+}
+
+void UObjectManager::BindingActor(AActor* TargetActor)
+{
+	//GameContents에 있는 액터들의 Delegate를 바인딩하여 의존성을 최대한 낮추는 것을 목표로 만들어진 함수.
+	//액터가 무엇인지 확인하고 Cast하여 Delegate에 바인딩한다.
+
+	//? : ObjectPool 한 액터에 제대로 동작하는지?
+
+	//예시로.. TBaseStaticDelegateInstance<FItemSheetData(const FName&), FDefaultDelegateUserPolicy>::FFuncPtr
+	//를 사용하여 static 함수를 넘길 수도 있긴 한데, 코드가 복잡해질 수 있는 가능성이 있어
+	//Object를 Spawn할 때만 GameInstance에 접근하여 static 함수를 바인드하도록 한다.
+
+	if (TargetActor->IsA(AFarmlandTile::StaticClass()))
+	{
+		auto farmtile= Cast<AFarmlandTile>(TargetActor);
+
+		if (IsValid(farmtile))
+		{
+			farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
+			farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
+			farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
+			farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
+		}
+	}
+	else if (TargetActor->IsA(AItemPickup::StaticClass()))
+	{
+		auto itemPickup = Cast<AItemPickup>(TargetActor);
+
+		if (IsValid(itemPickup))
+		{
+			itemPickup->RequestItemData.BindStatic(&UNFGameInstance::GetItemData);
+			itemPickup->RequestDespawn.BindStatic(&UNFGameInstance::Despawn);
+			itemPickup->RequestAddItem.BindStatic(&UNFGameInstance::AddItemToTargetInventory);
+		}
+	}
+	else if (TargetActor->IsA(AAbilityBase::StaticClass()))
+	{
+		auto abilityBase = Cast <AAbilityBase>(TargetActor);
+
+		if (IsValid(abilityBase))
+		{
+			abilityBase->RequestSpawnNiagara.BindStatic(&UNFGameInstance::SpawnNiagaraSystem);
+			abilityBase->RequestDespawnAbility.BindStatic(&UNFGameInstance::Despawn);
+		}
+	}
+	else
+	{
+		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed."));
+	}
+
+
 }
 
 UUserWidget* UObjectManager::CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner)
@@ -148,11 +203,11 @@ void UObjectManager::Despawn(AActor* DespawnTarget)
 	{
 		if (RequestObjectPoolDespawn.IsBound())
 		{
-			RequestObjectPoolDespawn.Execute(DespawnTarget); //ifExecute가 있기는 하지만, Spawn과의 통일성을 위해 그냥 체크 후 Execute한다.
+			RequestObjectPoolDespawn.Execute(DespawnTarget); //void function Delegate라서 ExecuteIfBound()가 있기는 하지만, Spawn과의 통일성을 위해 그냥 체크 후 Execute한다.
 		}
 		else
 		{
-			FMyDebug::Print(DEBUG_TEXT("Warning : ObjectPoolManager is Invalid."));
+			FMyDebug::Print(DEBUG_TEXT("RequestObjectPoolDespawn is not Bound."));
 		}
 
 	}
@@ -202,7 +257,7 @@ UNiagaraComponent* UObjectManager::SpawnNiagaraSystem(FString ToSpawnNiagaraName
 
 	if (!NiagaraSystemMap.Contains(ToSpawnNiagaraName))
 	{
-		FMyDebug::Print(DEBUG_TEXT("No Valid Niagara Name."));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Invalid Niagara Name. -> %s"), *ToSpawnNiagaraName));
 		return nullptr;
 	}
 

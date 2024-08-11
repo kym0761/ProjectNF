@@ -14,7 +14,7 @@ UElectricLinkComponent::UElectricLinkComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	//TODO : linkcollisionÀÌ µû·Î ÇÊ¿äÇÒ °Í..
+	//TODO : ?
 
 	bRootLink = false;
 	bLinkActive = false;
@@ -37,7 +37,7 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//tick¿¡¼­ ÁÖ±âÀûÀ¸·Î Àü±â ¿¬°á ÀÌÆåÆ® »ý¼º
+	//tickï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
 
 	ElectricEffectCounter += DeltaTime;
 
@@ -47,9 +47,9 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		{
 			for (auto i : AdjacentLinkComps)
 			{
-				//TODO : ¾ç¹æÇâÀ¸·Î Àü±â ÀÌÆåÆ®¸¦ »ý¼ºÇÏ¿© ³­ÀâÇØº¸ÀÓ
-				//¾çÂÊ°£¿¡ Àü±â ÀÌÆåÆ®¸¦ 1°³¸¸ ±×¸®µµ·Ï ÇØ¾ßÇÔ.
-				// ¾ÆÀÌµð¾î ? --> edge·Î °¡Á¤ÇÏ¿© start¿Í end°¡ °°Àº Àü±â ÀÌÆåÆ®¸¦ »ý¼ºÇÏÁö ¾Ê°Ô ¹æÁö?
+				//TODO : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
+				//ï¿½ï¿½ï¿½Ê°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ï¿½ï¿½.
+				// ï¿½ï¿½ï¿½Ìµï¿½ï¿½ ? --> edgeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ startï¿½ï¿½ endï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½?
 
 				auto niagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 					ElectricNiagaraBP,
@@ -58,7 +58,7 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 					FVector(0, 0, 0),
 					FRotator::ZeroRotator,
 					EAttachLocation::KeepRelativeOffset,
-					true);// ½Ã°£ÀÌ Áö³ª¸é ÀÌÆåÆ®°¡ ¾Ë¾Æ¼­ DestroyµÉ °Í.
+					true);// ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ë¾Æ¼ï¿½ Destroyï¿½ï¿½ ï¿½ï¿½.
 
 				if (!IsValid(niagaraComp))
 				{
@@ -77,15 +77,15 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UElectricLinkComponent::LinkJob()
 {
-	//ÁÖ±âÀûÀ¸·Î ÀÚ½Å ±ÙÃ³¿¡ ÀÖ´Â LinkComp¸¦ Ã£´Â´Ù.
+	//ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú½ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½Ö´ï¿½ LinkCompï¿½ï¿½ Ã£ï¿½Â´ï¿½.
 
 	if (!bLinkActive)
 	{
 		return;
 	}
 
-	//TODO : Manager¿¡ SearchAllLinks¸¦ ¹Þ¾Æ¿Í GetAllActorsOfClass¸¦ ÇÏÁö ¾Êµµ·Ï ¸¸µé¾î¾ßÇÔ
-	// Manager¸¦ ½Ì±ÛÅæÀ¸·Î °ü¸®ÇÏ°í ÀÖ´Â Á¤º¸¸¦ ¹Þ¾Æ¿Àµµ·Ï ¸¸µé¾î¾ßÇÒ µí
+	//TODO : Managerï¿½ï¿½ SearchAllLinksï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ GetAllActorsOfClassï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// Managerï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 	TArray<AActor*> outActor;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), outActor);
 
@@ -100,35 +100,35 @@ void UElectricLinkComponent::LinkJob()
 
 		float distance = FVector::Distance(this->GetComponentLocation(), otherLinkComp->GetComponentLocation());
 
-		//AdjacentLinkComps´Â TSetÀÌ¶ó¼­ UniqueÇÔÀÌ º¸ÀåµÊ.
-		//µÎ °Å¸®°¡ ³Ê¹« ¸Ö¸é Àü±â ¿¬°á ´ë»óÀÌ ¾Æ´Ô.
+		//AdjacentLinkCompsï¿½ï¿½ TSetï¿½Ì¶ï¿½ Uniqueï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
+		//ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½Ê¹ï¿½ ï¿½Ö¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½.
 		if (distance > ElectricityDistance)
 		{
 			AdjacentLinkComps.Remove(otherLinkComp);
 		}
 		else
 		{
-			//ÀÎÁ¢ link¿¡ ÀúÀåÇÔ. Àü±â ¿¬°á ÆÇ´ÜÀº LinkManager¿¡°Ô ¸Ã±ä´Ù.
+			//ï¿½ï¿½ï¿½ï¿½ linkï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ï¿½ï¿½ LinkManagerï¿½ï¿½ï¿½ï¿½ ï¿½Ã±ï¿½ï¿½.
 			AdjacentLinkComps.Add(otherLinkComp);
 		}
 		
 	}
 
-	//ÀÚ½ÅÀº Á¦¿ÜÇÔ
+	//ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	AdjacentLinkComps.Remove(this);
 
 }
 
 void UElectricLinkComponent::ElectricLinkActivate()
 {
-	//LinkComponent¸¦ ÃÖÃÊ ActiveÇÑ´Ù.
+	//LinkComponentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Activeï¿½Ñ´ï¿½.
 
-	if (bRootLink) // root´Â »ó½Ã È°¼ºÈ­¶ó ½ºÅµ
+	if (bRootLink) // rootï¿½ï¿½ ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½Åµ
 	{
 		return;
 	}
 
-	if (bLinkActive)// ÀÌ¹Ì È°¼ºÈ­ »óÅÂ¸é ½ºÅµ
+	if (bLinkActive)// ï¿½Ì¹ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½Åµ
 	{
 		return;
 	}
@@ -140,14 +140,14 @@ void UElectricLinkComponent::ElectricLinkActivate()
 
 void UElectricLinkComponent::ElectricLinkDeactivate()
 {
-	//Link Component¸¦ ºñÈ°¼ºÈ­ÇÑ´Ù.
+	//Link Componentï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ï¿½Ñ´ï¿½.
 
-	if (bRootLink) // root´Â »ó½Ã È°¼ºÈ­¶ó ½ºÅµ
+	if (bRootLink) // rootï¿½ï¿½ ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½Åµ
 	{
 		return;
 	}
 
-	if (!bLinkActive) //ÀÌ¹Ì ºñÈ°¼ºÈ­ »óÅÂ¸é ½ºÅµ
+	if (!bLinkActive) //ï¿½Ì¹ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½Åµ
 	{
 		return;
 	}
@@ -159,7 +159,7 @@ void UElectricLinkComponent::ElectricLinkDeactivate()
 
 void UElectricLinkComponent::SetAsRootLink()
 {
-	//PuzzleDeviceÀÇ °ª¿¡ µû¶ó BeginPlay()¿¡¼­ Root¼¼ÆÃÀÌ µÉ °ÍÀÌ´Ù.
+	//PuzzleDeviceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ BeginPlay()ï¿½ï¿½ï¿½ï¿½ Rootï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
 
 	bRootLink = true;
 	bLinkActive = true;

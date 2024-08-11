@@ -116,6 +116,11 @@ void UElectricLinkManager::LinkTest()
 
 }
 
+void UElectricLinkManager::RestartLinkManager()
+{
+	InitManager();
+}
+
 void UElectricLinkManager::InitManager()
 {
 	if (!GEngine)
@@ -124,9 +129,6 @@ void UElectricLinkManager::InitManager()
 		return;
 	}
 
-	SearchAllLinks();
-
-
 	UWorld* world = GEngine->GetCurrentPlayWorld();
 	if (!IsValid(world))
 	{
@@ -134,6 +136,7 @@ void UElectricLinkManager::InitManager()
 		return;
 	}
 
+	SearchAllLinks();
 
 	world->GetTimerManager().SetTimer(
 		ElectricLinkTimer,

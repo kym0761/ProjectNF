@@ -113,8 +113,8 @@ void UObjectPoolManager::DespawnToPool(AActor* PoolableActor)
 	//닿지 않을 위치로 이동시킨다.
 	//collision을 끈다.
 	//movement component가 있다면 비활성화한다.
-	PoolableActor->SetActorHiddenInGame(true);
 	PoolableActor->SetActorLocationAndRotation(FVector(-10000, -10000, 1000000), FRotator::ZeroRotator); //닿지 않을 만한 위치로 이동
+	PoolableActor->SetActorHiddenInGame(true);
 	PoolableActor->SetActorEnableCollision(false);
 
 	UMovementComponent* movement = PoolableActor->FindComponentByClass<UMovementComponent>();

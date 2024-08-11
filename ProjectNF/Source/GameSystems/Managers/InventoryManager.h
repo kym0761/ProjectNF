@@ -45,6 +45,6 @@ public:
 
 	void LoadInventories(const TArray<FInventorySaveData>& InventorySaveData);
 
-	const TMap<FString, UInventoryObject*>& GetAllInventories() const;
+	TMap<FString, UInventoryObject*>& GetAllInventories();
 
 };

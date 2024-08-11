@@ -29,7 +29,7 @@ void AAbilityBase::Tick(float DeltaTime)
 }
 
 
-void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal)
+void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal)
 {
 	//어빌리티 Owner를 Set함.
 
@@ -40,7 +40,7 @@ void AAbilityBase::InitAbility_Implementation(AActor* AbilityOwnerVal)
 	}
 
 	AbilityOwner = AbilityOwnerVal;
-
+	AbilityData = AbilityDataVal;
 
 	//!! after DO : 일부 스킬은, InitAbility를 override하여 애니메이션 실행 및 어빌리티 동작을 실행할 수 있도록 해야함.
 
@@ -100,3 +100,13 @@ void AAbilityBase::EndAbility_Implementation()
 	//2) 끝날때 데미지를 줌
 	//3) ...
 }
+
+//void AAbilityBase::SetAbilityOwner(AActor* OwnerVal)
+//{
+//	AbilityOwner = OwnerVal;
+//}
+//
+//void AAbilityBase::SetAbilityTarget(AActor* TargetVal)
+//{
+//	AbilityTarget = TargetVal;
+//}

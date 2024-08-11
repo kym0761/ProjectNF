@@ -9,14 +9,17 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "ObjectManager.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn, UObject*, WorldContext, UClass*, PoolableClass, const FVector&, Location, const FRotator&, Rotation);
-DECLARE_DYNAMIC_DELEGATE_OneParam(FRequestObjectPoolDespawn, AActor*, PoolableActor);
+//DECLARE_DYNAMIC_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn, UObject*, WorldContext, UClass*, PoolableClass, const FVector&, Location, const FRotator&, Rotation);
+//DECLARE_DYNAMIC_DELEGATE_OneParam(FRequestObjectPoolDespawn, AActor*, PoolableActor);
+
+DECLARE_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn, UObject*, UClass*, const FVector&, const FRotator&);
+DECLARE_DELEGATE_OneParam(FRequestObjectPoolDespawn, AActor*);
 
 
 class UNiagaraSystem;
 class UNiagaraComponent;
 /**
- * ActorSpawnFactory다.
+ * ObjectSpawnFactory다.
  */
 UCLASS(BlueprintType, Blueprintable)
 class GAMESYSTEMS_API UObjectManager : public UObject, public IManageable
@@ -28,9 +31,7 @@ public:
 	UObjectManager();
 	
 	/*ObjectPoolManager와 연동하여 ObjectPool가능한 액터들을 Spawn & Despawn할 때 사용한다.*/
-	UPROPERTY()
 	FRequestObjectPoolSpawn RequestObjectPoolSpawn;
-	UPROPERTY()
 	FRequestObjectPoolDespawn RequestObjectPoolDespawn;
 
 #pragma region BlueprintsLoad
@@ -71,6 +72,8 @@ public:
 	UFUNCTION()
 	AActor* Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
 
+	void BindingActor(AActor* TargetActor);
+
 	//UMG를 생성
 	UFUNCTION()
 	UUserWidget* CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner);
@@ -81,6 +84,8 @@ public:
 
 
 	UNiagaraComponent* SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
+
+
 
 };
 
@@ -127,57 +132,50 @@ void UObjectManager::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UC
 
 		if (!IsValid(findClass))
 		{
-			FMyDebug::Print(DEBUG_TEXT("failed to get findclass"));
+			//FMyDebug::Print(DEBUG_TEXT("failed to get findclass"));
 			continue;
 		}
-		else if (IsValid(findClass) && findClass->IsChildOf(TargetClass))
+		else if(!findClass->IsChildOf(TargetClass))
 		{
-			FMyDebug::Print(DEBUG_TEXT("findclass is child of TargetClass"));
-		}
-		else
-		{
-			FMyDebug::Print(DEBUG_TEXT("findclass is !! Not !! child of TargetClass"));
+			//FMyDebug::Print(DEBUG_TEXT("findclass is !! Not !! child of TargetClass"));
 			continue;
 		}
 
 		//찾은 클래스가 Target Class인지 확인
-		if (IsValid(findClass))
-		{
+
 			//BP_ 빼고 key로 만들어 Map에 넣음.
-			name.RemoveFromStart(PrefixToRemove);
+		name.RemoveFromStart(PrefixToRemove);
 
-			//빌드된 패키지에서는 블루프린트 이름에 _C가 자동으로 붙는다.
-			name.RemoveFromEnd(TEXT("_C"));
+		//빌드된 패키지에서는 블루프린트 이름에 _C가 자동으로 붙는다.
+		name.RemoveFromEnd(TEXT("_C"));
 
-			if (TargetMap.Contains(name))
-			{
-				//같은 이름의 블루프린트가 있었으므로, 해당 BP_의 이름을 바꾸어야함.
-				FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name NS : %s"), *name));
-			}
-
-			TargetMap.Add(name, findClass);
-
-
-			FMyDebug::Print(DEBUG_VATEXT(TEXT("key : %s / Val : %s"), *name, *findClass->GetName()));
+		if (TargetMap.Contains(name))
+		{
+			//같은 이름의 블루프린트가 있었으므로, 해당 BP_의 이름을 바꾸어야함.
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name NS : %s"), *name));
 		}
+
+		TargetMap.Add(name, findClass);
+
+		//FMyDebug::Print(DEBUG_VATEXT(TEXT("key : %s / Val : %s"), *name, *findClass->GetName()));
+
 	}
 
 	//// 제대로 읽었는지 확인.
-
 	//for (auto& i : TargetMap)
 	//{
 	//	if (IsValid(i.Value))
 	//	{
-	//		Debug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
+	//		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
 	//	}
 	//	else
 	//	{
-	//		Debug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
+	//		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
 	//	}
 	//}
 
-	//Debug::Print(TEXT("=============Load Blueprints END============="));
-	//Debug::Print(TEXT("============================================="));
+	//FMyDebug::Print(TEXT("=============Load Blueprints END============="));
+	//FMyDebug::Print(TEXT("============================================="));
 }
 
 #pragma endregion

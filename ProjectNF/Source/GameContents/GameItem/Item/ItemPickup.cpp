@@ -6,13 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BillboardComponent.h"
 
-#include "Components/InventoryComponent.h"
-
 #include "DebugHelper.h"
-
-#include "System/NFGameInstance.h"
-#include "Managers/ObjectPoolManager.h"
-#include "Managers/DataManager.h"
+//#include "Components/InventoryComponent.h"
 
 // Sets default values
 AItemPickup::AItemPickup()
@@ -25,8 +20,8 @@ AItemPickup::AItemPickup()
 	ItemVisual->SetHiddenInGame(false);
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->InitSphereRadius(64.0f);
 	Sphere->SetupAttachment(RootComponent);
+	Sphere->InitSphereRadius(64.0f);
 
 	//ItemVisual->SetEnableGravity(true);
 }
@@ -37,8 +32,8 @@ void AItemPickup::BeginPlay()
 	Super::BeginPlay();
 
 	{
-		auto itemData = UNFGameInstance::GetDataManager()->GetItemData(PickupItemData.ItemName);
-		ItemVisual->SetSprite(itemData.Thumbnail);
+		//아이템이 맵에 배치되어 있을때 ItemData가 정해져있다면, 시작할 때 PickupItemData를 사용해 아이템 정보를 세팅해준다.
+		SetItemPickupData(PickupItemData);
 	}
 }
 
@@ -57,18 +52,12 @@ void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 	//인벤토리가 있으면, 인벤토리 안에 PickupItemData 정보를 넣음.
 
 
-	auto inventoryComponent = InteractCauser->FindComponentByClass<UInventoryComponent>();
-	if (!IsValid(inventoryComponent))
-	{
-		FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
-	}
-
-	bool bAdded = inventoryComponent->AddItemToInventory(PickupItemData);
+	bool bAdded= RequestAddItem.Execute(InteractCauser, PickupItemData);
 
 	if (bAdded)
 	{
-		FMyDebug::Print(DEBUG_TEXT("Item Added to Inventory."));
-		UNFGameInstance::GetObjectPoolManager()->DespawnToPool(this);
+		FMyDebug::Print(DEBUG_TEXT("Item will be Added to Inventory."));
+		RequestDespawn.ExecuteIfBound(this);
 	}
 
 }
@@ -76,10 +65,22 @@ void AItemPickup::Interact_Implementation(APawn* InteractCauser)
 void AItemPickup::SetItemPickupData(FItemSlotData SlotData)
 {
 	PickupItemData = SlotData;
+
 	FMyDebug::Print(DEBUG_VATEXT(TEXT("Set Item Pickup Data : %s, %d"), *PickupItemData.ItemName.ToString(), PickupItemData.Quantity));
 
-	auto itemData = UNFGameInstance::GetDataManager()->GetItemData(PickupItemData.ItemName);
+	if (!RequestItemData.IsBound())
+	{
+		FMyDebug::Print(DEBUG_TEXT("Request Item Data Not Bound."));
+		return;
+	}
 
+	auto itemData = RequestItemData.Execute(PickupItemData.ItemName);
+	
 	ItemVisual->SetSprite(itemData.Thumbnail);
+}
+
+FItemSlotData AItemPickup::GetPickupItemData() const
+{
+	return PickupItemData;
 }
 

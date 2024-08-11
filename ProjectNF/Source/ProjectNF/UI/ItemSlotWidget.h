@@ -4,13 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Defines/Data.h"
 #include "ItemSlotWidget.generated.h"
 
 class UImage;
 class UTextBlock;
 class UInventoryComponent;
 
+//struct FItemSlotData;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseEnterFunc, FItemSlotData, SlotData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMouseLeaveFunc);
 /**
  * 
  */
@@ -37,6 +41,14 @@ protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI", Meta = (AllowPrivateAccess = "true"))
 	//TSubclassOf<UItemSlotWidget> ItemSlotBP;
 
+//public:
+//	
+//	UPROPERTY()
+//	FOnMouseEnterFunc OnMouseEnterFunc;
+//	
+//	UPROPERTY()
+//	FOnMouseLeaveFunc OnMouseLeaveFunc;
+
 protected:
 
 	virtual void NativeConstruct() override;
@@ -58,10 +70,13 @@ protected:
 	void DragFunction(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation);
 	bool DropFunction(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation);
 
+	bool UseItem();
+
 public:
 
 	void SetSlotInfo(UInventoryComponent* RefVal, int32 SlotNum);
 
 	void UpdateSlot();
+
 
 };

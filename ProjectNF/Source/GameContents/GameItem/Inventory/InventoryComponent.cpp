@@ -2,8 +2,9 @@
 
 
 #include "InventoryComponent.h"
-#include "System/NFGameInstance.h"
-#include "Managers/InventoryManager.h"
+//#include "System/NFGameInstance.h"
+#include "GameItem/Inventory/InventoryObject.h"
+#include "DebugHelper.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -42,15 +43,19 @@ void UInventoryComponent::InitInventoryComponent()
 {
 	FMyDebug::Print(DEBUG_TEXT("Inventory Component Init()"));
 
-	auto inventoryManager = UNFGameInstance::GetInventoryManager();
-
-	if (IsValid(inventoryManager))
+	if (RequestTryGetInventory.IsBound())
 	{
-		InventoryObjectRef = inventoryManager->TryGetInventory(InventoryID);
+		InventoryObjectRef = //UNFGameInstance::TryGetInventory(InventoryID);
+			RequestTryGetInventory.Execute(InventoryID);
+	}
+
+	if (IsValid(InventoryObjectRef))
+	{
+		FMyDebug::Print(DEBUG_TEXT("InventoryObjectRef is OK."));
 	}
 	else
 	{
-		FMyDebug::Print(DEBUG_TEXT("Inventory Manager is Invalid."));
+		FMyDebug::Print(DEBUG_TEXT("InventoryObjectRef is Invalid."));
 	}
 }
 

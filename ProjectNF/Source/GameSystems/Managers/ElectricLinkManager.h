@@ -32,11 +32,15 @@ public:
 
 	FTimerHandle ElectricLinkTimer;
 
+public:
+
 	UFUNCTION(BlueprintCallable)
 	void SearchAllLinks();
 
 	UFUNCTION(BlueprintCallable)
 	void LinkTest();
+
+	void RestartLinkManager();
 
 	virtual void InitManager() override;
 

@@ -111,7 +111,7 @@ void UBaseAnimInstance::PlayAttackMontage()
 
 	//mesh를 찾고, 알맞는 Ability찾은 뒤에 Mesh에 붙임.
 	auto mesh = TryGetPawnOwner()->FindComponentByClass<USkeletalMeshComponent>();
-	if (mesh)
+	if (IsValid(mesh))
 	{
 		//일단 0,0,0위치에 Spawn한 뒤에 Mesh의 소켓에 붙인다.
 		 
@@ -119,9 +119,11 @@ void UBaseAnimInstance::PlayAttackMontage()
 		//FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
 
 		//AOE 테스트 용도
-		FString abilityName = TEXT("AbilityAOE");
+		//FString abilityName = TEXT("AbilityAOE");
+		FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
 
-		auto ability = Cast<AAbilityBase>(UNFGameInstance::GetObjectManager()->Spawn(
+
+		auto ability = Cast<AAbilityBase>(UNFGameInstance::Spawn(
 			abilityName, FVector(0, 0, 0), FRotator(0, 0, 0)));
 
 		//어빌리티 초기화
@@ -135,7 +137,7 @@ void UBaseAnimInstance::PlayAttackMontage()
 			OnEndAbility.AddDynamic(ability, &AAbilityBase::EndAbility);
 
 			ability->AttachToComponent(mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-			ability->InitAbility(TryGetPawnOwner());
+			ability->InitAbility(TryGetPawnOwner(), UNFGameInstance::GetAbilityData(FName(abilityName)));
 		}
 	}
 	

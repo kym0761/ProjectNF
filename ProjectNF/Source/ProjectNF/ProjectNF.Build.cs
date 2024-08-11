@@ -39,7 +39,6 @@ public class ProjectNF : ModuleRules
         PublicIncludePaths.AddRange(new string[] { "GameSystems" });
 
         PublicDependencyModuleNames.AddRange(new string[] { "GameContents" });
-        CircularlyReferencedDependentModules.AddRange(new string[] { "GameContents" });
         PublicIncludePaths.AddRange(new string[] { "GameContents" });
     }
 }

@@ -40,8 +40,6 @@ public:
 
 	bool IsSomethingExistOnGrid(const FGrid& Grid) const;
 
-	virtual void InitManager() override;
-
 	void SetCropMap(const TMap<FGrid, FCropData>& SavedMap);
 	TMap<FGrid, FCropData>& GetCropMap();
 
@@ -49,4 +47,8 @@ public:
 	void UpdateCropInfo(AFarmlandTile* TargetFarmlandTile);
 	UFUNCTION()
 	void RemoveCropInfo(AFarmlandTile* TargetFarmlandTile);
+
+public:
+
+	virtual void InitManager() override;
 };

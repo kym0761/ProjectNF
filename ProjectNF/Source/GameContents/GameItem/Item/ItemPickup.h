@@ -19,6 +19,9 @@ class UBillboardComponent;
 * 3 : 밭에서 수확물 채집할 때
 */
 
+DECLARE_DELEGATE_RetVal_OneParam(FItemSheetData, FRequestItemData, const FName&);
+DECLARE_DELEGATE_OneParam(FRequestDespawn, AActor*);
+DECLARE_DELEGATE_RetVal_TwoParams(bool, FRequestAddItem, AActor*, const FItemSlotData&);
 UCLASS()
 class GAMECONTENTS_API AItemPickup : public AActor, public IInteractive, public IObjectPoolable
 {
@@ -28,6 +31,11 @@ public:
 	// Sets default values for this actor's properties
 	AItemPickup();
 
+	FRequestItemData RequestItemData;
+
+	FRequestDespawn RequestDespawn;
+
+	FRequestAddItem RequestAddItem;
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", Meta = (AllowPrivateAccess = "true"))
@@ -53,5 +61,5 @@ public:
 	virtual void Interact_Implementation(APawn* InteractCauser) override;
 
 	void SetItemPickupData(FItemSlotData SlotData);
-
+	FItemSlotData GetPickupItemData() const;
 };

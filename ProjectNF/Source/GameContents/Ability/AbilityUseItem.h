@@ -4,27 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Ability/AbilityBase.h"
-#include "AbilityAOE.generated.h"
-
-class USphereComponent;
+#include "AbilityUseItem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GAMECONTENTS_API AAbilityAOE : public AAbilityBase
+class GAMECONTENTS_API AAbilityUseItem : public AAbilityBase
 {
 	GENERATED_BODY()
 	
 public:
 
-	AAbilityAOE();
-
-protected:
-
-	//광역기 Target 감지용도
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<USphereComponent> Sphere;
+	AAbilityUseItem();
 
 public:
 
@@ -35,5 +27,4 @@ public:
 
 	//어빌리티 끝마치기
 	virtual void EndAbility_Implementation() override;
-
 };

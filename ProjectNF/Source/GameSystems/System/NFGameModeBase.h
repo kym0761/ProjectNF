@@ -27,4 +27,6 @@ protected:
 
 	void CreateAllSavedCrop();
 
+	void SetExistItemsInMap();
+
 };

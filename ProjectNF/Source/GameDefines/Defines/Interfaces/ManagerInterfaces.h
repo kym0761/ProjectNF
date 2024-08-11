@@ -11,13 +11,13 @@
 
 //Interactive Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UManageable : public UInterface
+class GAMEDEFINES_API UManageable : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //매니저 객체에 넣을 인터페이스.
-class IManageable
+class GAMEDEFINES_API IManageable
 {
 	GENERATED_BODY()
 

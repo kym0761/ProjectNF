@@ -9,16 +9,27 @@
 #include "Blueprint/DragDropOperation.h"
 #include "DebugHelper.h"
 
-#include "Components/InventoryComponent.h"
+#include "GameItem/Inventory/InventoryComponent.h"
 #include "GameItem/Inventory/InventoryObject.h"
 
 #include "System/NFGameInstance.h"
 #include "Managers/ObjectManager.h"
 #include "Managers/DataManager.h"
 
+#include "ItemTooltipWidget.h"
+#include "Ability/AbilityUseItem.h"
+
 void UItemSlotWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	//생성시 Tooltip 위젯을 생성 및 설정한다.
+	//아직 사용하지 않으므로 캐스트할 필요 없음.
+	auto itemTooltip =
+		UNFGameInstance::CreateWidgetFromName(TEXT("ItemTooltip"), GetOwningPlayer());
+
+	SetToolTip(itemTooltip);
+
 }
 
 FReply UItemSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -52,10 +63,10 @@ FReply UItemSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const
 {
 	Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
 
-	//drag였는지, 아니면 클릭이었는지에 따라 행동이 달라야함.
 
-	//클릭이었으면 아이템 사용 요청
-	//drag였으면 아이템 슬롯끼리 정보 교체
+	//TODO : 정상적인 클릭이라면 아이템 사용 요청
+	UseItem();
+
 
 	return FReply::Handled();
 }
@@ -70,12 +81,16 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 		return;
 	}
 
-	////TODO : Item Database에서 item 정보를 가져와야함.
-	////이유 : Item Image 세팅 등에 필요함
+	FItemSlotData itemSlotData = *InventoryComponentRef->GetInventoryObjectRef()->GetInventoryItem(InventorySlotNumber);
+	if (itemSlotData.IsEmpty())
+	{
+		//아이템이 존재하지 않는 공간을 굳이 drag할 필요 없음.
+		return;
+	}
 
 	////drag display
 	TObjectPtr<UItemSlotWidget> dragDisplay = Cast<UItemSlotWidget>(
-		UNFGameInstance::GetObjectManager()->CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+		UNFGameInstance::CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 	if (!IsValid(dragDisplay))
 	{
@@ -139,6 +154,45 @@ bool UItemSlotWidget::DropFunction(const FGeometry& InGeometry, const FDragDropE
 	return false;
 }
 
+bool UItemSlotWidget::UseItem()
+{
+	auto inventoryObj = InventoryComponentRef->GetInventoryObjectRef();
+
+	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
+
+	FItemSheetData itemSheetData = UNFGameInstance::GetItemData(itemSlot.ItemName);
+
+	EItemGroupType itemGroupType = itemSheetData.ItemGroupType;
+
+	switch (itemGroupType)
+	{
+	case EItemGroupType::None:
+		//아무것도 안함
+		break;
+	case EItemGroupType::Equipment:
+		//장착함.
+		//아이템 장비 속성에 맞춰서 해당 슬롯과 아이템 자리를 Swap한다.
+		{}
+		break;
+	case EItemGroupType::Consumable:
+		//실제 아이템을 사용해야함.
+		{
+		auto useitemAbility = Cast<AAbilityUseItem>(
+			UNFGameInstance::Spawn(TEXT("AbilityUseItem"), GetOwningPlayerPawn()->GetActorLocation()));
+		if (IsValid(useitemAbility))
+		{
+			useitemAbility->InitAbility(GetOwningPlayerPawn(), UNFGameInstance::GetAbilityData(itemSlot.ItemName), GetOwningPlayerPawn());
+		}
+			return true;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
 void UItemSlotWidget::SetSlotInfo(UInventoryComponent* RefVal, int32 SlotNum)
 {
 	InventoryComponentRef = RefVal;
@@ -153,8 +207,7 @@ void UItemSlotWidget::UpdateSlot()
 
 	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
 
-	FItemSheetData itemSheetData =
-		UNFGameInstance::GetDataManager()->GetItemData(itemSlot.ItemName);
+	FItemSheetData itemSheetData = UNFGameInstance::GetItemData(itemSlot.ItemName);
 
 	if (itemSheetData.Thumbnail == nullptr)
 	{
@@ -166,7 +219,7 @@ void UItemSlotWidget::UpdateSlot()
 		SlotImage->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
 		SlotImage->SetBrushFromTexture(itemSheetData.Thumbnail);
 	}
-	
+
 
 	if (itemSlot.Quantity == 0)
 	{
@@ -176,4 +229,22 @@ void UItemSlotWidget::UpdateSlot()
 	{
 		SlotItemNum->SetText(FText::FromString(FString::FromInt(itemSlot.Quantity)));
 	}
+
+	//tooltipWidget을 아이템 정보에 맞게 수정한다.
+	UItemTooltipWidget* itemTooltip = Cast<UItemTooltipWidget>(GetToolTip());
+
+	if (IsValid(itemTooltip))
+	{
+		if (itemSheetData.IsEmpty())
+		{
+			itemTooltip->SetVisibility(ESlateVisibility::Hidden); //빈 아이템 정보는 보여주지 않는다.
+		}
+		else
+		{
+			itemTooltip->SetVisibility(ESlateVisibility::HitTestInvisible);// 아이템 정보가 유효하면 보여주어야함.
+			itemTooltip->SetItemTooltipWidget(itemSlot);
+		}
+	}
+
+
 }

@@ -5,9 +5,6 @@
 #include "Components/SphereComponent.h"
 #include "DebugHelper.h"
 
-#include "System/NFGameInstance.h"
-#include "Managers/ObjectManager.h"
-
 AAbilityAOE::AAbilityAOE()
 {
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -15,19 +12,17 @@ AAbilityAOE::AAbilityAOE()
 	Sphere->SetupAttachment(RootComponent);
 }
 
-void AAbilityAOE::InitAbility_Implementation(AActor* AbilityOwnerVal)
+void AAbilityAOE::InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal)
 {
 	if (!IsValid(AbilityOwnerVal))
 	{
 		FMyDebug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
-
-		//Debug::Print(DEBUG_TEXT("Ability Owner Val is Invalid."));
 		return;
 	}
 
 	AbilityOwner = AbilityOwnerVal;
-
-	//TODO : 스킬 Owner의 montage를 실행하고 notify로 StartAbility를 실행한다.
+	AbilityData = AbilityDataVal;
+	//이 어빌리티는 Target을 설정할 필요가 없음.
 }
 
 void AAbilityAOE::StartAbility_Implementation()
@@ -41,9 +36,16 @@ void AAbilityAOE::StartAbility_Implementation()
 	for (auto i : overlappedActors)
 	{
 		FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlapped By AOE : %s"), *i->GetName()));
+		//TODO : overlap된 액터에 피해주기
 	}
 
-	UNFGameInstance::GetObjectManager()->SpawnNiagaraSystem(EffectName, GetActorLocation());
+	//EffectName에 맞는 나이아가라를 이 어빌리티 위치에 생성
+
+	if (RequestSpawnNiagara.IsBound())
+	{
+		RequestSpawnNiagara.Execute(AbilityData.AbilityNiagara, GetActorLocation(), FRotator::ZeroRotator);
+	}
+
 }
 
 void AAbilityAOE::EndAbility_Implementation()

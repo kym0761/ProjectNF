@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "Defines/Interfaces/ManagerInterfaces.h"
+#include "Defines/Enums.h"
 #include "GameManager.generated.h"
 
 /**
@@ -24,6 +25,10 @@ protected:
 	/*게임 관련 재화들*/
 	UPROPERTY()
 	int32 Money;
+
+protected:
+
+	ELanguage GameLanguage = ELanguage::English;
 
 public:
 

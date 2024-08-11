@@ -9,20 +9,20 @@
 
 //Interactive Interface Class Base. Don't Use.
 UINTERFACE(Blueprintable)
-class UInteractive : public UInterface
+class GAMEDEFINES_API UInteractive : public UInterface
 {
 	GENERATED_BODY()
 };
 
 //Interactive 인터페이스, Interact 행동이 가능한 Actor들에게 넣음.
 //예시) ItemPickup은 Interact에서 플레이어의 인벤토리에 접근해 아이템을 넣어주고 Destroy함.
-class IInteractive
+class GAMEDEFINES_API IInteractive
 {
 	GENERATED_BODY()
 
 public:
 
-	UFUNCTION(BlueprintCallable,BlueprintNativeEvent, Category = "Interactive")
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
 	void Interact(APawn* InteractCauser);
 
 };

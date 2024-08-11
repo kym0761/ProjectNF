@@ -9,11 +9,13 @@
 
 class UInventoryObject;
 
+DECLARE_DELEGATE_RetVal_OneParam(UInventoryObject*, FRequestTryGetInventory, FString);
+
 /*
 * 실제 인벤토리는 GameInstance
 */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTNF_API UInventoryComponent : public UActorComponent
+class GAMECONTENTS_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -26,6 +28,8 @@ public:
 	//2) 아이템 창고는 설치할 때 ItemNumberID를 ID로 한다..?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FString InventoryID;
+
+	FRequestTryGetInventory RequestTryGetInventory;
 
 protected:
 	// Called when the game starts
@@ -46,12 +50,14 @@ public:
 protected:
 
 	//실제 Inventory Ref
+	//GameInstance -> InventoryManager에 존재함.
+	//게임 Level이 바뀌어도 인벤토리를 유지할려면 GameInstance에서 관리하는 것이 편함.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
 	UInventoryObject* InventoryObjectRef;
 
-	//마우스로 아이템을 나누거나 할 때 사용할 수 있는 임시 공간
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
-	FItemSlotData DraggedItem;
+	////마우스로 아이템을 나누거나 할 때 사용할 수 있는 임시 공간
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Inventory", Meta = (AllowPrivateAccess = "true"))
+	//FItemSlotData DraggedItem;
 
 public:	
 	// Called every frame

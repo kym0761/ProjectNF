@@ -8,31 +8,26 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-
+#include "Components/SphereComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
+
 #include "DrawDebugHelpers.h"
-
 #include "CharacterState/CharacterState.h"
-
 #include "GameFarm/FarmlandTile.h"
-
 #include "Defines/Data.h"
+#include "System/NFGameInstance.h"
 #include "Managers/GridManager.h"
 #include "Managers/ObjectPoolManager.h"
 #include "Managers/DataManager.h"
 #include "Managers/ObjectManager.h"
-
-#include "System/NFGameInstance.h"
-
 #include "BaseAnimInstance.h"
-
-#include "Components/InventoryComponent.h"
+#include "GameItem/Inventory/InventoryComponent.h"
 #include "Stat/StatComponent.h"
 
-#include "Blueprint/UserWidget.h"
+#include "Defines/Interfaces/InteractiveInterfaces.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -68,6 +63,11 @@ ABaseCharacter::ABaseCharacter()
 	FarmPos = CreateDefaultSubobject<USceneComponent>(TEXT("FarmPos"));
 	FarmPos->SetupAttachment(GetRootComponent());
 	FarmPos->SetRelativeLocation(FVector(100.0f,0.0f,50.0f));
+
+	InteractSphere = CreateDefaultSubobject<USphereComponent>(TEXT("InteractSphere"));
+	InteractSphere->SetupAttachment(GetRootComponent());
+	InteractSphere->InitSphereRadius(64.0f);
+	InteractSphere->SetRelativeLocation(FVector(80, 0, 0));
 
 	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
 
@@ -122,6 +122,23 @@ void ABaseCharacter::MouseLeft(const FInputActionValue& Value)
 
 }
 
+void ABaseCharacter::DoInteract(const FInputActionValue& Value)
+{
+	TArray<AActor*> actors;
+	InteractSphere->GetOverlappingActors(actors);
+
+	for (auto actor : actors)
+	{
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("Overlap Actor Name : %s"), *actor->GetName()));
+
+		if (actor->GetClass()->ImplementsInterface(UInteractive::StaticClass()))
+		{
+			IInteractive::Execute_Interact(actor, this);
+		}
+	}
+
+}
+
 // Called when the game starts or when spawned
 void ABaseCharacter::BeginPlay()
 {
@@ -147,11 +164,12 @@ void ABaseCharacter::BeginPlay()
 
 	if (IsValid(InventoryComponent))
 	{
+		InventoryComponent->RequestTryGetInventory.BindStatic(&UNFGameInstance::TryGetInventory);
 		InventoryComponent->InitInventoryComponent();
 	}
 
-	//HUD = UNFGameInstance::GetObjectManager()->CreateWidgetFromName(TEXT("HUD"), Cast<APlayerController>(GetController()));
-	//HUD->AddToViewport();
+	HUD = UNFGameInstance::CreateWidgetFromName(TEXT("HUD"), Cast<APlayerController>(GetController()));
+	HUD->AddToViewport();
 }
 
 // Called every frame
@@ -180,6 +198,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABaseCharacter::Look);
 
 		EnhancedInputComponent->BindAction(MouseLeftAction, ETriggerEvent::Started, this, &ABaseCharacter::MouseLeft);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ABaseCharacter::DoInteract);
 	}
 
 }
@@ -229,17 +248,10 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
-	UGridManager* gridManager = UNFGameInstance::GetGridManager();
-	if (!IsValid(gridManager))
-	{
-		//gridmanager nullptr
-		FMyDebug::Print(DEBUG_TEXT("gridManager nullptr"));
-		return;
-	}
 
-	FGrid grid = gridManager->WorldToGrid(hit.Location);
+	FGrid grid = UNFGameInstance::WorldToGrid(hit.Location);
 
-	bool bExistOnGrid = gridManager->IsSomethingExistOnGrid(grid);
+	bool bExistOnGrid = UNFGameInstance::IsSomethingExistOnGrid(grid);
 	if (bExistOnGrid)
 	{
 		//누가 점유중이라 못함
@@ -247,9 +259,7 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
-	auto objManager = UNFGameInstance::GetObjectManager();
-
-	auto farmtile = Cast<AFarmlandTile>(objManager->Spawn(TEXT("FarmlandTile"), gridManager->GridToWorld(grid)));
+	auto farmtile = Cast<AFarmlandTile>(UNFGameInstance::Spawn(TEXT("FarmlandTile"), UNFGameInstance::GridToWorld(grid)));
 
 	if (!IsValid(farmtile))
 	{
@@ -258,23 +268,19 @@ void ABaseCharacter::UseFarmTool()
 	}
 
 
-	auto dataManager = UNFGameInstance::GetDataManager();
-	if (!IsValid(dataManager))
-	{
-		FMyDebug::Print(DEBUG_TEXT("Data Manager is Invalid."));
-		return;
-	}
-
 	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-	farmtile->RequestCropSheetData.BindDynamic(dataManager, &UDataManager::GetCropData);
+	farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
 	//작물 아이템을 Spawn 요청하는 기능 Bind
-	farmtile->RequestSpawnItemPickup.BindDynamic(objManager, &UObjectManager::Spawn);
+	farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
 
-	farmtile->RequestUpdateCropData.BindDynamic(gridManager, &UGridManager::UpdateCropInfo);
-	farmtile->RequestRemoveCropData.BindDynamic(gridManager, &UGridManager::RemoveCropInfo);
+	farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
+	farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
 
 	//캐릭터에 의해 farmtile 생성시 gridmanager에 최초 반영
 	farmtile->RequestUpdateCropData.ExecuteIfBound(farmtile);
+
+	//farmtile->TestFunction(&UNFGameInstance::GetItemData);
+
 }
 
 void ABaseCharacter::DoWhat()
@@ -310,15 +316,7 @@ void ABaseCharacter::DoPlanting()
 		return;
 	}
 
-	UGridManager* gridManager = UNFGameInstance::GetGridManager();
-	if (!IsValid(gridManager))
-	{
-		//gridmanager nullptr
-		FMyDebug::Print(DEBUG_TEXT("gridManager nullptr"));
-		return;
-	}
-
-	FGrid grid = gridManager->WorldToGrid(hit.Location);
+	FGrid grid = UNFGameInstance::WorldToGrid(hit.Location);
 
 	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());
 

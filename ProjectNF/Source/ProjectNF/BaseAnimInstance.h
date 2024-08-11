@@ -36,6 +36,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Anim", meta = (AllowPrivateAccess = "true"))
 	bool bAttackPlayOK;
 	
+	//BP_Ability_MainCharacter일 때, "MainCharacter"부분이다.
 	UPROPERTY()
 	FString AbilitySuffix;
 

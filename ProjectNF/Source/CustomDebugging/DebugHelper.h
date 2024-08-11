@@ -38,6 +38,8 @@ class CUSTOMDEBUGGING_API FMyDebug
 {
 private:
 
+	//빌드하기 전에 디버그를 보고 싶지 않다면 이 변수를 false할 것.
+	//코드 상에서는 .cpp 파일의 값을 바꾸어야함.
 	static bool bDebugPlay;
 
 public:
@@ -45,6 +47,13 @@ public:
 	FMyDebug();
 	~FMyDebug();
 
+	//예시1) FMyDebug::Print(DEBUG_TEXT("ABC"));
+	//예시2) FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *str1, *str2));
 	static void Print(const FString& Msg, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1);
+
+	//외부 코드에서 bDebugPlay를 바꿀려면 이 코드로 바꿀 것.
+	//예시) GameMode에 bool 변수를 따로 만들어 Beginplay()에서 bDebugPlay를 bool 변수 값으로 변경하면
+	//에디터 인게임 내에서 디버그가 활성/비활성된다.
+	static void SetBoolDebugPlay(bool Val);
 
 };

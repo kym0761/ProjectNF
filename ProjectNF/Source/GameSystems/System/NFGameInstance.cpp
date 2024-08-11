@@ -14,6 +14,8 @@
 #include "Managers/GameManager.h"
 #include "Managers/ObjectManager.h"
 
+#include "GameItem/Inventory/InventoryComponent.h"
+
 //private manager
 TObjectPtr<UGridManager> UNFGameInstance::GGridManager = nullptr;
 TObjectPtr<UElectricLinkManager> UNFGameInstance::GElectricLinkManager = nullptr;
@@ -264,10 +266,11 @@ void UNFGameInstance::InitManagers()
 	FMyDebug::Print(DEBUG_TEXT("인스턴스의 InitManagers()이 완료됨."));
 
 	//ObjManager에 ObjPoolManager의 Spawn & Despawn을 연동함.
-	ObjectManager->RequestObjectPoolSpawn.Clear();
-	ObjectManager->RequestObjectPoolSpawn.BindDynamic(ObjectPoolManager, &UObjectPoolManager::SpawnInPool);
-	ObjectManager->RequestObjectPoolDespawn.Clear();
-	ObjectManager->RequestObjectPoolDespawn.BindDynamic(ObjectPoolManager, &UObjectPoolManager::DespawnToPool);
+	ObjectManager->RequestObjectPoolSpawn.Unbind();
+	ObjectManager->RequestObjectPoolSpawn.BindUObject(ObjectPoolManager, &UObjectPoolManager::SpawnInPool);
+	ObjectManager->RequestObjectPoolDespawn.Unbind();
+	ObjectManager->RequestObjectPoolDespawn.BindUObject(ObjectPoolManager, &UObjectPoolManager::DespawnToPool);
+
 }
 
 void UNFGameInstance::InitNFGameInstance()
@@ -309,4 +312,153 @@ TObjectPtr<UGameManager> UNFGameInstance::GetGameManager()
 TObjectPtr<UObjectManager> UNFGameInstance::GetObjectManager()
 {
 	return GObjectManager;
+}
+
+//Static Functions of Managers
+
+FItemSheetData UNFGameInstance::GetItemData(const FName& ItemID)
+{
+	return GDataManager->GetItemData(ItemID);
+}
+
+bool UNFGameInstance::IsValidItem(const FName& ItemID)
+{
+	return GDataManager->IsValidItem(ItemID);
+}
+
+FCropSheetData UNFGameInstance::GetCropData(const FName& CropID)
+{
+	return GDataManager->GetCropData(CropID);
+}
+
+bool UNFGameInstance::IsValidCrop(const FName& CropID)
+{
+	return GDataManager->IsValidCrop(CropID);
+}
+
+FAbilitySheetData UNFGameInstance::GetAbilityData(const FName& AbilityID)
+{
+	return GDataManager->GetAbilityData(AbilityID);
+}
+
+bool UNFGameInstance::IsValidAbility(const FName& AbilityID)
+{
+	return GDataManager->IsValidAbility(AbilityID);
+}
+
+FLanguageSheetData UNFGameInstance::GetLanguageData(const FName& LanguageID)
+{
+	return GDataManager->GetLanguageData(LanguageID);
+}
+
+bool UNFGameInstance::IsValidLanguageData(const FName& LanguageID)
+{
+	return GDataManager->IsValidLanguageData(LanguageID);
+}
+
+void UNFGameInstance::RestartLinkManager()
+{
+	GElectricLinkManager->RestartLinkManager();
+}
+
+FGrid UNFGameInstance::WorldToGrid(const FVector& WorldLocation)
+{
+	return GGridManager->WorldToGrid(WorldLocation);
+}
+
+FVector UNFGameInstance::GridToWorld(const FGrid& Grid)
+{
+	return GGridManager->GridToWorld(Grid);
+}
+
+bool UNFGameInstance::IsSomethingExistOnGrid(const FGrid& Grid)
+{
+	return GGridManager->IsSomethingExistOnGrid(Grid);
+}
+
+void UNFGameInstance::SetCropMap(const TMap<FGrid, FCropData>& SavedMap)
+{
+	GGridManager->SetCropMap(SavedMap);
+}
+
+TMap<FGrid, FCropData>& UNFGameInstance::GetCropMap()
+{
+	return GGridManager->GetCropMap();
+}
+
+void UNFGameInstance::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
+{
+	GGridManager->UpdateCropInfo(TargetFarmlandTile);
+}
+
+void UNFGameInstance::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
+{
+	GGridManager->RemoveCropInfo(TargetFarmlandTile);
+}
+
+UInventoryObject* UNFGameInstance::TryGetInventory(FString InventoryOwner)
+{
+	return GInventoryManager->TryGetInventory(InventoryOwner);
+}
+
+void UNFGameInstance::LoadInventories(const TArray<FInventorySaveData>& InventorySaveData)
+{
+	GInventoryManager->LoadInventories(InventorySaveData);
+}
+
+TMap<FString, UInventoryObject*>& UNFGameInstance::GetAllInventories()
+{
+	return GInventoryManager->GetAllInventories();
+}
+
+bool UNFGameInstance::AddItemToTargetInventory(AActor* InventoryOwner, const FItemSlotData& SlotData)
+{
+	//인벤토리를 찾고, 인벤토리에 아이템을 넣는다.
+
+	auto inventoryComponent = InventoryOwner->FindComponentByClass<UInventoryComponent>();
+
+	if (!IsValid(inventoryComponent))
+	{
+		FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
+		return false;
+	}
+
+	bool bAdded = inventoryComponent->AddItemToInventory(SlotData);
+
+	return bAdded;
+}
+
+AActor* UNFGameInstance::Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation)
+{
+	return GObjectManager->Spawn(ToSpawnClassName, Location, Rotation);
+}
+
+UUserWidget* UNFGameInstance::CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner)
+{
+	return GObjectManager->CreateWidgetFromName(ToCreateWidgetName, WidgetOwner);
+}
+
+void UNFGameInstance::Despawn(AActor* DespawnTarget)
+{
+	GObjectManager->Despawn(DespawnTarget);
+}
+
+UNiagaraComponent* UNFGameInstance::SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation)
+{
+	return GObjectManager->SpawnNiagaraSystem(ToSpawnNiagaraName, Location, Rotation);
+}
+
+AActor* UNFGameInstance::SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation)
+{
+	return GObjectPoolManager->SpawnInPool(WorldContext, PoolableBP, Location, Rotation);
+}
+
+void UNFGameInstance::DespawnToPool(AActor* PoolableActor)
+{
+	GObjectPoolManager->DespawnToPool(PoolableActor);
+}
+
+void UNFGameInstance::ClearObjectPooling()
+{
+	GObjectPoolManager->ClearObjectPooling();
 }

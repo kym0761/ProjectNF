@@ -20,7 +20,7 @@ void AElectricPuzzleDevice::BeginPlay()
 
 	ElectricLinkComponent->OnLinkActivatedChanged.AddDynamic(this, &AElectricPuzzleDevice::SetPuzzleActiveByLink);
 
-	if (bIsRoot)//rootÃ¼Å©°¡ µÇ¾î ÀÖÀ¸¸é, ÀÌ device¾×ÅÍ´Â Àü±â¸¦ »ý»êÇÏ´Â root°¡ µÉ °ÍÀÌ´Ù.
+	if (bIsRoot)//rootÃ¼Å©ï¿½ï¿½ ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ deviceï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½â¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ rootï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
 	{
 		bPuzzleActive = true;
 		ElectricLinkComponent->SetAsRootLink();
@@ -29,7 +29,7 @@ void AElectricPuzzleDevice::BeginPlay()
 
 void AElectricPuzzleDevice::SetPuzzleActiveByLink(bool InVal)
 {
-	//Àü±â ¹ß»ýÇÏ´Â root´Â ÀÌ ÇÔ¼ö¿¡ ÀÇÇØ bPuzzleActive°¡ º¯ÇÏÁö ¾ÊÀ½
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ rootï¿½ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ bPuzzleActiveï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (!bIsRoot)
 	{
 		bPuzzleActive = InVal;
@@ -44,8 +44,8 @@ void AElectricPuzzleDevice::Tick(float DeltaTime)
 
 void AElectricPuzzleDevice::Trigger()
 {
-	//Æ®¸®°Å µ¿ÀÛ½Ã ´Ù¸¥ Æ®¸®°ÅµÉ ¾ÖµéÀ» µ¿ÀÛ½ÃÄÑÁÜ
-	//¿¹½Ã) ºÒÀÌ ºÙÀ¸¸é ¹®ÀÌ ¿­¸°´Ù.
+	//Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û½ï¿½ ï¿½Ù¸ï¿½ Æ®ï¿½ï¿½ï¿½Åµï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//ï¿½ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 
 	for (auto i : TriggerTargets)
 	{
