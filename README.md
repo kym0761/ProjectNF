@@ -12,7 +12,7 @@
 10. [ObjectPool](#objectpool)
 11. [Modules](#modules)
 12. [델리게이트 패턴](#델리게이트-패턴)
-
+13. [그외](#그외)
 # ProjectNF
 
 NF는 New Farm의 줄임말입니다.
@@ -209,3 +209,17 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 <img src="ExplainImages/DelegatePattern03.png" width="75%">
 
 ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄여 사용할 수 있습니다.
+
+# 그외
+
+<img src="ExplainImages/ETC01.png" width="75%">
+
+퍼즐 기믹
+
+<img src="ExplainImages/ETC02.png" width="75%">
+
+인벤토리 시스템
+
+<img src="ExplainImages/ETC03.png" width="75%">
+
+어빌리티 시스템
