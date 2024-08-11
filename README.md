@@ -38,7 +38,7 @@ DebugHelper.h / .cpp는 그런 기능을 만들어 놓은 코드입니다.
 __FUNCTION__ 매크로를 기반으로 만든 또다른 매크로로, 언리얼 엔진의 TEXT() 매크로를 개선하고 싶은 디버그 환경에 맞추어 DEBUG_TEXT()와 DEBUG_VATEXT()를 만들었습니다.
 
 
-<img src="ExplainImages/DebugHelper02.png" width="75%">
+<img src="ExplainImages/DebugHelper02.png" width="50%">
 
 
 또한 간단한 로그 사용을 위한 static 함수를 보유한 클래스를 만들었습니다.
@@ -66,7 +66,7 @@ GameInstance는 언리얼 엔진 내에서 레벨이 전환되어도 사라지�
 
 ## DataManager
 
-<img src="ExplainImages/DataManager01.png" width="75%">
+<img src="ExplainImages/DataManager01.png" width="50%">
 
 DataManager는 게임에서 사용할 스프레드시트 데이터를 보관하고 관리하는 매니저 클래스입니다.
 
@@ -89,7 +89,7 @@ FItemSheetData data = UNFGameInstance::GetItemData(TEXT("Item01"));
 
 ## GridManager
 
-<img src="ExplainImages/GridManager01.png" width="75%">
+<img src="ExplainImages/GridManager01.png" width="50%">
 
 월드를 적절한 크기의 값으로 나누어 만들어진 좌표로 매칭하여 그리드 칸에 농작물을 심고 키우는 시스템의 일부입니다.
 
@@ -141,7 +141,7 @@ ObjectPoolManager는 사용하고 금방 사라질 수 있는 오브젝트를 De
 
 ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝트가 있는지 확인하고, 남은 오브젝트가 존재하면 비활성화된 오브젝트를 가져와 사용하고, 없다면 새로 생성해주는 역할을 ObjectManager의 Spawn을 보조해줍니다.
 
-<img src="ExplainImages/ObjectPoolManager03.png" width="75%">
+<img src="ExplainImages/ObjectPoolManager03.png" width="50%">
 
 예시 설명으로는, 위의 스크린샷처럼 바닥에 떨어진 ItemPickup 오브젝트들은 오브젝트 풀링이 가능한 오브젝트들입니다.
 
@@ -157,13 +157,13 @@ ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝�
 
 위의 스크린샷의 코드대로, TMap 클래스에서 Key로 UClass*를 사용해 BP_?? 같은 블루프린트 클래스 중에서도 오브젝트 풀링이 가능한 객체를 키값으로 사용합니다.
 
-<img src="ExplainImages/ObjectPool02.png" width="75%">
+<img src="ExplainImages/ObjectPool02.png" width="50%">
 
 언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링이 가능한 액터들을 관리합니다.
 
 # Modules
 
-<img src="ExplainImages/Modules01.png" width="75%">
+<img src="ExplainImages/Modules01.png" width="25%">
 
 이 프로젝트는 관리의 용이성을 위해
 
