@@ -174,12 +174,12 @@ ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝�
 
 이 프로젝트는 관리의 용이성을 위해
 
-CustomDebugging - 커스텀 디버깅 코드가 포함된 모듈
-GameDefines - 게임 구조체나 enum, Interface 등을 포함하는 모듈
-GameContents - 실제 게임 기능과 관련된 클래스들을 포함하는 모듈
-GamePuzzle - 퍼즐 기믹 기능 액터를 포함한 모듈
-GameSystem - Manager, GameInstance, GameMode 등을 포함하는 모듈
-MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모듈(사실 별 내용은 없다.)
+CustomDebugging - 커스텀 디버깅 코드가 포함된 모듈   
+GameDefines - 게임 구조체나 enum, Interface 등을 포함하는 모듈   
+GameContents - 실제 게임 기능과 관련된 클래스들을 포함하는 모듈   
+GamePuzzle - 퍼즐 기믹 기능 액터를 포함한 모듈   
+GameSystem - Manager, GameInstance, GameMode 등을 포함하는 모듈   
+MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모듈   
 
 이런 방식으로 모듈을 나누어 프로젝트를 관리하고 있습니다.
 
