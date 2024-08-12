@@ -35,7 +35,7 @@ GEngine->AddOnScreenDebugMessage();
 
 DebugHelper.h / .cpp는 그런 기능을 만들어 놓은 코드입니다.
 
-__FUNCTION__ 매크로를 기반으로 만든 또다른 매크로로, 언리얼 엔진의 TEXT() 매크로를 개선하고 싶은 디버그 환경에 맞추어 DEBUG_TEXT()와 DEBUG_VATEXT()를 만들었습니다.
+__FUNCTION__ 매크로를 기반으로 만든 또다른 매크로로, 언리얼 엔진의 TEXT() 매크로를 개선하고 싶은 디버그 환경에 맞게 DEBUG_TEXT()와 DEBUG_VATEXT() 매크로를 만들었습니다.
 
 
 <img src="ExplainImages/DebugHelper02.png" width="50%">
@@ -51,6 +51,11 @@ bDebugPlay를 false로 만든다면
 FMyDebug::Print(DEBUG_TEXT("abc"));
 FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *str1, *str2));
 ```
+
+<img src="ExplainImages/DebugHelper03.png" width="50%">
+<img src="ExplainImages/DebugHelper04.png" width="50%">
+
+위 스크린샷처럼 로그가 나올 때 로그가 동작한 함수 이름과 어느 위치에 로그 코드가 존재하는지 출력됩니다.
 
 # GameInstance
 
@@ -128,6 +133,8 @@ ObjectManager는 게임 시작시 각 종류에 맞는 블루프린트 등의 �
 UNFGameInstance::Spawn(TEXT("TestActor"),Location, Rotation);
 
 ``` 
+
+액터 블루프린트 외에도 언리얼 엔진의 UI인 UMG와 게임 이펙트인 나이아가라 등 다양한 블루프린트 클래스를 미리 로드하여 사용할 수 있습니다.
 
 ## ObjectPoolManager
 
