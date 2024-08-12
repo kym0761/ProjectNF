@@ -433,7 +433,7 @@ AActor* UNFGameInstance::Spawn(FString ToSpawnClassName, const FVector& Location
 	return GObjectManager->Spawn(ToSpawnClassName, Location, Rotation);
 }
 
-UUserWidget* UNFGameInstance::CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner)
+UUserWidget* UNFGameInstance::CreateWidgetBlueprint(FString ToCreateWidgetName, APlayerController* WidgetOwner)
 {
 	return GObjectManager->CreateWidgetFromName(ToCreateWidgetName, WidgetOwner);
 }

@@ -32,7 +32,7 @@ void UInventoryWidget::NativeConstruct()
 	{
 		//Create
 		UItemSlotWidget* slot = Cast<UItemSlotWidget>(
-			UNFGameInstance::CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+			UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 		if (!IsValid(slot))
 		{

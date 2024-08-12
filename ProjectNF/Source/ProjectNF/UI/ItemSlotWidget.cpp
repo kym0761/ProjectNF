@@ -26,7 +26,7 @@ void UItemSlotWidget::NativeConstruct()
 	//생성시 Tooltip 위젯을 생성 및 설정한다.
 	//아직 사용하지 않으므로 캐스트할 필요 없음.
 	auto itemTooltip =
-		UNFGameInstance::CreateWidgetFromName(TEXT("ItemTooltip"), GetOwningPlayer());
+		UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemTooltip"), GetOwningPlayer());
 
 	SetToolTip(itemTooltip);
 
@@ -88,9 +88,9 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 		return;
 	}
 
-	////drag display
+	//drag display
 	TObjectPtr<UItemSlotWidget> dragDisplay = Cast<UItemSlotWidget>(
-		UNFGameInstance::CreateWidgetFromName(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+		UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 	if (!IsValid(dragDisplay))
 	{

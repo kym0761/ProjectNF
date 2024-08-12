@@ -168,7 +168,7 @@ void ABaseCharacter::BeginPlay()
 		InventoryComponent->InitInventoryComponent();
 	}
 
-	HUD = UNFGameInstance::CreateWidgetFromName(TEXT("HUD"), Cast<APlayerController>(GetController()));
+	HUD = UNFGameInstance::CreateWidgetBlueprint(TEXT("HUD"), Cast<APlayerController>(GetController()));
 	HUD->AddToViewport();
 }
 

@@ -120,7 +120,8 @@ private:
 
 private:
 
-	//위에 Manager 변수가 있는데도 전역변수로도 관리하는 이유는, Get_Manager()를 Static 함수로 사용할 수 있게 만들기 위함이다.
+	//위에 Manager 멤버 변수가 있는데도 전역변수로 따로 관리하는 이유는, 
+	//GameInstance의 static 함수에서 매니저의 기능을 사용할 수 있게 만들기 위함이다.
 
 	static TObjectPtr<UGridManager> GGridManager;
 	static TObjectPtr<UElectricLinkManager> GElectricLinkManager;
@@ -131,6 +132,8 @@ private:
 	static TObjectPtr<UObjectManager> GObjectManager;
 
 protected:
+
+	//현재 필요없는 관계로 protected로 외부 사용을 막음.
 
 	static 	TObjectPtr<UGridManager> GetGridManager();
 	static 	TObjectPtr<UElectricLinkManager> GetElectricLinkManager();
@@ -151,7 +154,7 @@ public:
 
 public:
 
-	/*Static Functions*/
+	/*매니저와 관련된 Static Functions*/
 
 	/*DataManager Functions*/
 	UFUNCTION()
@@ -228,7 +231,7 @@ public:
 	static AActor* Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation = FRotator::ZeroRotator);
 
 	UFUNCTION()
-	static UUserWidget* CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner);
+	static UUserWidget* CreateWidgetBlueprint(FString ToCreateWidgetName, APlayerController* WidgetOwner);
 
 	UFUNCTION()
 	static void Despawn(AActor* DespawnTarget);

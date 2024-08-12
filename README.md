@@ -1,4 +1,4 @@
-## 목차
+# 목차
 
 1. [ProjectNF](#projectnf)
 2. [DebugHelper](#debughelper)
@@ -12,12 +12,17 @@
 10. [ObjectPool](#objectpool)
 11. [Modules](#modules)
 12. [델리게이트 패턴](#델리게이트-패턴)
-13. [그외](#그외)
+13. [ETC](#ETC)
+
 # ProjectNF
 
 NF는 New Farm의 줄임말입니다.
 
-이번 프로젝트는 기존에 제작했던 프로젝트의 코드를 리메이크하고, 프레임워크화하기 위한 목표로 시작됐습니다.
+예전에 만들었던 농장 경영 시스템은 사용한 코드들이 관리가 힘들고 확장이 어려워지는 문제가 발생하여
+
+관리하기 쉽고 확장이 용이하도록 디자인 패턴을 적용하여 프로젝트의 코드를 리메이크하는 것을 목표로 잡았으며
+
+다른 프로젝트에서도 간편하게 사용할 수 있도록 일종의 프레임워크화 하려는 시도로 제작하는 프로젝트입니다.
 
 # DebugHelper
 
@@ -43,13 +48,18 @@ __FUNCTION__ 매크로를 기반으로 만든 또다른 매크로로, 언리얼 
 
 또한 간단한 로그 사용을 위한 static 함수를 보유한 클래스를 만들었습니다.
 
-bDebugPlay를 false로 만든다면
+bDebugPlay에 의해 프로젝트 내에 있는 모든 로그 코드가 활성/비활성 상태가 될 수 있습니다.
 
-일반적으로 사용하는 방법은 다음과 같습니다.
+이 로그 시스템을 사용하는 일반적으로 사용하는 방법은 다음과 같습니다.
 
 ```
-FMyDebug::Print(DEBUG_TEXT("abc"));
-FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *str1, *str2));
+
+// 단순 로그
+FMyDebug::Print(DEBUG_TEXT("abc")); 
+
+//파라미터가 들어간 로그
+FMyDebug::Print(DEBUG_VATEXT(TEXT("test log : %s, %s"), *str1, *str2));
+
 ```
 
 <img src="ExplainImages/DebugHelper03.png" width="50%">
@@ -64,6 +74,16 @@ FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *str1, *str2));
 GameInstance는 언리얼 엔진 내에서 레벨이 전환되어도 사라지지 않고 유지되는 객체입니다.
 
 그러므로, GameInstance를 매니저를 모아두는 싱글톤 클래스로서 사용하고 게임 로직과 관련된 Manager들을 전부 GameInstance에서 관리하도록 만듭니다.
+
+매니저 클래스는 전부 static 멤버 변수로서 동작하며, 매니저 함수들 또한 GameInstance의 static 함수로 동작하게 만듭니다.
+
+즉, GameInstance의 기능을 사용할 때, 매니저 클래스의 존재를 확인하거나 코드를 포함할 필요없이 GameInstance에만 접근하여 매니저의 기능을 온전히 사용할 수 있습니다.
+
+```
+//예시
+//실제로는 DataManager의 기능이지만, 게임 인스턴스에서 동작할 수 있습니다.
+FItemSheetData a = UNFGameInstance::GetItemData(TEXT("Item01"));
+```
 
 # Managers
 
@@ -121,16 +141,32 @@ FItemSheetData data = UNFGameInstance::GetItemData(TEXT("Item01"));
 ObjectManager는 Content폴더에 있는 블루프린트로 만들어진 클래스를 전부 게임 시작시 로드하여 사용자가 필요하면 원하는 Key값의 클래스를 Spawn을 도와주는 팩토리 패턴의 매니저 클래스입니다.
 
 <img src="ExplainImages/ObjectManager02.png" width="75%">
+<img src="ExplainImages/ObjectManager03.png" width="75%">
 
-ObjectManager는 게임 시작시 각 종류에 맞는 블루프린트 등의 경로에 맞춰 폴더 안에 있는 모든 블루프린트를 매니저에 로드합니다.
+예시로, ObjectManager는 게임 시작시 Blueprints 폴더에 있는 액터 블루프린트들을 로드합니다. 
 
-로드한 블루프린트는 "BP_라는 접두어를 제거한 이름"을 제거한 문자열을 Key값으로 사용합니다.
+C++ 액터 블루프린트, 순수 액터 블루프린트를 구분하지 않고 로드할 수 있습니다. 액터 블루프린트가 아닐 시에는 무시합니다.
+
+로드한 액터 블루프린트는 "BP_라는 접두어를 제거한 이름"을 제거한 문자열을 Key값으로 사용합니다.
 
 ```
 //사용예시
 
 //BP_TestActor라는 클래스를 Spawn한다.
 UNFGameInstance::Spawn(TEXT("TestActor"),Location, Rotation);
+
+//BP_ItemPickup이라는 클래스를 Spawn한다.
+//
+//ItemPickup클래스는 IObjectPoolable 인터페이스를 상속받았기에, 
+//실제로는 오프젝트 풀링에 의해 비활성화된 오브젝트를 활성화하여 가져올 수도 있음.
+//자세한 내용은 밑에 ObjectPoolManager 내용에서 설명.
+UNFGameInstance::Spawn(TEXT("ItemPickup"),Location, Rotation);
+
+//WBP_HUD를 UI 인스턴스로 생성한다.
+UNFGameInstance::CreateWidgetBlueprint(TEXT("HUD"), GetOwningPlayer());
+
+//NS_Fire라는 이펙트를 Spawn한다.
+UNFGameInstance::SpawnNiagaraSystem(TEXT("Fire"), Location, Rotation);
 
 ``` 
 
@@ -140,7 +176,7 @@ UNFGameInstance::Spawn(TEXT("TestActor"),Location, Rotation);
 
 <img src="ExplainImages/ObjectPoolManager01.png" width="75%">
 
-ObjectPoolManager는 사용하고 금방 사라질 수 있는 오브젝트를 Destroy로 바로 제거하지 않고, 게임 공간에 그대로 유지하면서 비활성화 상태로 바꾼 뒤, 필요해질 때마다 기존의 오브젝트를 활성화하고 사용하는 방식인 오브젝트 풀링을 구현하여 관리한 매니저 클래스입니다.
+ObjectPoolManager는 사용하고 금방 사라지지만 계속 필요로 하는 오브젝트를 즉각 제거하지 않고, 게임 공간에 그대로 유지하면서 비활성화 상태로 바꾼 뒤, 필요해질 때마다 기존의 오브젝트를 활성화하고 사용하는 방식인 오브젝트 풀링을 구현하여 관리한 매니저 클래스입니다.
 
 위의 코드대로, ObjectManager에서는 오브젝트 풀링이 가능한 오브젝트인지 확인 후, 오브젝트 풀링 오브젝트라면 ObjectPoolManager에서 Spawn을 맡깁니다.
 
@@ -180,7 +216,7 @@ TArray<TArray<int32>> arr; // !! 불가능
 
 ```
 
-언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링이 가능한 액터들을 관리합니다.
+언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링에서 사용할 컨테이너로 액터들을 관리합니다.
 
 # Modules
 
@@ -197,13 +233,11 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 
 이런 방식으로 모듈을 나누어 프로젝트를 관리하고 있습니다. (필요에 따라 더 추가될 수도 있음.)
 
-초기에는 모듈을 매우 작은 크기로 나누어 서로 참조를 하는 방식으로 프로젝트를 구성하여 시작했지만,
+초기에는 모듈을 매우 작은 크기로 나누어 서로 참조를 하는 방식으로 프로젝트를 구성하여 시작했지만, 점차 모듈 상호 간에 순환적 의존성을 띠는 경고가 나오기에 모듈의 숫자를 줄여 현재 구성으로 관리하는 것으로 변경했습니다.
 
-점차 모듈 상호 간에 순환적 의존성을 띠는 경고가 나오기에 모듈의 숫자를 줄여 현재 구성으로 관리하는 것으로 변경했습니다.
+또한, GameContents의 일부 코드는 GameSystem과 MainModule의 코드 일부를 참조하는 기능을 가지고 있었기에, 의존성을 낮추기 위한 설정이 꼬이는 문제를 가지고 있었습니다.
 
-또한 사실 GameContents의 일부 코드는 GameSystem과 MainModule의 코드 일부를 참조하는 기능을 가지고 있었기에 계속 모듈 의존성 설정이 꼬이는 문제를 가지고 있었습니다.
-
-이 문제를 해결하기 위해 GameContents에서는 되도록이면 실제 GameInstance의 코드를 직접 참조하지 않고 델리게이트 패턴을 사용하도록 했습니다.
+이 문제를 해결하기 위해 GameContents 모듈에 있는 코드들은 되도록이면 실제 GameInstance의 코드를 직접 참조하지 않고 델리게이트 패턴을 사용하도록 했습니다.
 
 ## 델리게이트 패턴
 
@@ -229,18 +263,27 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 
 <img src="ExplainImages/DelegatePattern03.png" width="75%">
 
-ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄여 사용할 수 있습니다.
+ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 싱글톤 클래스의 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄여 사용할 수 있습니다.
 
-# 그외
+# ETC
+
+이 프로젝트에 포함된 기능을 간략하게 소개하면 다음과 같습니다.
+
+## 퍼즐 기믹
 
 <img src="ExplainImages/ETC01.png" width="75%">
 
-퍼즐 기믹
+던전맵을 만들 때 퍼즐 기믹들을 만들어 맵을 진행하는 콘텐츠를 제공하고자 만들어진 시스템입니다.
+
+## 아이템 & 인벤토리 시스템
 
 <img src="ExplainImages/ETC02.png" width="75%">
 
-인벤토리 시스템
+아이템을 얻는 것은 물론, 아이템의 이름과 설명 등의 정보와, 사용시 효과 등을 구현하였습니다.
+
+## 어빌리티 시스템
 
 <img src="ExplainImages/ETC03.png" width="75%">
 
-어빌리티 시스템
+
+캐릭터가 어빌리티(혹은 스킬)을 가지고 상대를 공격하거나 효과가 나오는 기능을 구현했습니다. 또한. 스킬에 맞는 이펙트를 발동할 수 있도록 데이터시트로 정리한 데이터 기반으로 동작하여, 일부 수치나 에셋의 오류가 있으면 앱의 빌드 바이너리를 수정하지 않고 데이터시트의 pak만 교체하여 오류를 수정할 수 있는 기반을 만들었습니다.
