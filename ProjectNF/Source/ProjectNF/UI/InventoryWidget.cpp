@@ -26,8 +26,8 @@ void UInventoryWidget::NativeConstruct()
 
 	InventoryGridPanel->ClearChildren();
 	
-	int32 inventorySize = 100;
-	int32 startOffset = 20; //인벤토리 0~9번째는 장비칸 예약, 10~19는 퀵슬롯 예약.
+	int32 inventorySize = InventoryComponentRef->GetInventoryObjectRef()->GetInventorySize();
+	int32 startOffset = InventoryComponentRef->GetInventoryObjectRef()->GetFreeInventoryStart(); //인벤토리 0~9번째는 장비칸 예약, 10~19는 퀵슬롯 예약.
 	for (int32 i = startOffset; i < inventorySize; i++)
 	{
 		//Create

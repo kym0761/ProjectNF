@@ -236,8 +236,27 @@ int32 UInventoryObject::AddItemToInventory(const FItemSlotData& InData)
 bool UInventoryObject::UseItemInInventory(const int32 ItemIndex, const int32 UseQuantity)
 {
 	//TODO : 아이템 종류에 따라 아이템 갯수를 내리거나, 장착하거나... 등등
+	if (!Items.IsValidIndex(ItemIndex))
+	{
+		//아이템 인덱스가 유효하지 않음.
+		return false;
+	}
+	
+	bool bEnough = (Items[ItemIndex].Quantity >= UseQuantity);
+	if (!bEnough)
+	{
+		//아이템이 충분히 있지 않으면 실패
+		return false;
+	}
 
-	return false;
+	Items[ItemIndex].Quantity -= UseQuantity;
+	if (Items[ItemIndex].Quantity <= 0)
+	{
+		Items[ItemIndex] = FItemSlotData();
+	}
+
+	OnInventoryItemsChanged.Broadcast();
+	return true;
 }
 
 bool UInventoryObject::UseItemInInventory(const FName& ItemName, const int32 UseQuantity)
@@ -293,6 +312,12 @@ int32 UInventoryObject::GetInventorySize() const
 {
 	return InventorySize;
 }
+
+int32 UInventoryObject::GetFreeInventoryStart() const
+{
+	return FreeInventoryStart;
+}
+
 
 bool UInventoryObject::SwapItemBetweenInventory(TObjectPtr<UInventoryObject> FromInventory, const int32 FromIndex, TObjectPtr<UInventoryObject> ToInventory, const int32 ToIndex)
 {

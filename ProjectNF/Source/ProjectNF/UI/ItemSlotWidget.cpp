@@ -179,11 +179,15 @@ bool UItemSlotWidget::UseItem()
 		{
 		auto useitemAbility = Cast<AAbilityUseItem>(
 			UNFGameInstance::Spawn(TEXT("AbilityUseItem"), GetOwningPlayerPawn()->GetActorLocation()));
+
 		if (IsValid(useitemAbility))
 		{
 			useitemAbility->InitAbility(GetOwningPlayerPawn(), UNFGameInstance::GetAbilityData(itemSlot.ItemName), GetOwningPlayerPawn());
 		}
-			return true;
+
+		inventoryObj->UseItemInInventory(InventorySlotNumber, 1);
+
+		return true;
 		}
 		break;
 	default:

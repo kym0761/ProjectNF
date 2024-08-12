@@ -92,6 +92,7 @@ public:
 	//인벤토리 Size
 	int32 GetInventorySize() const;
 
+	int32 GetFreeInventoryStart() const;
 
 	static bool SwapItemBetweenInventory(TObjectPtr<UInventoryObject> FromInventory, const int32 FromIndex, TObjectPtr<UInventoryObject> ToInventory, const int32 ToIndex);
 
