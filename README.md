@@ -149,12 +149,17 @@ ObjectPoolManager는 사용하고 금방 사라질 수 있는 오브젝트를 De
 ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝트가 있는지 확인하고, 남은 오브젝트가 존재하면 비활성화된 오브젝트를 가져와 사용하고, 없다면 새로 생성해주는 역할을 ObjectManager의 Spawn을 보조해줍니다.
 
 <img src="ExplainImages/ObjectPoolManager03.png" width="50%">
+<img src="ExplainImages/ObjectPoolManager04.png" width="50%">
 
 예시 설명으로는, 위의 스크린샷처럼 바닥에 떨어진 ItemPickup 오브젝트들은 오브젝트 풀링이 가능한 오브젝트들입니다.
 
 아이템을 얻으면 시작적으로는 아이템이 사라진 것처럼 보이지만, 실제로는 플레이어가 닿지 않을 공간에 오브젝트를 이동시킨 후 비활성화합니다.
 
-후에 ItemPickup이 맵 공간 어딘가에 생성될 때는 ObjectPoolManager에서 관리된 비활성화된 오브젝트를 활성화하고 원하는 위치에 배치하여 마치 오브젝트가 생성된 것과 비슷한 효과를 얻을 수 있습니다.
+<img src="ExplainImages/ObjectPoolManager05.png" width="50%">
+<img src="ExplainImages/ObjectPoolManager06.png" width="50%">
+<img src="ExplainImages/ObjectPoolManager07.png" width="50%">
+
+후에 ItemPickup이 맵 공간 어딘가에 생성될 때는 ObjectPoolManager에서 관리된 비활성화된 오브젝트를 활성화하고 원하는 위치에 배치하여 마치 오브젝트가 생성된 것 같은 효과를 얻을 수 있습니다.
 
 ### ObjectPool
 
@@ -181,7 +186,7 @@ GamePuzzle - 퍼즐 기믹 기능 액터를 포함한 모듈
 GameSystem - Manager, GameInstance, GameMode 등을 포함하는 모듈   
 MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모듈   
 
-이런 방식으로 모듈을 나누어 프로젝트를 관리하고 있습니다.
+이런 방식으로 모듈을 나누어 프로젝트를 관리하고 있습니다. (필요에 따라 더 추가될 수도 있음.)
 
 초기에는 모듈을 매우 작은 크기로 나누어 서로 참조를 하는 방식으로 프로젝트를 구성하여 시작했지만,
 
@@ -199,7 +204,7 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 
 <img src="ExplainImages/DelegatePattern01.png" width="75%">
 
-특히 언리얼 엔진에서는 순환 의존성을 좋아하지 않기에 모듈 간의 순환 의존성이 생기면 고치라는 경고 메시지가 나타납니다.
+특히 언리얼 엔진에서는 순환 의존성을 피하도록 권고하고 있으므로, 모듈 간의 순환 의존성이 생기면 고치라는 경고 메시지가 나타납니다.
 
 이를 고치기 위해 언리얼 엔진에서 제공하는 델리게이트를 사용할 수 있습니다.
 
