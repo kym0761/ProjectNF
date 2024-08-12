@@ -53,7 +53,8 @@ public:
 
 	//데이터 테이블 -> 구조체에 맞는 Map으로
 	template <typename T>
-	void IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, TArray<TObjectPtr<UDataTable>> SheetTables);
+	void IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap,
+		TArray<TObjectPtr<UDataTable>> SheetTables);
 
 	//item
 	UFUNCTION()

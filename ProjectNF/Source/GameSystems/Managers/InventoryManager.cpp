@@ -19,7 +19,7 @@ UInventoryObject* UInventoryManager::TryGetInventory(FString InventoryOwner)
 		return nullptr;
 	}
 
-	FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Map Size = %d"), InventoryMap.Num()));
+	//FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Map Size = %d"), InventoryMap.Num()));
 
 	//InventoryOwner에 대한 인벤토리가 없다면 새로 생성해준다.
 	if (InventoryMap.Num() == 0 

@@ -4,14 +4,6 @@
 
 bool FMyDebug::bDebugPlay = true;
 
-FMyDebug::FMyDebug()
-{
-}
-
-FMyDebug::~FMyDebug()
-{
-}
-
 void FMyDebug::Print(const FString& Msg, const FColor& Color, int32 InKey)
 {
 
@@ -32,4 +24,12 @@ void FMyDebug::Print(const FString& Msg, const FColor& Color, int32 InKey)
 void FMyDebug::SetBoolDebugPlay(bool Val)
 {
 	bDebugPlay = Val;
+}
+
+FMyDebug::FMyDebug()
+{
+}
+
+FMyDebug::~FMyDebug()
+{
 }

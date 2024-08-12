@@ -23,12 +23,9 @@ public:
 
 	//데이터 테이블의 'Row Name'이 아이템의 "ItemID"로 취급
 
-	//TODO : 번역용 기능 만들기
-	//ItemName값으로 Localize데이터 테이블을 검색해 Korean 언어라면 Kor 데이터를 가져온다..
+	//ItemNameID값으로 로컬라이징 데이터 테이블을 검색해 Korean 언어라면 Kor 데이터를 가져온다..
 
-
-	//ItemBaseData의 ItemName은 FText로 추후 Localizing에 사용될 수도 있는 값이다.
-	// Item ID가 아님!
+	// ItemNameID는 Item ID가 아님!
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FText ItemNameID;
 

@@ -6,3 +6,6 @@
 /Saved
 /ProjectNF.sln
 /.vsconfig
+
+# 용량이 너무 큰 관계로 제외함
+/Content

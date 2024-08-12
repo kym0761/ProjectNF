@@ -11,7 +11,7 @@ AGridSetup::AGridSetup()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GridVisual = CreateDefaultSubobject<UGridVisualComponent>(TEXT("GridVisual"));
-	SetRootComponent(GridVisual);
+	GridVisual->SetupAttachment(GetRootComponent());
 
 }
 

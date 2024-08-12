@@ -170,12 +170,14 @@ ObjectPoolManager에서는 해당 오브젝트 풀에서 남아있는 오브젝�
 위의 스크린샷의 코드대로, TMap 클래스에서 Key로 UClass*를 사용해 BP_?? 같은 블루프린트 클래스 중에서도 오브젝트 풀링이 가능한 객체를 키값으로 사용합니다.
 
 <img src="ExplainImages/ObjectPool02.png" width="50%">
+
 ```
 //STL
 vector<vector<int>> arr; //가능
 
 //언리얼 컨테이너
 TArray<TArray<int32>> arr; // !! 불가능
+
 ```
 
 언리얼 컨테이너는 이중 사용이 불가능한 문제를 가지고 있기 때문에 오브젝트 풀 청크라는 클래스를 따로 만들어 청크 오브젝트 안에 오브젝트 풀링이 가능한 액터들을 관리합니다.

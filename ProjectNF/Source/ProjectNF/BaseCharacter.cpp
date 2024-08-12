@@ -268,13 +268,13 @@ void ABaseCharacter::UseFarmTool()
 	}
 
 
-	//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-	farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
-	//작물 아이템을 Spawn 요청하는 기능 Bind
-	farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
+	////farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
+	//farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
+	////작물 아이템을 Spawn 요청하는 기능 Bind
+	//farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
 
-	farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
-	farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
+	//farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
+	//farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
 
 	//캐릭터에 의해 farmtile 생성시 gridmanager에 최초 반영
 	farmtile->RequestUpdateCropData.ExecuteIfBound(farmtile);
