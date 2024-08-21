@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PuzzleActors/PuzzlePhysicsProp.h"
+#include "GamePuzzle/PuzzlePhysicsProp.h"
 #include "ElectricityBowl.generated.h"
 
 
@@ -12,7 +12,7 @@ class UElectricLinkComponent;
  * 
  */
 UCLASS()
-class GAMEPUZZLE_API AElectricityBowl : public APuzzlePhysicsProp
+class GAMECONTENTS_API AElectricityBowl : public APuzzlePhysicsProp
 {
 	GENERATED_BODY()
 	

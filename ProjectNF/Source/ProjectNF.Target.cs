@@ -22,7 +22,6 @@ public class ProjectNFTarget : TargetRules
         ExtraModuleNames.Add("GameSystems");
 
         //Contents
-        ExtraModuleNames.Add("GamePuzzle");
         ExtraModuleNames.Add("GameContents");
     }
 }

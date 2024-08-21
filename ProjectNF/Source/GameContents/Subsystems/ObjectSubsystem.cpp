@@ -1,26 +1,55 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ObjectManager.h"
+#include "ObjectSubsystem.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Niagara/Classes/NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-
-#include "AssetRegistry/AssetRegistryModule.h"
-
-#include "Defines/Interfaces/ObjectPoolInterfaces.h"
-
-#include "System/NFGameInstance.h"
 
 #include "GameContents/GameFarm/FarmlandTile.h"
 #include "GameContents/GameItem/Item/ItemPickup.h"
 #include "GameContents/Ability/AbilityBase.h"
 
-UObjectManager::UObjectManager()
+#include "Defines/Interfaces/ObjectPoolInterfaces.h"
+
+#include "ObjectPoolSubsystem.h"
+#include "SheetDataSubsystem.h"
+#include "GameInfoSubsystem.h"
+#include "InventorySubsystem.h"
+
+UObjectSubsystem::UObjectSubsystem()
 {
 }
 
-void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths)
+void UObjectSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	//Blueprints 폴더에 있는 모든 액터 블루프린트를 긁어온다.
+	TArray<FName> blueprintPaths;
+	blueprintPaths.Add(TEXT("/Game/Blueprints")); //블루프린트를 긁어올 때 폴더 여러개로 분류했다면, 해당 폴더들 전부를 add하면 된다.
+	LoadBlueprints<AActor>(BlueprintMap, AActor::StaticClass(), blueprintPaths, TEXT("BP_")); //ActorBlueprint만 가져온다.
+
+	//UMG
+	TArray<FName> widgetBlueprintPaths;
+	widgetBlueprintPaths.Add(TEXT("/Game/UI"));
+	LoadBlueprints<UUserWidget>(WidgetBlueprintMap, UUserWidget::StaticClass(), widgetBlueprintPaths, TEXT("WBP_"));
+
+
+	//Niagara
+	TArray<FName> niagaraPaths;
+	niagaraPaths.Add(TEXT("/Game/Niagaras"));
+	LoadNiagaras(NiagaraSystemMap, niagaraPaths);
+
+}
+
+void UObjectSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+}
+
+void UObjectSubsystem::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths)
 {
 	FAssetRegistryModule& assetRegistryModule
 		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
@@ -71,10 +100,9 @@ void UObjectManager::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& Tar
 			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
 		}
 	}
-
 }
 
-AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation)
+AActor* UObjectSubsystem::Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation)
 {
 	if (!GEngine)
 	{
@@ -101,13 +129,14 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 
 	if (toSpawn->ImplementsInterface(UObjectPoolable::StaticClass()))
 	{
-		if (RequestObjectPoolSpawn.IsBound())
+		UObjectPoolSubsystem* objectPoolSubsys = world->GetSubsystem<UObjectPoolSubsystem>();
+		if (IsValid(objectPoolSubsys))
 		{
-			actor = RequestObjectPoolSpawn.Execute(world, toSpawn, Location, Rotation);
+			actor = objectPoolSubsys->SpawnInPool(world, toSpawn, Location, Rotation);
 		}
 		else
 		{
-			FMyDebug::Print(DEBUG_TEXT("RequestObjectPoolSpawn is not Bound."));
+			FMyDebug::Print(DEBUG_TEXT("objectPoolSubsys is Invalid."));
 		}
 	}
 	else
@@ -124,7 +153,7 @@ AActor* UObjectManager::Spawn(FString ToSpawnClassName, const FVector& Location,
 	return actor;
 }
 
-void UObjectManager::BindingActor(AActor* TargetActor)
+void UObjectSubsystem::BindingActor(AActor* TargetActor)
 {
 	//GameContents에 있는 액터들의 Delegate를 바인딩하여 의존성을 최대한 낮추는 것을 목표로 만들어진 함수.
 	//액터가 무엇인지 확인하고 Cast하여 Delegate에 바인딩한다.
@@ -135,48 +164,53 @@ void UObjectManager::BindingActor(AActor* TargetActor)
 	//를 사용하여 static 함수를 넘길 수도 있긴 한데, 코드가 복잡해질 수 있는 가능성이 있어
 	//Object를 Spawn할 때만 GameInstance에 접근하여 static 함수를 바인드하도록 한다.
 
-	if (TargetActor->IsA(AFarmlandTile::StaticClass()))
+	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
+	auto gameInfoSubsystem = GetGameInstance()->GetSubsystem<UGameInfoSubsystem>();
+	auto inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+	if (!IsValid(TargetActor))
 	{
-		auto farmtile= Cast<AFarmlandTile>(TargetActor);
+		FMyDebug::Print(DEBUG_TEXT("TargetActor Invalid."));
+	}
+	else if (TargetActor->IsA(AFarmlandTile::StaticClass()))
+	{
+		auto farmtile = Cast<AFarmlandTile>(TargetActor);
 
-		//if (IsValid(farmtile))
-		//{
-		//	farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
-		//	farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
-		//	farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
-		//	farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
-		//}
+		if (IsValid(farmtile))
+		{
+			farmtile->RequestCropSheetData.BindUObject(sheetDataSubsystem, &USheetDataSubsystem::GetCropData);
+			farmtile->RequestSpawnItemPickup.BindUObject(this, &UObjectSubsystem::Spawn);
+			farmtile->RequestUpdateCropData.BindUObject(gameInfoSubsystem, &UGameInfoSubsystem::UpdateCropInfo);
+			farmtile->RequestRemoveCropData.BindUObject(gameInfoSubsystem, &UGameInfoSubsystem::RemoveCropInfo);
+		}
 	}
 	else if (TargetActor->IsA(AItemPickup::StaticClass()))
 	{
 		auto itemPickup = Cast<AItemPickup>(TargetActor);
 
-		//if (IsValid(itemPickup))
-		//{
-		//	itemPickup->RequestItemData.BindStatic(&UNFGameInstance::GetItemData);
-		//	itemPickup->RequestDespawn.BindStatic(&UNFGameInstance::Despawn);
-		//	itemPickup->RequestAddItem.BindStatic(&UNFGameInstance::AddItemToTargetInventory);
-		//}
+		if (IsValid(itemPickup))
+		{
+			itemPickup->RequestItemData.BindUObject(sheetDataSubsystem ,&USheetDataSubsystem::GetItemData);
+			itemPickup->RequestDespawn.BindUObject(this, &UObjectSubsystem::Despawn);
+			itemPickup->RequestAddItem.BindUObject(inventorySubsystem , &UInventorySubsystem::AddItemToTargetInventory);
+		}
 	}
 	else if (TargetActor->IsA(AAbilityBase::StaticClass()))
 	{
 		auto abilityBase = Cast <AAbilityBase>(TargetActor);
 
-		//if (IsValid(abilityBase))
-		//{
-		//	abilityBase->RequestSpawnNiagara.BindStatic(&UNFGameInstance::SpawnNiagaraSystem);
-		//	abilityBase->RequestDespawnAbility.BindStatic(&UNFGameInstance::Despawn);
-		//}
+		if (IsValid(abilityBase))
+		{
+			abilityBase->RequestSpawnNiagara.BindUObject(this, &UObjectSubsystem::SpawnNiagaraSystem);
+			abilityBase->RequestDespawnAbility.BindUObject(this, &UObjectSubsystem::Despawn);
+		}
 	}
 	else
 	{
 		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed."));
 	}
-
-
 }
 
-UUserWidget* UObjectManager::CreateWidgetFromName(FString ToCreateWidgetName, APlayerController* WidgetOwner)
+UUserWidget* UObjectSubsystem::CreateWidgetBlueprint(FString ToCreateWidgetName, APlayerController* WidgetOwner)
 {
 	auto widgetClass = WidgetBlueprintMap[ToCreateWidgetName];
 	UUserWidget* widget = CreateWidget<UUserWidget>(WidgetOwner, widgetClass);
@@ -184,15 +218,16 @@ UUserWidget* UObjectManager::CreateWidgetFromName(FString ToCreateWidgetName, AP
 	return widget;
 }
 
-void UObjectManager::Despawn(AActor* DespawnTarget)
+void UObjectSubsystem::Despawn(AActor* DespawnTarget)
 {
 	if (!GEngine)
 	{
 		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return;
 	}
-
-	UWorld* world = GEngine->GetCurrentPlayWorld();
+	
+	UWorld* world = //GEngine->GetCurrentPlayWorld();
+		GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
 	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No World."));
@@ -201,13 +236,14 @@ void UObjectManager::Despawn(AActor* DespawnTarget)
 
 	if (DespawnTarget->GetClass()->ImplementsInterface(UObjectPoolable::StaticClass()))
 	{
-		if (RequestObjectPoolDespawn.IsBound())
+		UObjectPoolSubsystem* objectPoolSubsys = world->GetSubsystem<UObjectPoolSubsystem>();
+		if (IsValid(objectPoolSubsys))
 		{
-			RequestObjectPoolDespawn.Execute(DespawnTarget); //void function Delegate라서 ExecuteIfBound()가 있기는 하지만, Spawn과의 통일성을 위해 그냥 체크 후 Execute한다.
+			objectPoolSubsys->DespawnToPool(DespawnTarget);
 		}
 		else
 		{
-			FMyDebug::Print(DEBUG_TEXT("RequestObjectPoolDespawn is not Bound."));
+			FMyDebug::Print(DEBUG_TEXT("objectPoolSubsys is Invalid."));
 		}
 
 	}
@@ -215,40 +251,19 @@ void UObjectManager::Despawn(AActor* DespawnTarget)
 	{
 		DespawnTarget->Destroy();
 	}
-
 }
 
-void UObjectManager::InitManager()
+UNiagaraComponent* UObjectSubsystem::SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation)
 {
-
-	//Blueprints 폴더에 있는 모든 액터 블루프린트를 긁어온다.
-	TArray<FName> blueprintPaths;
-	blueprintPaths.Add(TEXT("/Game/Blueprints")); //블루프린트를 긁어올 때 폴더 여러개로 분류했다면, 해당 폴더들 전부를 add하면 된다.
-	LoadBlueprints<AActor>(BlueprintMap, AActor::StaticClass(), blueprintPaths, TEXT("BP_")); //ActorBlueprint만 가져온다.
-
-	//UMG
-	TArray<FName> widgetBlueprintPaths;
-	widgetBlueprintPaths.Add(TEXT("/Game/UI"));
-	LoadBlueprints<UUserWidget>(WidgetBlueprintMap, UUserWidget::StaticClass(), widgetBlueprintPaths, TEXT("WBP_"));
-
-
-	//Niagara
-	TArray<FName> niagaraPaths;
-	niagaraPaths.Add(TEXT("/Game/Niagaras"));
-	LoadNiagaras(NiagaraSystemMap, niagaraPaths);
-}
-
-UNiagaraComponent* UObjectManager::SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation)
-{
-
 	if (!GEngine)
 	{
 		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return nullptr;
 	}
 
-	UWorld* world = GEngine->GetCurrentPlayWorld();
-	
+	UWorld* world = //GEngine->GetCurrentPlayWorld();
+		GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
+
 	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No World."));

@@ -25,8 +25,6 @@ void APuzzleActorBase::PreEditChange(FProperty* PropertyAboutToChange)
 {
 	Super::PreEditChange(PropertyAboutToChange);
 
-	//UE_LOG(LogTemp, Warning, TEXT("PreEditChange"));
-
 	//TriggerTargets가 변경된다면, 이전 TriggerTargets의 값을 저장함.
 	//PostEditChangeProperty를 통해 TriggerTargets 변화에 따라
 	//triggerMap을 만들어준다.
@@ -41,8 +39,6 @@ void APuzzleActorBase::PreEditChange(FProperty* PropertyAboutToChange)
 void APuzzleActorBase::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
-
-	//UE_LOG(LogTemp, Warning, TEXT("PostEditChangeProperty IN %s"), *this->GetName());
 
 	//prevTriggerTargets과 triggerTargets의 변화에 따라
 	//triggerTargets에 새로 들어온 Actor에 접근해 TriggerMap 세팅

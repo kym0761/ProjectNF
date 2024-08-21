@@ -2,7 +2,7 @@
 
 
 #include "ElectricityBowl.h"
-#include "PuzzleActors/ElectricLink/ElectricLinkComponent.h"
+#include "GamePuzzle/ElectricLink/ElectricLinkComponent.h"
 
 AElectricityBowl::AElectricityBowl()
 {

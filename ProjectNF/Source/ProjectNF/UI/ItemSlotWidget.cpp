@@ -12,9 +12,12 @@
 #include "GameItem/Inventory/InventoryComponent.h"
 #include "GameItem/Inventory/InventoryObject.h"
 
-#include "System/NFGameInstance.h"
-#include "Managers/ObjectManager.h"
-#include "Managers/DataManager.h"
+//#include "System/NFGameInstance.h"
+//#include "Managers/ObjectManager.h"
+//#include "Managers/DataManager.h"
+
+#include "Subsystems/ObjectSubsystem.h"
+#include "Subsystems/SheetDataSubsystem.h"
 
 #include "ItemTooltipWidget.h"
 #include "Ability/AbilityUseItem.h"
@@ -25,8 +28,10 @@ void UItemSlotWidget::NativeConstruct()
 
 	//생성시 Tooltip 위젯을 생성 및 설정한다.
 	//아직 사용하지 않으므로 캐스트할 필요 없음.
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+
 	auto itemTooltip =
-		UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemTooltip"), GetOwningPlayer());
+		objectSubsystem->CreateWidgetBlueprint(TEXT("ItemTooltip"), GetOwningPlayer());
 
 	SetToolTip(itemTooltip);
 
@@ -88,9 +93,11 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 		return;
 	}
 
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+
 	//drag display
 	TObjectPtr<UItemSlotWidget> dragDisplay = Cast<UItemSlotWidget>(
-		UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+		objectSubsystem->CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 	if (!IsValid(dragDisplay))
 	{
@@ -160,7 +167,10 @@ bool UItemSlotWidget::UseItem()
 
 	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
 
-	FItemSheetData itemSheetData = UNFGameInstance::GetItemData(itemSlot.ItemName);
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
+
+	FItemSheetData itemSheetData = sheetDataSubsystem->GetItemData(itemSlot.ItemName);
 
 	EItemGroupType itemGroupType = itemSheetData.ItemGroupType;
 
@@ -178,11 +188,11 @@ bool UItemSlotWidget::UseItem()
 		//실제 아이템을 사용해야함.
 		{
 		auto useitemAbility = Cast<AAbilityUseItem>(
-			UNFGameInstance::Spawn(TEXT("AbilityUseItem"), GetOwningPlayerPawn()->GetActorLocation()));
+			objectSubsystem->Spawn(TEXT("AbilityUseItem"), GetOwningPlayerPawn()->GetActorLocation()));
 
 		if (IsValid(useitemAbility))
 		{
-			useitemAbility->InitAbility(GetOwningPlayerPawn(), UNFGameInstance::GetAbilityData(itemSlot.ItemName), GetOwningPlayerPawn());
+			useitemAbility->InitAbility(GetOwningPlayerPawn(), sheetDataSubsystem->GetAbilityData(itemSlot.ItemName), GetOwningPlayerPawn());
 		}
 
 		inventoryObj->UseItemInInventory(InventorySlotNumber, 1);
@@ -211,7 +221,9 @@ void UItemSlotWidget::UpdateSlot()
 
 	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
 
-	FItemSheetData itemSheetData = UNFGameInstance::GetItemData(itemSlot.ItemName);
+	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
+
+	FItemSheetData itemSheetData = sheetDataSubsystem->GetItemData(itemSlot.ItemName);
 
 	if (itemSheetData.Thumbnail == nullptr)
 	{

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Defines/Interfaces/PuzzleInterfaces.h"
-#include "PuzzleActors/PuzzlePhysicsProp.h"
+#include "GamePuzzle/PuzzlePhysicsProp.h"
 #include "FireBowl.generated.h"
 
 class UNiagaraComponent;
@@ -13,7 +13,7 @@ class UNiagaraComponent;
  * 
  */
 UCLASS()
-class GAMEPUZZLE_API AFireBowl : public APuzzlePhysicsProp, public ICombustible
+class GAMECONTENTS_API AFireBowl : public APuzzlePhysicsProp, public ICombustible
 {
 	GENERATED_BODY()
 	

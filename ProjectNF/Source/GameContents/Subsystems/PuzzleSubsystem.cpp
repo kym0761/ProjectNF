@@ -1,50 +1,51 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "ElectricLinkManager.h"
-
+#include "PuzzleSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "GamePuzzle/ElectricLink/ElectricLinkComponent.h"
-
 #include "DebugHelper.h"
+#include "GamePuzzle/ElectricLink/ElectricPuzzleDevice.h"
 
-UElectricLinkManager::UElectricLinkManager()
+UPuzzleSubsystem::UPuzzleSubsystem()
 {
 }
 
-void UElectricLinkManager::SearchAllLinks()
+void UPuzzleSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	//맵에 존재하는 모든 Electric Link Component 들을 검색한다.
-	//레벨에서 최초 1번만 실행될 것이다.
-	//게임 중간에 Link를 보유한 Actor가 추가된다면 이를 다시 실행해야 할 수도 있다.
+	Super::Initialize(Collection);
 
-	//UObject* outer = this;
-	//while (IsValid(outer))
-	//{
-	//	Debug::Print(DEBUG_STRING(FString::Printf(TEXT("%s"),*outer->GetName())));
-	//	outer = outer->GetOuter();
-	//}
+}
 
-	if (!GEngine)
-	{
-		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
-		return;
-	}
+void UPuzzleSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+}
 
-	auto world = GEngine->GetCurrentPlayWorld();
+void UPuzzleSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
 
-	if (!IsValid(world))
-	{
-		FMyDebug::Print(DEBUG_TEXT("World is Invalid."));
-		return;
-	}
+	SearchAllLinks();
 
+	GetWorld()->GetTimerManager().SetTimer(
+		ElectricLinkTimer,
+		this,
+		&UPuzzleSubsystem::LinkTest,
+		1.0f,
+		true,
+		1.0f
+	);
+
+}
+
+void UPuzzleSubsystem::SearchAllLinks()
+{
 	ElectricLinks.Empty();
 	RootLinks.Empty();
 
 	//!! : 액터가 100만개 넘으면 약간의 문제가 생길 듯?
 	TArray<AActor*> allActors;
-	UGameplayStatics::GetAllActorsOfClass(world, AActor::StaticClass(), allActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
 
 	for (auto i : allActors)
 	{
@@ -56,15 +57,20 @@ void UElectricLinkManager::SearchAllLinks()
 
 		ElectricLinks.Add(linkComp);
 
-		if (linkComp->bRootLink)
+		auto electricDevice = Cast<AElectricPuzzleDevice>(i);
+		if (IsValid(electricDevice) && electricDevice->bIsRoot)
 		{
 			RootLinks.Add(linkComp);
+			linkComp->SetAsRootLink();
 		}
 	}
 
+	//FMyDebug::Print(DEBUG_VATEXT(TEXT("Actor Num : %d"), allActors.Num()));
+	//FMyDebug::Print(DEBUG_VATEXT(TEXT("Electric Links Num : %d") , ElectricLinks.Num()));
+	//FMyDebug::Print(DEBUG_VATEXT(TEXT("RootLinks Num : %d"), RootLinks.Num()));
 }
 
-void UElectricLinkManager::LinkTest()
+void UPuzzleSubsystem::LinkTest()
 {
 	//closeSet 안에 들어온 것들은 전부 activate 상태가 된다
 	TSet<TObjectPtr<UElectricLinkComponent>> closedSet;
@@ -105,48 +111,14 @@ void UElectricLinkManager::LinkTest()
 	{
 		if (closedSet.Contains(i))
 		{
+			//FMyDebug::Print(DEBUG_TEXT("Active."));
 			i->ElectricLinkActivate();
 		}
 		else
 		{
+			//FMyDebug::Print(DEBUG_TEXT("de-Active."));
 			i->ElectricLinkDeactivate();
 		}
 	}
-
-
-}
-
-void UElectricLinkManager::RestartLinkManager()
-{
-	InitManager();
-}
-
-void UElectricLinkManager::InitManager()
-{
-	if (!GEngine)
-	{
-		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
-		return;
-	}
-
-	UWorld* world = GEngine->GetCurrentPlayWorld();
-	if (!IsValid(world))
-	{
-		FMyDebug::Print(DEBUG_TEXT("world is invalid."));
-		return;
-	}
-
-	SearchAllLinks();
-
-	world->GetTimerManager().SetTimer(
-		ElectricLinkTimer,
-		this,
-		&UElectricLinkManager::LinkTest,
-		1.0f,
-		true,
-		1.0f
-	);
-
-
 
 }

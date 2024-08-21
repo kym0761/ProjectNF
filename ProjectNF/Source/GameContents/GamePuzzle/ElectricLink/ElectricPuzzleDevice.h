@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PuzzleActors/PuzzleActorBase.h"
+#include "GamePuzzle/PuzzleActorBase.h"
 #include "Defines/Interfaces/PuzzleInterfaces.h"
 #include "ElectricPuzzleDevice.generated.h"
 
@@ -13,7 +13,7 @@ class UElectricLinkComponent;
  * 
  */
 UCLASS()
-class GAMEPUZZLE_API AElectricPuzzleDevice : public APuzzleActorBase, public ITriggerable
+class GAMECONTENTS_API AElectricPuzzleDevice : public APuzzleActorBase, public ITriggerable
 {
 	GENERATED_BODY()
 

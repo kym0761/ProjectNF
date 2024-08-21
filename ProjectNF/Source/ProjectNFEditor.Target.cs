@@ -18,11 +18,10 @@ public class ProjectNFEditorTarget : TargetRules
         ExtraModuleNames.Add("CustomDebugging");
         ExtraModuleNames.Add("GameDefines");
 
-        //Gamesystems And Managers
+        //Gamesystems
         ExtraModuleNames.Add("GameSystems");
 
         //Contents
-        ExtraModuleNames.Add("GamePuzzle");
         ExtraModuleNames.Add("GameContents");
     }
 }

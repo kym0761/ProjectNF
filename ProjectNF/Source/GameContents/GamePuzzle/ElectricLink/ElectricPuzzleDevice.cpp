@@ -20,21 +20,23 @@ void AElectricPuzzleDevice::BeginPlay()
 
 	ElectricLinkComponent->OnLinkActivatedChanged.AddDynamic(this, &AElectricPuzzleDevice::SetPuzzleActiveByLink);
 
-	if (bIsRoot)//rootüũ�� �Ǿ� ������, �� device���ʹ� ���⸦ �����ϴ� root�� �� ���̴�.
-	{
-		bPuzzleActive = true;
-		ElectricLinkComponent->SetAsRootLink();
-	}
+	////이 부분은 PuzzleSubsystem으로 옮김. 필요없어지면 삭제
+	//if (bIsRoot)//루트면 전기를 생성한다고 생각하자. link컴포넌트도 루트로 지정한다.
+	//{
+	//	bPuzzleActive = true;
+	//	ElectricLinkComponent->SetAsRootLink();
+	//}
 }
 
 void AElectricPuzzleDevice::SetPuzzleActiveByLink(bool InVal)
 {
-	//���� �߻��ϴ� root�� �� �Լ��� ���� bPuzzleActive�� ������ ����
-	if (!bIsRoot)
+	//전기를 받으면 트리거한다.
+
+	if (!bIsRoot) //루트가 아닐때만 값이 변할 수 있다.
 	{
 		bPuzzleActive = InVal;
 	}
-	Trigger();
+	Trigger(); //액티브 상태일때 액티브 트리거 , 디액티브 상태일땐 디액티브 트리거가 됨.
 }
 
 void AElectricPuzzleDevice::Tick(float DeltaTime)
@@ -44,8 +46,10 @@ void AElectricPuzzleDevice::Tick(float DeltaTime)
 
 void AElectricPuzzleDevice::Trigger()
 {
-	//Ʈ���� ���۽� �ٸ� Ʈ���ŵ� �ֵ��� ���۽�����
-	//����) ���� ������ ���� ������.
+	//트리거 가능한 대상을 전부 트리거한다.
+
+	//활성화일 때 true로 트리거한다.
+	//비활성화 상태일 때 false로 트리거한다.
 
 	for (auto i : TriggerTargets)
 	{

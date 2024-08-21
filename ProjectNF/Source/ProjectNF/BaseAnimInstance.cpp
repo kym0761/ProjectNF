@@ -4,9 +4,11 @@
 #include "BaseAnimInstance.h"
 #include "DebugHelper.h"
 
-#include "System/NFGameInstance.h"
-#include "Managers/ObjectManager.h"
-
+//#include "System/NFGameInstance.h"
+//#include "Managers/ObjectManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Subsystems/ObjectSubsystem.h"
+#include "Subsystems/SheetDataSubsystem.h"
 #include "Ability/AbilityBase.h"
 
 UBaseAnimInstance::UBaseAnimInstance()
@@ -119,12 +121,13 @@ void UBaseAnimInstance::PlayAttackMontage()
 		//FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
 
 		//AOE 테스트 용도
-		//FString abilityName = TEXT("AbilityAOE");
-		FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
+		FString abilityName = TEXT("AbilityAOE");
+		//FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
 
+		auto objectSubsystem= UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UObjectSubsystem>();
+		auto sheetDataSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USheetDataSubsystem>();
+		auto ability = Cast<AAbilityBase>(objectSubsystem->Spawn(abilityName, FVector(0, 0, 0), FRotator(0, 0, 0)));
 
-		auto ability = Cast<AAbilityBase>(UNFGameInstance::Spawn(
-			abilityName, FVector(0, 0, 0), FRotator(0, 0, 0)));
 
 		//어빌리티 초기화
 		if (IsValid(ability))
@@ -137,7 +140,7 @@ void UBaseAnimInstance::PlayAttackMontage()
 			OnEndAbility.AddDynamic(ability, &AAbilityBase::EndAbility);
 
 			ability->AttachToComponent(mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
-			ability->InitAbility(TryGetPawnOwner(), UNFGameInstance::GetAbilityData(FName(abilityName)));
+			ability->InitAbility(TryGetPawnOwner(), sheetDataSubsystem->GetAbilityData(FName(abilityName)));
 		}
 	}
 	

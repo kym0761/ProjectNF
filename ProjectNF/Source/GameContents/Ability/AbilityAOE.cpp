@@ -28,7 +28,7 @@ void AAbilityAOE::InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbi
 void AAbilityAOE::StartAbility_Implementation()
 {
 	//AOE 공격 시작하면 사용자로부터 떨어짐.
-	AttachToActor(GetParentActor(),FAttachmentTransformRules::KeepWorldTransform);
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
 	TArray<AActor*> overlappedActors;
 	Sphere->GetOverlappingActors(overlappedActors);
@@ -46,10 +46,10 @@ void AAbilityAOE::StartAbility_Implementation()
 		RequestSpawnNiagara.Execute(AbilityData.AbilityNiagara, GetActorLocation(), FRotator::ZeroRotator);
 	}
 
+	//EndAbility();
 }
 
 void AAbilityAOE::EndAbility_Implementation()
 {
-
 	Destroy();
 }

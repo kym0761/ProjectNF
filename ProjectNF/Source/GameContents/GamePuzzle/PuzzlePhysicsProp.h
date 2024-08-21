@@ -10,7 +10,7 @@ class UStaticMeshComponent;
 class UBoxComponent;
 
 UCLASS()
-class GAMEPUZZLE_API APuzzlePhysicsProp : public AActor
+class GAMECONTENTS_API APuzzlePhysicsProp : public AActor
 {
 	GENERATED_BODY()
 	
@@ -24,7 +24,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	//¸¸¾à ÀÌ»óÇÑ ÁöÁ¡À¸·Î °¡¼­ Á¢±ÙÀÌ ºÒ°¡´ÉÇÏ¸é, µÇµ¹¾Æ¿Ã À§Ä¡?
+	//í˜¹ì‹œ ë‚˜ì¤‘ì— ê°€ì ¸ì˜¤ëŠ”ê²Œ ë¶ˆê°€ëŠ¥í•œ ìœ„ì¹˜ì— ë†“ì˜€ì„ ë•Œ, ì´ˆê¸°í™”í•˜ë©´ ì´ˆê¸° ìœ„ì¹˜ë¡œ ë¶ˆëŸ¬ë“¤ì´ëŠ” ìš©ë„?
+	//ì¦‰, ì•„ì§ ì‚¬ìš© ì•ˆí•˜ê³  ìˆëŠ” ê°’ì´ë‹¤.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FVector DefaultPosition;
 

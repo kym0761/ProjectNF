@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Defines/Interfaces/PuzzleInterfaces.h"
-#include "PuzzleActors/PuzzleActorBase.h"
+#include "GamePuzzle/PuzzleActorBase.h"
 #include "FireStand.generated.h"
 
 class UStaticMeshComponent;
@@ -17,7 +17,7 @@ class UBoxComponent;
  * 
  */
 UCLASS()
-class GAMEPUZZLE_API AFireStand : public APuzzleActorBase, public ITriggerable, public IBeTriggerable, public IResetable, public ICombustible
+class GAMECONTENTS_API AFireStand : public APuzzleActorBase, public ITriggerable, public IBeTriggerable, public IResetable, public ICombustible
 {
 	GENERATED_BODY()
 	

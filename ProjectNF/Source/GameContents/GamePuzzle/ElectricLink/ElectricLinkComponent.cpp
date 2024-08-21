@@ -37,7 +37,7 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//tick���� �ֱ������� ���� ���� ����Ʈ ����
+	//tick에서 이펙트를 주기적으로 생성한다.
 
 	ElectricEffectCounter += DeltaTime;
 
@@ -47,9 +47,8 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		{
 			for (auto i : AdjacentLinkComps)
 			{
-				//TODO : ��������� ���� ����Ʈ�� �����Ͽ� �����غ���
-				//���ʰ��� ���� ����Ʈ�� 1���� �׸����� �ؾ���.
-				// ���̵�� ? --> edge�� �����Ͽ� start�� end�� ���� ���� ����Ʈ�� �������� �ʰ� ����?
+				//TODO : 나이아가라 한 방향으로만 나오게 하기?
+				//현재 양방향에서 이펙트를 쏜다.
 
 				auto niagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 					ElectricNiagaraBP,
@@ -58,7 +57,7 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 					FVector(0, 0, 0),
 					FRotator::ZeroRotator,
 					EAttachLocation::KeepRelativeOffset,
-					true);// �ð��� ������ ����Ʈ�� �˾Ƽ� Destroy�� ��.
+					true);// 주기적으로 삭제될 것
 
 				if (!IsValid(niagaraComp))
 				{
@@ -77,15 +76,17 @@ void UElectricLinkComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UElectricLinkComponent::LinkJob()
 {
-	//�ֱ������� �ڽ� ��ó�� �ִ� LinkComp�� ã�´�.
+	
 
 	if (!bLinkActive)
 	{
 		return;
 	}
 
-	//TODO : Manager�� SearchAllLinks�� �޾ƿ� GetAllActorsOfClass�� ���� �ʵ��� ��������
-	// Manager�� �̱������� �����ϰ� �ִ� ������ �޾ƿ����� �������� ��
+	//TODO : 액터 필터링 필요?
+	//지금 모든 액터들을 검색하기 때문에 비효율적일 수 있음.
+	//PuzzleSubsystem에서 보유한 액터들만 사용하도록 하기?
+
 	TArray<AActor*> outActor;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), outActor);
 
@@ -100,66 +101,64 @@ void UElectricLinkComponent::LinkJob()
 
 		float distance = FVector::Distance(this->GetComponentLocation(), otherLinkComp->GetComponentLocation());
 
-		//AdjacentLinkComps�� TSet�̶� Unique���� �����.
-		//�� �Ÿ��� �ʹ� �ָ� ���� ���� ����� �ƴ�.
+		//AdjacentLinkComps는 TSet이라 Unique한 값을 가진다.
+		//거리를 벗어나면 인접 링크에서 제거
 		if (distance > ElectricityDistance)
 		{
 			AdjacentLinkComps.Remove(otherLinkComp);
 		}
 		else
 		{
-			//���� link�� ������. ���� ���� �Ǵ��� LinkManager���� �ñ��.
+			//거리 안이라면 인접 링크에서 추가한다.
 			AdjacentLinkComps.Add(otherLinkComp);
 		}
 		
 	}
 
-	//�ڽ��� ������
+	//자신은 제외한다.
 	AdjacentLinkComps.Remove(this);
 
 }
 
 void UElectricLinkComponent::ElectricLinkActivate()
 {
-	//LinkComponent�� ���� Active�Ѵ�.
 
-	if (bRootLink) // root�� ��� Ȱ��ȭ�� ��ŵ
+	if (bRootLink) // root는 이미 액티브 상태임
 	{
 		return;
 	}
 
-	if (bLinkActive)// �̹� Ȱ��ȭ ���¸� ��ŵ
+	if (bLinkActive)// 이미 액티브 상태임
 	{
 		return;
 	}
 
 	bLinkActive = true;
-	OnLinkActivatedChanged.Broadcast(bLinkActive);
+	OnLinkActivatedChanged.Broadcast(bLinkActive); // 액티브 상태가 변함
 	
 }
 
 void UElectricLinkComponent::ElectricLinkDeactivate()
 {
-	//Link Component�� ��Ȱ��ȭ�Ѵ�.
-
-	if (bRootLink) // root�� ��� Ȱ��ȭ�� ��ŵ
+	
+	if (bRootLink) // root는 액티브 상태 고정임
 	{
 		return;
 	}
 
-	if (!bLinkActive) //�̹� ��Ȱ��ȭ ���¸� ��ŵ
+	if (!bLinkActive) //이미 비활성화 상태임
 	{
 		return;
 	}
 
 	bLinkActive = false;
-	OnLinkActivatedChanged.Broadcast(bLinkActive);
+	OnLinkActivatedChanged.Broadcast(bLinkActive); //액티브 상태가 변함
 
 }
 
 void UElectricLinkComponent::SetAsRootLink()
 {
-	//PuzzleDevice�� ���� ���� BeginPlay()���� Root������ �� ���̴�.
+	//PuzzleDevice가 BeginPlay()에서 자신의Link컴포넌트를 Root로 만들 것이다.
 
 	bRootLink = true;
 	bLinkActive = true;

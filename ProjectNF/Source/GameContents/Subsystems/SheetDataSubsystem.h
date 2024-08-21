@@ -3,23 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "Defines/Interfaces/ManagerInterfaces.h"
 #include "Defines/Data.h"
 #include "DebugHelper.h"
-#include "DataManager.generated.h"
+#include "Subsystems/GameInstanceSubsystem.h"
+#include "SheetDataSubsystem.generated.h"
 
 /**
  * 
  */
-UCLASS(BlueprintType, Blueprintable)
-class GAMESYSTEMS_API UDataManager : public UObject, public IManageable
+UCLASS()
+class GAMECONTENTS_API USheetDataSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
 public:
 
-	UDataManager();
+	USheetDataSubsystem();
+
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	virtual void Deinitialize() override;
 
 protected:
 
@@ -49,12 +52,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Data|DataMap", Meta = (AllowPrivateAccess = true))
 	TMap<FName, FLanguageSheetData> LanguageSheetDataMap;
 
-public:
+protected:
 
 	//데이터 테이블 -> 구조체에 맞는 Map으로
 	template <typename T>
 	void IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap,
 		TArray<TObjectPtr<UDataTable>> SheetTables);
+
+	void LoadDataTables(TArray<TObjectPtr<UDataTable>>& TargetDataTables, const TArray<FName>& FolderPaths);
+
+public:
 
 	//item
 	UFUNCTION()
@@ -76,19 +83,10 @@ public:
 	FLanguageSheetData GetLanguageData(const FName& LanguageID);
 	bool IsValidLanguageData(const FName& LanguageID) const;
 
-public:
-
-
-	virtual void InitManager() override;
-
-protected:
-
-	void LoadDataTables(TArray<TObjectPtr<UDataTable>>& TargetDataTables, const TArray<FName>& FolderPaths);
-
 };
 
 template<typename T>
-void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, TArray<TObjectPtr<UDataTable>> SheetTables)
+void USheetDataSubsystem::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, TArray<TObjectPtr<UDataTable>> SheetTables)
 {
 	if (SheetTables.Num() == 0)
 	{
@@ -122,10 +120,4 @@ void UDataManager::IncludeSheetDataToMap(TMap<FName, T>& TargetDataMap, TArray<T
 		}
 
 	}
-
-
-	//for (auto i : TargetDataMap)
-	//{
-	//	FMyDebug::Print(DEBUG_VATEXT(TEXT("DataManager's Key : %s"),*i.Key.ToString()));
-	//}
 }

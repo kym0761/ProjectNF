@@ -5,7 +5,7 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "GameDefines",
+			"Name": "CustomDebugging",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
@@ -24,7 +24,16 @@
 			]
 		},
 		{
-			"Name": "GamePuzzle",
+			"Name": "GameDefines",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine",
+				"CoreUObject"
+			]
+		},
+		{
+			"Name": "GameSystems",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
@@ -40,24 +49,6 @@
 				"Engine",
 				"CoreUObject",
 				"UMG"
-			]
-		},
-		{
-			"Name": "CustomDebugging",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
-			]
-		},
-		{
-			"Name": "GameSystems",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
 			]
 		}
 	],

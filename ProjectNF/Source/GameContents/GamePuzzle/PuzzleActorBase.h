@@ -6,8 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "PuzzleActorBase.generated.h"
 
+//TODO : ê¹¨ì§„ ê¸€ì ê³ ì¹˜ê¸°..
+
 UCLASS(abstract)
-class GAMEPUZZLE_API APuzzleActorBase : public AActor
+class GAMECONTENTS_API APuzzleActorBase : public AActor
 {
 	GENERATED_BODY()
 	
@@ -17,13 +19,13 @@ public:
 
 protected:
 
-	//World¿¡¼­ Æ®¸®°ÅÇÏ±â¸¦ ¿øÇÏ´Â ¾×ÅÍ¸¦ ¼±ÅÃÇØ¼­ ³Ö¾î¾ßÇÔ.
+	//Worldì—ì„œ ì„ íƒí•´ì•¼í•  íŠ¸ë¦¬ê±° ëŒ€ìƒ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger")
 	TArray<TObjectPtr<APuzzleActorBase>> TriggerTargets;
 
 private:
 
-	//TriggerTargetsµéÀÌ ÀÌ ¾×ÅÍ¸¦ Æ®¸®°Å¸¦ ÇØÁá´ÂÁö È®ÀÎÇÏ±â À§ÇÑ TMap
+	//TriggerTargetsíŠ¸ë¦¬ê±° ëŒ€ìƒì— ëŒ€í•œ TMap
 	//key : ActorName, Value : bool
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Trigger", Meta = (AllowPrivateAccess = "true"))
 	TMap<FString, bool> TriggerMap;
@@ -34,6 +36,8 @@ protected:
 
 #if WITH_EDITORONLY_DATA
 
+	//PrevTriggerTargetsëŠ” ì—ë””í„°ì—ì„œ ì—°ê²°í•œ íŠ¸ë¦¬ê±° ê°’ì˜ ì´ì „ ê°’ì„ ì €ì¥í•˜ê¸° ìœ„í•œ ë°°ì—´ì´ë‹¤.
+	//ì´ì „ ê°’ì„ ë¹„êµí•˜ëŠ” ì²˜ë¦¬ê°€ í•„ìš”í•  ë•Œë§Œ ì¡´ì¬í•˜ë¯€ë¡œ WITH_EDITORONLY_DATAë‹¤.
 	UPROPERTY()
 	TArray<TObjectPtr<APuzzleActorBase>> PrevTriggerTargets;
 
@@ -42,7 +46,9 @@ protected:
 #if WITH_EDITOR
 protected:
 
-	//TriggerTargets¸¦ ¿¡µğÅÍ¿¡¼­ º¯°æÇÏ¸é TargetÀÌ µÇ´Â ÆÛÁñ ¾×ÅÍÀÇ TriggerMapÀÌ º¯ÇÏµµ·Ï ¹İ¿µÇÏ±â À§ÇÑ ¿¡µğÅÍ¿ë ÇÔ¼ö 2°³
+	//TriggerTargetsì„ ì—ë””í„° ë‚´ì—ì„œ ì„¤ì •í•˜ê¸° ìœ„í•œ í•¨ìˆ˜ë“¤
+	//ì´ ê¸°ëŠ¥ì€ WITH_EDITORê°€ ì—†ìœ¼ë©´ ë¹Œë“œí•œ ê²Œì„ì—ì„œ ì˜¤ë¥˜ê°€ ë‚œë‹¤. ê·¸ëŸ¬ë¯€ë¡œ WITH_EDITOR ì²˜ë¦¬í•´ì£¼ì–´ì•¼í•œë‹¤.
+	//.cppë„ ë§ˆì°¬ê°€ì§€
 	virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 
@@ -59,8 +65,11 @@ public:
 	bool CheckTriggersHaveActivated() const;
 
 #if WITH_EDITOR
-	//¿¡µğÅÍ¿¡¼­ TriggerMap ¾×ÅÍ Ãß°¡ ¹× Á¦°Å ±â´É
+
+	//TriggerMapì„ ì—ë””í„°ì—ì„œ ë³€ê²½í•  ë•Œ í•„ìš”í•œ í•¨ìˆ˜ë“¤
 	void AddToTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToAdd);
 	void RemoveFromTriggerMap(TObjectPtr<APuzzleActorBase> PuzzleActorToRemove);
+
 #endif // WITH_EDITOR
+
 };

@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class GAMEPUZZLE_API AResetPuzzleButton : public APuzzleButton
+class GAMECONTENTS_API AResetPuzzleButton : public APuzzleButton
 {
 	GENERATED_BODY()
 
@@ -29,5 +29,15 @@ public:
 	virtual void ButtonUp() override;
 
 	virtual void Trigger() override;
+
+#if WITH_EDITOR
+protected:
+
+	//ResetButton은 TriggerMap을 건드리면 안됨.
+	//Actor:: 의 함수로 기능 자체를 초기화함.
+	virtual void PreEditChange(FProperty* PropertyAboutToChange) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+
+#endif // WITH_EDITOR
 
 };

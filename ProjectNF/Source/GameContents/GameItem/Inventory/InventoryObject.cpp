@@ -333,6 +333,12 @@ bool UInventoryObject::SwapItemBetweenInventory(TObjectPtr<UInventoryObject> Fro
 		//각 인벤토리의 올바른 index가 아님
 		return false;
 	}
+	
+	if ((FromInventory == ToInventory) && (FromIndex == ToIndex))
+	{
+		//같은 인벤토리의 같은 슬롯이 스왑할 수는 없음
+		return false;
+	}
 
 	FItemSlotData i1 = FromInventory->Items[FromIndex];
 	FItemSlotData i2 = ToInventory->Items[ToIndex];
@@ -352,8 +358,11 @@ bool UInventoryObject::SwapItemBetweenInventory(TObjectPtr<UInventoryObject> Fro
 	}
 	else // 같은 아이템이면 조인한다.
 	{
-		if (itemSheetData.MaxQuantity >= i1.Quantity + i2.Quantity) //ToSlot 갯수랑 FromSlot 갯수의 합이 한 슬롯에 들어갈 정도로 충분하면.. "ToSlot"에 아이템이 전부 들어감. "FromSlot"은 빈 슬롯이 됨.
+		if (itemSheetData.MaxQuantity >= i1.Quantity + i2.Quantity)
 		{
+			//ToSlot 갯수랑 FromSlot 갯수의 합이 한 슬롯에 들어갈 정도로 충분하면
+			//"ToSlot"에 아이템이 전부 들어감. "FromSlot"은 빈 슬롯이 됨.
+
 			i1.Quantity += i2.Quantity;
 			i2 = FItemSlotData();
 
@@ -365,8 +374,11 @@ bool UInventoryObject::SwapItemBetweenInventory(TObjectPtr<UInventoryObject> Fro
 			ToInventory->OnInventoryItemsChanged.Broadcast();
 			return true;
 		}
-		else //둘이 합쳐서 최대 수량을 초과하면.. "ToSlot"에는 Max Quantity 만큼 들어감 , "FromSlot"에는 나머지가 들어감.
+		else
 		{
+			//둘이 합쳐서 최대 수량을 초과하면
+			//"ToSlot"에는 Max Quantity 만큼 들어감, "FromSlot"에는 나머지가 들어감.
+
 			int32 temp = i1.Quantity + i2.Quantity;
 			i1.Quantity = itemSheetData.MaxQuantity;
 

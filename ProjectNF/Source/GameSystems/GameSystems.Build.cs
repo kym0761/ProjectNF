@@ -30,7 +30,7 @@ public class GameSystems : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "GameDefines" });
         PublicIncludePaths.AddRange(new string[] { "GameDefines"});
 
-        PublicDependencyModuleNames.AddRange(new string[] { "GameContents", "GamePuzzle" });
-        PublicIncludePaths.AddRange(new string[] { "GameContents", "GamePuzzle" });
+        PublicDependencyModuleNames.AddRange(new string[] { "GameContents" });
+        PublicIncludePaths.AddRange(new string[] { "GameContents" });
     }
 }

@@ -4,8 +4,10 @@
 #include "InventoryWidget.h"
 #include "ItemSlotWidget.h"
 #include "Components/GridPanel.h"
-#include "System/NFGameInstance.h"
-#include "Managers/ObjectManager.h"
+//#include "System/NFGameInstance.h"
+//#include "Managers/ObjectManager.h"
+
+#include "Subsystems/ObjectSubsystem.h"
 #include "DebugHelper.h"
 #include "GameItem/Inventory/InventoryComponent.h"
 #include "GameItem/Inventory/InventoryObject.h"
@@ -24,15 +26,16 @@ void UInventoryWidget::NativeConstruct()
 		return;
 	}
 
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
 	InventoryGridPanel->ClearChildren();
 	
 	int32 inventorySize = InventoryComponentRef->GetInventoryObjectRef()->GetInventorySize();
-	int32 startOffset = InventoryComponentRef->GetInventoryObjectRef()->GetFreeInventoryStart(); //인벤토리 0~9번째는 장비칸 예약, 10~19는 퀵슬롯 예약.
+	int32 startOffset = InventoryComponentRef->GetInventoryObjectRef()->GetFreeInventoryStart(); //인벤토리 0~9번째는 장비칸 예약, 10~19는 퀵슬롯 예약. 즉 20부터 시작함.
 	for (int32 i = startOffset; i < inventorySize; i++)
 	{
 		//Create
 		UItemSlotWidget* slot = Cast<UItemSlotWidget>(
-			UNFGameInstance::CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
+			objectSubsystem->CreateWidgetBlueprint(TEXT("ItemSlotWidget"), GetOwningPlayer()));
 
 		if (!IsValid(slot))
 		{
@@ -40,8 +43,8 @@ void UInventoryWidget::NativeConstruct()
 			continue;
 		}
 
-		int32 row = i / ColumnNum;
-		int32 column = i % ColumnNum;
+		int32 row = (i - startOffset) / ColumnNum;
+		int32 column = (i - startOffset) % ColumnNum;
 
 		InventoryGridPanel->AddChildToGrid(slot, row, column);
 		ItemSlotWidgets.Add(slot);

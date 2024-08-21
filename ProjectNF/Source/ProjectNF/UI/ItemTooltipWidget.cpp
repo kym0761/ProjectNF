@@ -3,8 +3,9 @@
 
 #include "ItemTooltipWidget.h"
 
-#include "System/NFGameInstance.h"
-#include "Managers/DataManager.h"
+//#include "System/NFGameInstance.h"
+//#include "Managers/DataManager.h"
+#include "Subsystems/SheetDataSubsystem.h"
 #include "DebugHelper.h"
 
 #include "Components/Image.h"
@@ -18,12 +19,14 @@ void UItemTooltipWidget::NativeConstruct()
 void UItemTooltipWidget::SetItemTooltipWidget(FItemSlotData SlotData)
 {
 
-	auto itemsheetdata = UNFGameInstance::GetItemData(SlotData.ItemName);
+	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
+
+	auto itemsheetdata = sheetDataSubsystem->GetItemData(SlotData.ItemName);
 
 	ItemImage->SetBrushFromTexture(itemsheetdata.Thumbnail);
 
-	FLanguageSheetData langNameData = UNFGameInstance::GetLanguageData(FName(itemsheetdata.ItemNameID.ToString()));
-	FLanguageSheetData langDescData = UNFGameInstance::GetLanguageData(FName(itemsheetdata.DescriptionID.ToString()));
+	FLanguageSheetData langNameData = sheetDataSubsystem->GetLanguageData(FName(itemsheetdata.ItemNameID.ToString()));
+	FLanguageSheetData langDescData = sheetDataSubsystem->GetLanguageData(FName(itemsheetdata.DescriptionID.ToString()));
 
 	//TODO: GameInstance에서 언어 Enum을 가지고 관리하도록 해야함.
 	ELanguage currentLanguage = ELanguage::Korean;

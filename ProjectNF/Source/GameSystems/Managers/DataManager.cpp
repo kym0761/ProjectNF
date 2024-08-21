@@ -2,7 +2,7 @@
 
 
 #include "DataManager.h"
-
+#include "AssetRegistry/AssetRegistryModule.h"
 UDataManager::UDataManager()
 {
 }
@@ -133,8 +133,59 @@ bool UDataManager::IsValidLanguageData(const FName& LanguageID) const
 
 void UDataManager::InitManager()
 {
+	TArray<FName> itemDataTablePath;
+	itemDataTablePath.Add(TEXT("/Game/DataTables/ItemDataTables"));
+	LoadDataTables(ItemDataTables, itemDataTablePath);
+
+	TArray<FName> cropDataTablePath;
+	cropDataTablePath.Add(TEXT("/Game/DataTables/CropDataTables"));
+	LoadDataTables(CropSheetTables, cropDataTablePath);
+
+	TArray<FName> abilityDataTablePath;
+	abilityDataTablePath.Add(TEXT("/Game/DataTables/AbilityDataTables"));
+	LoadDataTables(AbilitySheetTables, abilityDataTablePath);
+
+	TArray<FName> languageDataTablePath;
+	languageDataTablePath.Add(TEXT("/Game/DataTables/LanguageDataTables"));
+	LoadDataTables(LanguageSheetTables, languageDataTablePath);
+
+
 	IncludeSheetDataToMap<FItemSheetData>(ItemSheetDataMap, ItemDataTables);
 	IncludeSheetDataToMap<FCropSheetData>(CropSheetDataMap, CropSheetTables);
 	IncludeSheetDataToMap<FAbilitySheetData>(AbilitySheetDataMap, AbilitySheetTables);
 	IncludeSheetDataToMap<FLanguageSheetData>(LanguageSheetDataMap, LanguageSheetTables);
+}
+
+void UDataManager::LoadDataTables(TArray<TObjectPtr<UDataTable>>& TargetDataTables, const TArray<FName>& FolderPaths)
+{
+	FAssetRegistryModule& assetRegistryModule
+		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+
+	TargetDataTables.Empty();
+
+	TArray<FAssetData> assetData;
+
+	FARFilter filter; //5.4부터인가 클래스 필터 처리가 사라짐 ㅡ,ㅡ;
+
+	filter.bRecursivePaths = true; //폴더 recursive 옵션
+	filter.PackagePaths = FolderPaths; //긁을 target이 되는 폴더
+
+	assetRegistryModule.Get().GetAssets(filter, assetData);
+
+	for (auto asset : assetData)
+	{
+		FString name = asset.GetAsset()->GetName();
+		FString path = asset.GetObjectPathString();
+
+		UDataTable* findClass = LoadObject<UDataTable>(nullptr, *path);
+
+		//찾은 클래스가 유효한지 확인
+		if (IsValid(findClass))
+		{
+			TargetDataTables.Add(findClass);
+		}
+	}
+
+	FMyDebug::Print(DEBUG_VATEXT(TEXT("num of targetDataTable Array : %d"), TargetDataTables.Num()));
+
 }

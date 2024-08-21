@@ -18,16 +18,20 @@
 #include "CharacterState/CharacterState.h"
 #include "GameFarm/FarmlandTile.h"
 #include "Defines/Data.h"
-#include "System/NFGameInstance.h"
-#include "Managers/GridManager.h"
-#include "Managers/ObjectPoolManager.h"
-#include "Managers/DataManager.h"
-#include "Managers/ObjectManager.h"
+//#include "System/NFGameInstance.h"
+//#include "Managers/GridManager.h"
+//#include "Managers/ObjectPoolManager.h"
+//#include "Managers/DataManager.h"
+//#include "Managers/ObjectManager.h"
 #include "BaseAnimInstance.h"
 #include "GameItem/Inventory/InventoryComponent.h"
 #include "Stat/StatComponent.h"
 
 #include "Defines/Interfaces/InteractiveInterfaces.h"
+
+#include "Subsystems/GridSubsystem.h"
+#include "Subsystems/ObjectSubsystem.h"
+#include "Subsystems/InventorySubsystem.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -164,11 +168,14 @@ void ABaseCharacter::BeginPlay()
 
 	if (IsValid(InventoryComponent))
 	{
-		InventoryComponent->RequestTryGetInventory.BindStatic(&UNFGameInstance::TryGetInventory);
+		auto objectSubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+		InventoryComponent->RequestTryGetInventory.BindUObject(objectSubsystem, &UInventorySubsystem::TryGetInventory);
 		InventoryComponent->InitInventoryComponent();
 	}
 
-	HUD = UNFGameInstance::CreateWidgetBlueprint(TEXT("HUD"), Cast<APlayerController>(GetController()));
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+
+	HUD = objectSubsystem->CreateWidgetBlueprint(TEXT("HUD"), Cast<APlayerController>(GetController()));
 	HUD->AddToViewport();
 }
 
@@ -248,18 +255,18 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
+	auto gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
+	FGrid grid = gridSubsystem->WorldToGrid(hit.Location);
 
-	FGrid grid = UNFGameInstance::WorldToGrid(hit.Location);
-
-	bool bExistOnGrid = UNFGameInstance::IsSomethingExistOnGrid(grid);
+	bool bExistOnGrid = gridSubsystem->IsSomethingExistOnGrid(grid);
 	if (bExistOnGrid)
 	{
 		//누가 점유중이라 못함
 		FMyDebug::Print(DEBUG_TEXT("already occupying"));
 		return;
 	}
-
-	auto farmtile = Cast<AFarmlandTile>(UNFGameInstance::Spawn(TEXT("FarmlandTile"), UNFGameInstance::GridToWorld(grid)));
+	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto farmtile = Cast<AFarmlandTile>(objectSubsystem->Spawn(TEXT("FarmlandTile"), gridSubsystem->GridToWorld(grid)));
 
 	if (!IsValid(farmtile))
 	{
@@ -316,7 +323,9 @@ void ABaseCharacter::DoPlanting()
 		return;
 	}
 
-	FGrid grid = UNFGameInstance::WorldToGrid(hit.Location);
+	auto gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
+
+	FGrid grid = gridSubsystem->WorldToGrid(hit.Location);
 
 	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());
 

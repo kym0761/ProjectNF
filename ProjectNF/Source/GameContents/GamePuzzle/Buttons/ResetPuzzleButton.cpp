@@ -57,3 +57,16 @@ void AResetPuzzleButton::Trigger()
 		}
 	}
 }
+#if WITH_EDITOR
+
+void AResetPuzzleButton::PreEditChange(FProperty* PropertyAboutToChange)
+{
+	Super::Super::Super::PreEditChange(PropertyAboutToChange);
+}
+
+void AResetPuzzleButton::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::Super::Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
+#endif

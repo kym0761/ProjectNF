@@ -2,19 +2,20 @@
 
 
 #include "MainHUD.h"
-#include "Managers/ObjectManager.h"
-#include "System/NFGameInstance.h"
+//#include "Managers/ObjectManager.h"
 #include "DebugHelper.h"
+#include "Subsystems/ObjectSubsystem.h"
 void UMainHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	////BP_로 만든 UMG도 Spawn가능
-	//{
-	//	auto testWidget = UNFGameInstance::GetObjectManager()
-	//		->CreateWidgetFromName(TEXT("CreateTest"), GetOwningPlayer());
-	//	testWidget->AddToViewport();
-	//	Debug::Print(DEBUG_TEXT("HUD Construct"));
-	//}
+	//BP_로 만든 UMG도 Spawn가능
+	{
+		auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+
+		auto testWidget = objectSubsystem->CreateWidgetBlueprint(TEXT("CreateTest"), GetOwningPlayer());
+		testWidget->AddToViewport();
+		FMyDebug::Print(DEBUG_TEXT("HUD Construct"));
+	}
 	
 }
