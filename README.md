@@ -107,19 +107,19 @@ FMyDebug::Print(DEBUG_VATEXT(TEXT("test log : %s, %s"), *str1, *str2));
 
 ## SheetDataSubsystem
 
-<img src="ExplainImages/DataSheetSubsystem01.png" width="50%">
+<img src="ExplainImages/SheetDataSubsystem01.png" width="50%">
 
 게임에서 사용할 스프레드시트 데이터를 보관하고 관리하는 서브시스템입니다.
 
 SheetDataSubsystem은 GameInstanceSubsystem으로, 게임인스턴스가 유효한 이상 게임 플레이 동안 게임 인스턴스로부터 서브시스템을 접근하고 데이터를 얻어낼 수 있습니다.
 
-<img src="ExplainImages/DataSheetSubsystem02.png" width="75%">
-<img src="ExplainImages/DataSheetSubsystem03.png" width="75%">
+<img src="ExplainImages/SheetDataSubsystem02.png" width="75%">
+<img src="ExplainImages/SheetDataSubsystem03.png" width="75%">
 
 언리얼 엔진의 구조체로 DataTable의 시트 구조를 만든 뒤, DataTable 블루프린트를 만들어 데이터를 관리합니다.
 
-<img src="ExplainImages/DataSheetSubsystem04.png" width="75%">
-<img src="ExplainImages/DataSheetSubsystem05.png" width="75%">
+<img src="ExplainImages/SheetDataSubsystem04.png" width="75%">
+<img src="ExplainImages/SheetDataSubsystem05.png" width="75%">
 
 카테고리에 맞춰 데이터 테이블을 분류하여 폴더 단위로 관리합니다.
 
