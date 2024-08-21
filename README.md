@@ -75,21 +75,31 @@ FMyDebug::Print(DEBUG_VATEXT(TEXT("test log : %s, %s"), *str1, *str2));
 
 # GameInstance
 
-<img src="ExplainImages/GameInstance01.png" width="75%">
+<img src="ExplainImages/GameInstance01.png" width="50%">
 
-GameInstance는 언리얼 엔진 내에서 레벨이 전환되어도 사라지지 않고 유지되는 객체입니다.
+원래 게임 인스턴스는 Manager를 담아 사용하는 싱글톤 클래스로서 동작했지만,
 
-그러므로, GameInstance를 매니저를 모아두는 싱글톤 클래스로서 사용하고 게임 로직과 관련된 Manager들을 전부 GameInstance에서 관리하도록 만듭니다.
+서브시스템으로 기능을 분리하여 현재는 게임 Load Save기능만 존재합니다.
 
-매니저 클래스는 전부 static 멤버 변수로서 동작하며, 매니저 함수들 또한 GameInstance의 static 함수로 동작하게 만들었습니다.
+추후 바뀔 가능성이 있습니다.
 
-즉, GameInstance의 기능을 사용할 때, 매니저 클래스의 존재를 확인하거나 코드를 포함할 필요없이 GameInstance에만 접근하여 매니저의 기능을 온전히 사용할 수 있습니다.
+# Managers
+
+게임의 주요한 기능을 Manager 단위로 묶어 관리하기 위해 싱글톤 클래스로서 게임인스턴스에 매니저가 포함됐었습니다.
+
+이 기능은 초기에 UObject를 기반으로 만들었는데, UObject기반으로 만든 뒤 GameInstance에 붙이면서 싱글톤으로서 동작하게 되어있었습니다.
+
+그러나 몇몇 기능은 GameInstance와 거리가 먼 기능인데도 GameInstance에 의해 관리되며, 점점 GameInstance에 대해서 기능이 동작하게 만들면서 GameInstance의 기능이 비대해질 가능성이 커졌습니다.
 
 ```
-//예시
-//실제로는 DataManager의 기능이지만, 게임 인스턴스에서 동작할 수 있습니다.
-FItemSheetData a = UNFGameInstance::GetItemData(TEXT("Item01"));
+예시 : ObjectPool은 오브젝트가 존재할 수 있는 Level이 유효할 때까지만 동작이 가능해야함. 이 기능이 GameInstance에서 관리되다 보니 Level이 바뀌어 Actor의 수명이 끝난 상황에 유효하지 않을 오브젝트를 계속 보유하고 있는 문제점을 가짐
+
+예시2 : Grid는 GetWorld()가 정상적으로 접근이 가능해야 실제로 사용이 가능함. 그러나 GameInstance는 transient 월드에 속하는 오브젝트라 GetWorld()가 실제 플레이어의 World와 다르므로 우회하여 접근할 필요가 있었음. 
 ```
+
+언리얼 엔진의 서브시스템이라는 기능이 제가 의도한대로 매니저 클래스로서 동작가능한 언리얼 엔진의 기능임을 조사하여 알게된 뒤에 매니저 클래스들을 전부 서브시스템에 맞게 다시 만드는 작업을 하였기에, Manager 클래스들은 전부 Deprecated된 클래스가 됐습니다.
+
+이 매니저 클래스는 삭제될 예정이며, 매니저 클래스를 사용하여 정상적으로 동작하는 프로젝트 기록은 Branch로 Manager_UObject로 아카이브화 하였습니다.
 
 # Subsystems
 
@@ -97,17 +107,24 @@ FItemSheetData a = UNFGameInstance::GetItemData(TEXT("Item01"));
 
 ## SheetDataSubsystem
 
+<img src="ExplainImages/DataSheetSubsystem01.png" width="50%">
+
 게임에서 사용할 스프레드시트 데이터를 보관하고 관리하는 서브시스템입니다.
 
 SheetDataSubsystem은 GameInstanceSubsystem으로, 게임인스턴스가 유효한 이상 게임 플레이 동안 게임 인스턴스로부터 서브시스템을 접근하고 데이터를 얻어낼 수 있습니다.
 
+<img src="ExplainImages/DataSheetSubsystem02.png" width="75%">
+<img src="ExplainImages/DataSheetSubsystem03.png" width="75%">
+
 언리얼 엔진의 구조체로 DataTable의 시트 구조를 만든 뒤, DataTable 블루프린트를 만들어 데이터를 관리합니다.
+
+<img src="ExplainImages/DataSheetSubsystem04.png" width="75%">
+<img src="ExplainImages/DataSheetSubsystem05.png" width="75%">
 
 카테고리에 맞춰 데이터 테이블을 분류하여 폴더 단위로 관리합니다.
 
 예를 들면, 아이템과 관련된 데이터 테이블은 /Content/DataTables/ItemDataTables 안에 전부 관리합니다.
-LoadDataTables();를 통해 해당 폴더 안에 있는 모든 데이터 테이블을 가져오고, 데이터 테이블의 데이터를 파싱하여
-캐시로서 동작하는 ItemSheetDataMap에 저장합니다.
+LoadDataTables()를 통해 해당 폴더 안에 있는 모든 데이터 테이블을 가져오고, 데이터 테이블의 데이터를 파싱하여 캐시로서 동작하는 ItemSheetDataMap에 저장합니다.
 
 데이터가 필요하다면 SheetDataSubsystem에 접근해 아이템 이름을 알고 있다면 해당 이름을 Key값으로 사용해 원하는 SheetData를 얻어낼 수 있습니다.
 
@@ -120,6 +137,8 @@ FItemSheetData itemData = sheetDataSubsystem->GetItemData(TEXT("Item01"));
 ```
 
 ## GridSubsystem
+
+<img src="ExplainImages/GridSubsystem01.png" width="75%">
 
 월드를 적절한 크기의 값으로 나누어 만들어진 좌표로 매칭하여 그리드 칸을 관리하기 위한 Subsystem입니다.
 
@@ -134,6 +153,8 @@ gridSubsystem->WorldToGrid( FVector(100.0f,500.0f,0) );
 ```
 
 ## InventorySubsystem
+
+<img src="ExplainImages/InventorySubsystem01.png" width="75%">
 
 실질적인 인벤토리인 InventoryObject를 관리하는 서브시스템입니다.
 
@@ -187,27 +208,27 @@ widget은 생성시 AddToViewport()를 따로 처리해주어야 합니다.
 
 ## ObjectPoolSubsystem
 
-<img src="ExplainImages/ObjectPoolManager01.png" width="75%">
+<img src="ExplainImages/ObjectPoolSubsystem01.png" width="75%">
 
 오브젝트 풀링을 위한 서브시스템입니다.
 
 ObjectPoolSubsystem은 사용하고 금방 사라지지만 계속 필요로 하는 오브젝트를 즉각 제거하지 않고, 게임 공간(Level)에 그대로 유지하면서 비활성화 상태로 바꾼 뒤, 필요해질 때마다 오브젝트를 활성화하고 사용하는 방식인 오브젝트 풀링을 구현하여 관리하는 서브시스템입니다.
 
-<img src="ExplainImages/ObjectPoolManager02.png" width="75%">
+<img src="ExplainImages/ObjectPoolSubsystem02.png" width="75%">
 
 위의 코드대로, ObjectSubsystem에서는 오브젝트 풀링이 가능한 오브젝트인지 확인 후, 오브젝트 풀링 오브젝트라면 ObjectPoolSubsystem에 Spawn을 맡깁니다.
 해당 오브젝트 풀에서 남아있는 오브젝트가 있는지 확인하고, 남은 오브젝트가 존재하면 비활성화된 오브젝트를 가져와 사용하고, 없다면 새로 생성해주는 역할을 ObjectSubsystem의 Spawn을 보조해줍니다.
 
-<img src="ExplainImages/ObjectPoolManager03.png" width="50%">
-<img src="ExplainImages/ObjectPoolManager04.png" width="50%">
+<img src="ExplainImages/ObjectPoolSubsystem03.png" width="50%">
+<img src="ExplainImages/ObjectPoolSubsystem04.png" width="50%">
 
 예시 설명으로는, 위의 스크린샷처럼 바닥에 떨어진 ItemPickup 오브젝트들은 오브젝트 풀링이 가능한 오브젝트들입니다.
 
 아이템을 얻으면 시작적으로는 아이템이 사라진 것처럼 보이지만, 실제로는 플레이어가 닿지 않을 공간에 오브젝트를 이동시킨 후 비활성화합니다.
 
-<img src="ExplainImages/ObjectPoolManager05.png" width="50%">
-<img src="ExplainImages/ObjectPoolManager06.png" width="50%">
-<img src="ExplainImages/ObjectPoolManager07.png" width="50%">
+<img src="ExplainImages/ObjectPoolSubsystem05.png" width="50%">
+<img src="ExplainImages/ObjectPoolSubsystem06.png" width="50%">
+<img src="ExplainImages/ObjectPoolSubsystem07.png" width="50%">
 
 후에 ItemPickup이 맵 공간 어딘가에 생성될 때는 ObjectPoolSubsystem에서 관리된 비활성화된 오브젝트를 활성화하고 원하는 위치에 배치하여 마치 오브젝트가 생성된 것 같은 효과를 얻을 수 있습니다.
 
@@ -256,18 +277,6 @@ PuzzleSubsystem은 World가 시작될 때, ElectricLinkComponent를 전부 찾�
 
 전기적 연결이 되었다면, 전기 이펙트가 나와 게임상에서도 전기적으로 연결이 되었음을 확인할 수 있습니다.
 
-
-# Managers
-
-게임의 주요한 기능을 Manager 단위로 묶어 관리하기 위해 싱글톤 클래스에 매니저를 포함됐었습니다.
-
-이 기능은 초기에 UObject를 기반으로 만들었는데, UObject기반으로 만든 뒤 GameInstance에 붙이면서 싱글톤으로서 동작하게 되어있었습니다.
-
-그러나 몇몇 기능은 GameInstance와 거리가 먼 기능인데도 GameInstance에 의해 관리되며, 점점 GameInstance에 대해서 기능이 동작하게 만들면서 GameInstance의 기능이 비대해질 가능성이 커졌습니다.
-
-언리얼 엔진의 서브시스템이라는 기능이 제가 의도한대로 매니저 클래스로서 동작가능한 언리얼 엔진의 기능임을 조사하여 알게된 뒤에 매니저 클래스들을 전부 서브시스템에 맞게 다시 만드는 작업을 하였기에, Manager 클래스들은 전부 Deprecated된 클래스가 됐습니다.
-
-이 매니저 클래스는 삭제될 예정이며, 매니저 클래스를 사용하여 정상적으로 동작하는 프로젝트 기록은 Branch로 Manager_UObject로 아카이브화 하였습니다.
 
 
 
