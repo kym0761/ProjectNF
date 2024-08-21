@@ -70,8 +70,10 @@ void UObjectSubsystem::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& T
 		FString name = asset.GetAsset()->GetName();
 		FString path = asset.GetObjectPathString();
 
+		//액터 블루프린트 등은 StaticLoadClass()를 사용하는데,
+		//NiagaraSystem은 LoadObject를 사용해야 정상적으로 사용이 가능하다. (패키징 시 문제임.)
+		//이 차이 때문에 LoadNiagaras 라는 Function이 따로 필요하다.
 		UNiagaraSystem* findClass = LoadObject<UNiagaraSystem>(nullptr, *path);
-
 
 		//찾은 클래스가 유효한지 확인
 		if (IsValid(findClass))

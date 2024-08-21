@@ -11,6 +11,9 @@
 class UNiagaraSystem;
 class UNiagaraComponent;
 
+//ObjectManager에 존재하는 델리게이트와 기능은 같은데, 중복할 수 없기에 2를 붙임
+//ObjectManager를 삭제한 뒤에 이름을 변경하여 사용할 것.
+// TODO : 현재 ObjectPoolSubsystem에 직접 접근하여 오브젝트 풀에 Spawn을 요청하므로, 이 델리게이트는 필요없음. 후에 삭제할 것.
 DECLARE_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn2, UObject*, UClass*, const FVector&, const FRotator&);
 DECLARE_DELEGATE_OneParam(FRequestObjectPoolDespawn2, AActor*);
 
@@ -52,6 +55,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
 	TMap<FString, TSubclassOf<UUserWidget>> WidgetBlueprintMap;
 
+	//Niagaras
+	//나이아가라는 TSubclassOf가 아닌, TObjectPtr<>로 관리되므로 LoadNiagaras를 따로 만들어 Load함.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object", Meta = (AllowPrivateAccess = true))
 	TMap<FString, TObjectPtr<UNiagaraSystem>> NiagaraSystemMap;
 
