@@ -332,6 +332,29 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 
 던전맵을 만들 때 퍼즐 기믹들을 만들어 맵을 진행하는 콘텐츠를 제공하고자 만들어진 시스템입니다.
 
+<img src="ExplainImages/PuzzleGimmick01.png" width="75%">
+
+퍼즐 Actor에게는 어떤 Target을 트리거하여 동작하게 할 것인지 Target을 정하는 프로퍼티를 가지고 있습니다.
+
+<img src="ExplainImages/PuzzleGimmick02.png" width="75%">
+
+<img src="ExplainImages/PuzzleGimmick03.png" width="75%">
+
+예를 들면, 빨간 버튼은 눌리면 오른쪽에 있는 화로대의 불을 켜는 기능을 위해서 Target에 화로대를 에디터에서 추가합니다.
+
+이렇게 Target을 추가하면, 화로대는 자신을 트리거해주는 대상을 PreEditChange() PostEditChangeProperty() 함수를 통해 자동으로 등록됩니다.
+
+<img src="ExplainImages/PuzzleGimmick04.png" width="75%">
+
+위 스크린샷처럼, 빨간 버튼 위에 무언가 올라가서 버튼이 눌린다면, 화로대에 불이 켜지는 것을 볼 수 있습니다.
+
+초록색 버튼은 지정된 타겟의 Reset()을 동작시킵니다. 이 방식의 예시라면 화로대의 불이 꺼지게 될 것입니다.
+
+전기 연결 퍼즐은 PuzzleSubsystem에서 설명하여 생략합니다.
+
+이런 식으로 퍼즐을 만들어 트리거를 동작시키고, 동작에 맞춰 던전의 문을 열거나 하는 방식으로 던전을 만들어 낼 수 있습니다.
+
+
 ## 아이템 & 인벤토리 시스템
 
 <img src="ExplainImages/ETC02.png" width="50%">
@@ -387,6 +410,6 @@ Ability 액터는 정의한 StartAbility(), DoingAbility(), EndAbility()에 맞�
 
 공격 어빌리티 외에도, 아이템을 사용하는 효과도 어빌리티로서 동작할 수 있게 만들기 위해 아이템 효과에 맞는 데이터테이블을 추가로 정의합니다.
 
-<img src="ExplainImages/Ability06.png" width="75%">
+<img src="ExplainImages/Ability06.png" width="50%">
 
 예시로, HP포션을 사용한다면 데이터테이블에 정의된 이펙트가 발동하는 것을 확인할 수 있습니다.
