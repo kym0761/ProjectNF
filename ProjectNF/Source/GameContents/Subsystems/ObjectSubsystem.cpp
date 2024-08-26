@@ -185,7 +185,7 @@ void UObjectSubsystem::BindingActor(AActor* TargetActor)
 		return;
 	}
 
-	auto gameinstance = GWorld->GetGameInstance();
+	auto gameinstance = TargetActor->GetWorld()->GetGameInstance();
 
 	auto sheetDataSubsystem = gameinstance->GetSubsystem<USheetDataSubsystem>();
 	auto gameInfoSubsystem = gameinstance->GetSubsystem<UGameInfoSubsystem>();

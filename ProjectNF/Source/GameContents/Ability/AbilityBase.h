@@ -38,15 +38,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Ability", Meta = (AllowPrivateAccess = "true"))
 	AActor* AbilityTarget;
 
-	UPROPERTY()
-	FTimerHandle AbilityDoingTimer;
-
-	////원하는 이펙트의 이름을 입력하면 이펙트가 동작한다. (NS_는 뺀다.)
-	//UPROPERTY(EditDefaultsOnly, Category = "Ability", Meta = (AllowPrivateAccess = "true"))
-	//FString EffectName;
-
+	//해당 어빌리티의 이름 및 각종 수치 값이 들어가 있는 데이터
 	UPROPERTY()
 	FAbilitySheetData AbilityData;
+
+	UPROPERTY()
+	FTimerHandle AbilityDoingTimer;
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,27 +58,24 @@ public:
 	/*어빌리티는 아래의 기능을 Override하여 구현하도록 한다.*/
 
 	//어빌리티의 Owner를 세팅
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) //블루프린트 테스트 용도 -> 필요없어지면 삭제할 것.
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void InitAbility(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal = nullptr);
 	virtual void InitAbility_Implementation(AActor* AbilityOwnerVal, const FAbilitySheetData AbilityDataVal, AActor* AbilityTargetVal = nullptr);
 
 
-	//어빌리티 시작하기
+	//어빌리티 시작시 발동할 기능
 	UFUNCTION(BlueprintNativeEvent)
 	void StartAbility();
 	virtual void StartAbility_Implementation();
 	
+	//어빌리티가 동작하면서 특정 시간(0.5초 마다?) 발동할 수 있는 기능
 	UFUNCTION(BlueprintNativeEvent)
 	void DoingAbility();
 	virtual void DoingAbility_Implementation();
 
-	//어빌리티 끝마치기
+	//어빌리티 끝날 때 발동할 기능 (죽음의 메아리 같은 효과)
 	UFUNCTION(BlueprintNativeEvent)
 	void EndAbility();
 	virtual void EndAbility_Implementation();
-
-	//void SetAbilityOwner(AActor* OwnerVal);
-	//void SetAbilityTarget(AActor* TargetVal);
-
 
 };

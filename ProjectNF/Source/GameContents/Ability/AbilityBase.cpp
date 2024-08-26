@@ -100,13 +100,3 @@ void AAbilityBase::EndAbility_Implementation()
 	//2) 끝날때 데미지를 줌
 	//3) ...
 }
-
-//void AAbilityBase::SetAbilityOwner(AActor* OwnerVal)
-//{
-//	AbilityOwner = OwnerVal;
-//}
-//
-//void AAbilityBase::SetAbilityTarget(AActor* TargetVal)
-//{
-//	AbilityTarget = TargetVal;
-//}

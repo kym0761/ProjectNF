@@ -33,6 +33,11 @@ void AAbilityUseItem::StartAbility_Implementation()
 		RequestSpawnNiagara.Execute(AbilityData.AbilityNiagara,AbilityOwner->GetActorLocation(), FRotator::ZeroRotator);
 	}
 
+	//TODO : Owner나 Target에게 실제로 아이템의 효과를 발동시켜주기
+	//먹으면 HP 회복 등
+
+
+
 	EndAbility();
 }
 

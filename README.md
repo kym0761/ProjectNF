@@ -3,8 +3,8 @@
 - [ProjectNF](#projectnf)
 - [DebugHelper](#debughelper)
 - [GameInstance](#gameinstance)
-- [Subsystems](#Subsystems)
 	- [Managers](#managers) // 삭제예정
+- [Subsystems](#Subsystems)
 	- [SheetDataSubsystem](#sheetdatasubsystem)
 	- [GridSubsystem](#gridsubsystem)
 	- [InventorySubsystem](#inventorysubsystem)
@@ -79,7 +79,7 @@ FMyDebug::Print(DEBUG_VATEXT(TEXT("test log : %s, %s"), *str1, *str2));
 
 추후 바뀔 가능성이 있습니다.
 
-# Managers
+## Managers
 
 게임의 주요한 기능을 Manager 단위로 묶어 관리하기 위해 싱글톤 클래스로서 게임인스턴스에 매니저가 포함됐었습니다.
 
@@ -343,4 +343,28 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 <img src="ExplainImages/ETC03.png" width="75%">
 
 
-캐릭터가 어빌리티(혹은 스킬)을 가지고 상대를 공격하거나 효과가 나오는 기능을 구현했습니다. 또한. 스킬에 맞는 이펙트를 발동할 수 있도록 데이터시트로 정리한 데이터 기반으로 동작하여, 일부 수치나 에셋의 오류가 있으면 앱의 빌드 바이너리를 수정하지 않고 데이터시트의 pak만 교체하여 오류를 수정할 수 있는 기반을 만들었습니다.
+캐릭터가 어빌리티(혹은 스킬)을 가지고 상대를 공격하거나 효과가 나오는 기능을 구현했습니다. 또한. 스킬에 맞는 이펙트를 발동할 수 있도록 데이터시트로 정리한 데이터 기반으로 동작하여, 어빌리티의 데미지 등의 수치값이나 에셋 연동에 오류가 있으면 앱의 빌드 바이너리를 수정하지 않고 데이터시트의 pak만 교체하여 오류를 수정할 수 있는 기반을 만들었습니다.
+
+<img src="ExplainImages/Ability01.png" width="75%">
+
+데이터 테이블을 사용해 스킬에 대한 정확한 수치, 어빌리티가 동작할 때 보여줄 효과 등을 정리합니다. 이 데이터 테이블은 SheetDataSubsystem이 게임을 시작할 때 자동으로 DataTables에 있는 모든 데이터테이블을 로드합니다.
+
+<img src="ExplainImages/Ability02.png" width="75%">
+
+스킬을 생성할 타이밍에서 위에서 설명한 ObjectSubsystem에게 어빌리티 액터의 Spawn을, SheetDataSubsystem에게서는 어빌리티에 대한 데이터테이블 정보를 얻어내고, Spawn이 끝난 어빌리티에게 데이터를 전달하고 어빌리티 액터를 초기화합니다.
+
+<img src="ExplainImages/Ability03.png" width="75%">
+Ability 액터는 정의한 StartAbility(), DoingAbility(), EndAbility()에 맞게 효과가 동작할 것입니다.
+
+
+<img src="ExplainImages/Ability04.png" width="75%">
+
+맨 위의 스크린샷처럼 공격할 때 이펙트가 보여주기 위해서, 애니메이션의 노티파이에 맞춰 공격이 발동할 타이밍을 세팅해주면 의도에 맞게 이펙트가 발동하고 적에게 피해를 주는 등의 효과를 동작시킬 수 있습니다.
+
+<img src="ExplainImages/Ability05.png" width="75%">
+
+공격 어빌리티 외에도, 아이템을 사용하는 효과도 어빌리티로서 동작할 수 있게 만들기 위해 아이템 효과에 맞는 데이터테이블을 추가로 정의합니다.
+
+<img src="ExplainImages/Ability05.png" width="75%">
+
+예시로, HP포션을 사용한다면 데이터테이블에 정의된 이펙트가 발동하는 것을 확인할 수 있습니다.
