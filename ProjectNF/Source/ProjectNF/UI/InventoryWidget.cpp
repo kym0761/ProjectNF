@@ -49,10 +49,8 @@ void UInventoryWidget::NativeConstruct()
 		InventoryGridPanel->AddChildToGrid(slot, row, column);
 		ItemSlotWidgets.Add(slot);
 
-		//TODO : Slot 초기화
 		int32 slotNum = i;
 		slot->SetSlotInfo(InventoryComponentRef, slotNum);
-
 	}
 
 

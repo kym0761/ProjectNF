@@ -338,6 +338,26 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 
 아이템을 얻는 것은 물론, 아이템의 이름과 설명 등의 정보와, 사용시 효과 등을 구현하였습니다.
 
+<img src="ExplainImages/InventorySystem01.png" width="75%">
+
+인벤토리는 Actor가 InventoryComponent를 가지고 있다면 InventorySubsystem에서 인벤토리 공간을 요청하여 접근할 수 있습니다.
+
+인벤토리 UI에서는 InventoryComponent를 통해 InventoryObject를 얻고, 인벤토리 내용물을 읽어 ObjectSubsystem에게서 인벤토리 Slot 생성을 요청해 인벤토리 공간을 만들어냅니다.
+
+<img src="ExplainImages/InventorySystem02.png" width="75%">
+
+인벤토리 슬롯은 하나의 InventoryObject를 참조하고, 몇번째 공간을 담당하는지 Index 정보를 가지고 있습니다.
+
+그런 정보를 토대로 Drag Drop 기능을 만들어 아이템 공간에서 Drag Drop을 사용해 사용자가 인벤토리를 정리할 수도 있습니다.
+
+<img src="ExplainImages/InventorySystem03.png" width="75%">
+
+예를 들어, 위의 스크린샷처럼 3번째 슬롯에 있는 아이템을 drag해서 아무 칸으로 옮기고 Drop하면
+
+<img src="ExplainImages/InventorySystem04.png" width="75%">
+
+이처럼 아이템의 위치가 변경되는 것을 알 수 있습니다.
+
 ## 어빌리티 시스템
 
 <img src="ExplainImages/ETC03.png" width="75%">
@@ -354,8 +374,8 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 스킬을 생성할 타이밍에서 위에서 설명한 ObjectSubsystem에게 어빌리티 액터의 Spawn을, SheetDataSubsystem에게서는 어빌리티에 대한 데이터테이블 정보를 얻어내고, Spawn이 끝난 어빌리티에게 데이터를 전달하고 어빌리티 액터를 초기화합니다.
 
 <img src="ExplainImages/Ability03.png" width="75%">
-Ability 액터는 정의한 StartAbility(), DoingAbility(), EndAbility()에 맞게 효과가 동작할 것입니다.
 
+Ability 액터는 정의한 StartAbility(), DoingAbility(), EndAbility()에 맞게 효과가 동작할 것입니다.
 
 <img src="ExplainImages/Ability04.png" width="75%">
 
