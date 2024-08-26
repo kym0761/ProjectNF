@@ -334,7 +334,7 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 
 ## 아이템 & 인벤토리 시스템
 
-<img src="ExplainImages/ETC02.png" width="75%">
+<img src="ExplainImages/ETC02.png" width="50%">
 
 아이템을 얻는 것은 물론, 아이템의 이름과 설명 등의 정보와, 사용시 효과 등을 구현하였습니다.
 
@@ -350,13 +350,15 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 
 그런 정보를 토대로 Drag Drop 기능을 만들어 아이템 공간에서 Drag Drop을 사용해 사용자가 인벤토리를 정리할 수도 있습니다.
 
-<img src="ExplainImages/InventorySystem03.png" width="75%">
+<img src="ExplainImages/InventorySystem03.png" width="50%">
 
 예를 들어, 위의 스크린샷처럼 3번째 슬롯에 있는 아이템을 drag해서 아무 칸으로 옮기고 Drop하면
 
-<img src="ExplainImages/InventorySystem04.png" width="75%">
+<img src="ExplainImages/InventorySystem04.png" width="50%">
 
 이처럼 아이템의 위치가 변경되는 것을 알 수 있습니다.
+
+그 외에도 아이템을 클릭하면 사용하는 기능도 일부 구현되어 있으며, 아이템 사용 효과는 밑에 설명한 어빌리티 시스템에서 이어집니다.
 
 ## 어빌리티 시스템
 
@@ -385,6 +387,6 @@ Ability 액터는 정의한 StartAbility(), DoingAbility(), EndAbility()에 맞�
 
 공격 어빌리티 외에도, 아이템을 사용하는 효과도 어빌리티로서 동작할 수 있게 만들기 위해 아이템 효과에 맞는 데이터테이블을 추가로 정의합니다.
 
-<img src="ExplainImages/Ability05.png" width="75%">
+<img src="ExplainImages/Ability06.png" width="75%">
 
 예시로, HP포션을 사용한다면 데이터테이블에 정의된 이펙트가 발동하는 것을 확인할 수 있습니다.
