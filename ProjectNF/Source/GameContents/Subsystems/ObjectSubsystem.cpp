@@ -18,6 +18,7 @@
 #include "GameInfoSubsystem.h"
 #include "InventorySubsystem.h"
 
+
 UObjectSubsystem::UObjectSubsystem()
 {
 }
@@ -26,27 +27,12 @@ void UObjectSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	//Blueprints 폴더에 있는 모든 액터 블루프린트를 긁어온다.
-	TArray<FName> blueprintPaths;
-	blueprintPaths.Add(TEXT("/Game/Blueprints")); //블루프린트를 긁어올 때 폴더 여러개로 분류했다면, 해당 폴더들 전부를 add하면 된다.
-	LoadBlueprints<AActor>(BlueprintMap, AActor::StaticClass(), blueprintPaths, TEXT("BP_")); //ActorBlueprint만 가져온다.
-
-	//UMG
-	TArray<FName> widgetBlueprintPaths;
-	widgetBlueprintPaths.Add(TEXT("/Game/UI"));
-	LoadBlueprints<UUserWidget>(WidgetBlueprintMap, UUserWidget::StaticClass(), widgetBlueprintPaths, TEXT("WBP_"));
-
-
-	//Niagara
-	TArray<FName> niagaraPaths;
-	niagaraPaths.Add(TEXT("/Game/Niagaras"));
-	LoadNiagaras(NiagaraSystemMap, niagaraPaths);
-
 }
 
 void UObjectSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
+
 }
 
 void UObjectSubsystem::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths)
@@ -102,6 +88,27 @@ void UObjectSubsystem::LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& T
 			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
 		}
 	}
+}
+
+void UObjectSubsystem::LoadAllBlueprints()
+{
+	//Blueprints 폴더에 있는 모든 액터 블루프린트를 긁어온다.
+	TArray<FName> blueprintPaths;
+	blueprintPaths.Add(TEXT("/Game/Blueprints")); //블루프린트를 긁어올 때 폴더 여러개로 분류했다면, 해당 폴더들 전부를 add하면 된다.
+	LoadBlueprints<AActor>(BlueprintMap, AActor::StaticClass(), blueprintPaths, TEXT("BP_")); //ActorBlueprint만 가져온다.
+
+	//UMG
+	TArray<FName> widgetBlueprintPaths;
+	widgetBlueprintPaths.Add(TEXT("/Game/UI"));
+	LoadBlueprints<UUserWidget>(WidgetBlueprintMap, UUserWidget::StaticClass(), widgetBlueprintPaths, TEXT("WBP_"));
+
+
+	//Niagara
+	TArray<FName> niagaraPaths;
+	niagaraPaths.Add(TEXT("/Game/Niagaras"));
+	LoadNiagaras(NiagaraSystemMap, niagaraPaths);
+
+	FMyDebug::Print(DEBUG_TEXT("Blueprints Load Successful."));
 }
 
 AActor* UObjectSubsystem::Spawn(FString ToSpawnClassName, const FVector& Location, const FRotator& Rotation)
@@ -166,14 +173,25 @@ void UObjectSubsystem::BindingActor(AActor* TargetActor)
 	//를 사용하여 static 함수를 넘길 수도 있긴 한데, 코드가 복잡해질 수 있는 가능성이 있어
 	//Object를 Spawn할 때만 GameInstance에 접근하여 static 함수를 바인드하도록 한다.
 
-	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
-	auto gameInfoSubsystem = GetGameInstance()->GetSubsystem<UGameInfoSubsystem>();
-	auto inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
 	if (!IsValid(TargetActor))
 	{
 		FMyDebug::Print(DEBUG_TEXT("TargetActor Invalid."));
+		return;
 	}
-	else if (TargetActor->IsA(AFarmlandTile::StaticClass()))
+
+	if (!GWorld)
+	{
+		FMyDebug::Print(DEBUG_TEXT("GWorld Invalid."));
+		return;
+	}
+
+	auto gameinstance = GWorld->GetGameInstance();
+
+	auto sheetDataSubsystem = gameinstance->GetSubsystem<USheetDataSubsystem>();
+	auto gameInfoSubsystem = gameinstance->GetSubsystem<UGameInfoSubsystem>();
+	auto inventorySubsystem = gameinstance->GetSubsystem<UInventorySubsystem>();
+
+	if (TargetActor->IsA(AFarmlandTile::StaticClass()))
 	{
 		auto farmtile = Cast<AFarmlandTile>(TargetActor);
 
@@ -208,7 +226,7 @@ void UObjectSubsystem::BindingActor(AActor* TargetActor)
 	}
 	else
 	{
-		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed."));
+		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed or No Needed."));
 	}
 }
 

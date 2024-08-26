@@ -6,6 +6,7 @@
 #include "DebugHelper.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Subsystems/EngineSubsystem.h"
 #include "ObjectSubsystem.generated.h"
 
 class UNiagaraSystem;
@@ -21,7 +22,7 @@ DECLARE_DELEGATE_OneParam(FRequestObjectPoolDespawn2, AActor*);
  * 
  */
 UCLASS()
-class GAMECONTENTS_API UObjectSubsystem : public UGameInstanceSubsystem
+class GAMECONTENTS_API UObjectSubsystem : public UEngineSubsystem //public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	
@@ -70,6 +71,9 @@ protected:
 	//나이아가라는 TSubclassOf<>가 아니라서 따로 만듬.
 	void LoadNiagaras(TMap<FString, TObjectPtr<UNiagaraSystem>>& TargetMap, const TArray<FName>& FolderPaths);
 
+public:
+
+	void LoadAllBlueprints();
 
 #pragma endregion
 
@@ -159,27 +163,27 @@ void UObjectSubsystem::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, 
 		if (TargetMap.Contains(name))
 		{
 			//같은 이름의 블루프린트가 있었으므로, 해당 BP_의 이름을 바꾸어야함.
-			FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name NS : %s"), *name));
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("Warning! --- Same Name BP : %s"), *name));
 		}
 
 		TargetMap.Add(name, findClass);
 
-		//FMyDebug::Print(DEBUG_VATEXT(TEXT("key : %s / Val : %s"), *name, *findClass->GetName()));
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("key : %s / Val : %s"), *name, *findClass->GetName()));
 
 	}
 
-	//// 제대로 읽었는지 확인.
-	//for (auto& i : TargetMap)
-	//{
-	//	if (IsValid(i.Value))
-	//	{
-	//		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
-	//	}
-	//	else
-	//	{
-	//		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
-	//	}
-	//}
+	////// 제대로 읽었는지 확인.
+	////for (auto& i : TargetMap)
+	////{
+	////	if (IsValid(i.Value))
+	////	{
+	////		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
+	////	}
+	////	else
+	////	{
+	////		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
+	////	}
+	////}
 
 	//FMyDebug::Print(TEXT("=============Load Blueprints END============="));
 	//FMyDebug::Print(TEXT("============================================="));

@@ -11,7 +11,7 @@ void UMainHUD::NativeConstruct()
 
 	//BP_로 만든 UMG도 Spawn가능
 	{
-		auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+		auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 
 		auto testWidget = objectSubsystem->CreateWidgetBlueprint(TEXT("CreateTest"), GetOwningPlayer());
 		testWidget->AddToViewport();

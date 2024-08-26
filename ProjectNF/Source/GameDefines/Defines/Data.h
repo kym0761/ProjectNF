@@ -124,8 +124,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FName ItemName;
 
+	//? : 필요한지 모르겠음
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int32 Price;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	EShopItemType ShopItemType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	int32 Stock;
@@ -318,8 +322,11 @@ public:
 	const static int32 MAX_MINUTE = 60;
 	const static int32 MAX_WEEK = 7;
 
+	//const static int32 MAX_DAY = 28;
+
 	// cpp에서 알맞는 값으로 초기화한다.
 	const static TArray<int32> MAXDAY_OF_MONTH;
+
 	const static FGameDateTime MORNING;
 	const static FGameDateTime NOON;
 	const static FGameDateTime EVENING;
@@ -341,7 +348,10 @@ public:
 	bool operator<=(const FGameDateTime& Other) const;
 
 	FString ToString() const;
+	
+	EDayType GetDayType() const;
 
+	int32 GetSumDay() const;
 };
 
 //월의 명칭을 관리할 데이터 테이블

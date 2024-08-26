@@ -166,17 +166,21 @@ void ABaseCharacter::BeginPlay()
 		//!! 애니메이션 블루 프린트에서 애니메이션 재생 기준으로 사용 중.
 	}
 
+	//인벤토리 초기화
 	if (IsValid(InventoryComponent))
 	{
-		auto objectSubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
-		InventoryComponent->RequestTryGetInventory.BindUObject(objectSubsystem, &UInventorySubsystem::TryGetInventory);
+		auto inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
+		InventoryComponent->RequestTryGetInventory.BindUObject(inventorySubsystem, &UInventorySubsystem::TryGetInventory);
 		InventoryComponent->InitInventoryComponent();
 	}
 
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
-
-	HUD = objectSubsystem->CreateWidgetBlueprint(TEXT("HUD"), Cast<APlayerController>(GetController()));
-	HUD->AddToViewport();
+	//기본 UI 생성
+	{
+		auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
+		HUD = objectSubsystem->CreateWidgetBlueprint(TEXT("HUD"), Cast<APlayerController>(GetController()));
+		HUD->AddToViewport();
+	}
+	
 }
 
 // Called every frame
@@ -255,7 +259,8 @@ void ABaseCharacter::UseFarmTool()
 		return;
 	}
 
-	auto gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
+	auto gridSubsystem = //GEngine->GetEngineSubsystem<UGridSubsystem>();
+		GetWorld()->GetSubsystem<UGridSubsystem>();
 	FGrid grid = gridSubsystem->WorldToGrid(hit.Location);
 
 	bool bExistOnGrid = gridSubsystem->IsSomethingExistOnGrid(grid);
@@ -265,7 +270,7 @@ void ABaseCharacter::UseFarmTool()
 		FMyDebug::Print(DEBUG_TEXT("already occupying"));
 		return;
 	}
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 	auto farmtile = Cast<AFarmlandTile>(objectSubsystem->Spawn(TEXT("FarmlandTile"), gridSubsystem->GridToWorld(grid)));
 
 	if (!IsValid(farmtile))
@@ -323,8 +328,9 @@ void ABaseCharacter::DoPlanting()
 		return;
 	}
 
-	auto gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
-
+	auto gridSubsystem = //GEngine->GetEngineSubsystem<UGridSubsystem>();
+	GetWorld()->GetSubsystem<UGridSubsystem>();
+	
 	FGrid grid = gridSubsystem->WorldToGrid(hit.Location);
 
 	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());

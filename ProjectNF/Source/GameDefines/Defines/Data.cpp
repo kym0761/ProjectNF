@@ -134,7 +134,7 @@ uint32 GetTypeHash(const FGrid& Grid)
 //~~
 
 //[0]번째는 편의상 사용하지 않는다.
-const TArray<int> FGameDateTime::MAXDAY_OF_MONTH = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const TArray<int32> FGameDateTime::MAXDAY_OF_MONTH = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 const FGameDateTime FGameDateTime::MORNING = FGameDateTime(0, 0, 0, 6, 0);
 const FGameDateTime FGameDateTime::NOON = FGameDateTime(0, 0, 0, 12, 0);
@@ -229,6 +229,8 @@ FGameDateTime FGameDateTime::operator-(const FGameDateTime& rValue)
 		hour = hour + MAX_HOUR;
 		day--;
 	}
+
+	//day와 month는 0을 비허용함.
 
 	if (day <= 0)
 	{
@@ -425,6 +427,57 @@ bool FGameDateTime::operator<=(const FGameDateTime& Other) const
 FString FGameDateTime::ToString() const
 {
 	return FString::Printf(TEXT("| Year : %d -- Month : %d -- Day : %d -- Hour : %d -- Minute : %d |"), Year, Month, Day, Hour, Minute);
+}
+
+EDayType FGameDateTime::GetDayType() const
+{
+	//0sus 3월 1일은 일요일이다. 그 기준부터 요일을 계산함.
+
+	//1->0 - sunday
+	//2->1 - monday
+	//...
+	//7->6 - saturday
+	int sumDay = GetSumDay();
+	EDayType result = EDayType(sumDay % 7);
+
+	return result;
+}
+
+int32 FGameDateTime::GetSumDay() const
+{
+	//0년 3월 1일 기준으로 얼마나 지났는가?
+	FGameDateTime current = *this;
+	FGameDateTime compareTime = FGameDateTime(0, 3, 1);
+	
+	//FGameDateTime의 + - 계산은 day와 month를 0을 허용하지 않기 때문에 따로 계산함.
+	
+	int32 year = current.Year - compareTime.Year;
+	int32 month = current.Month - compareTime.Month;
+	
+	//month가 음수라면 year에서 값을 1번 얻어 다시 계산한다.
+	if (month < 0)
+	{
+		year--;
+		month += 12;
+	}
+	int32 day = current.Day - compareTime.Day;
+
+	//3월부터 시작함 : 3 4 5 6 7 8 9 10 11 12 1 2
+	TArray<int32> months = { 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31, 28 };
+
+	int32 monthSum = 0;
+	for (int i = 0; i < month; i++) // 3월이면 1월 2월까지만 더한다.
+	{
+		monthSum += months[i];
+	}
+
+	int32 yearSum = 365; // year값 전부 합치면 무조건 365일임. 게임에선 윤년은 감안하지 않음.
+	int32 yearToDay = yearSum * year;
+	
+	int32 total = yearToDay + monthSum + day;
+
+
+	return total;
 }
 
 //~~

@@ -18,6 +18,12 @@ public:
 
 	ANFGameModeBase();
 
+	//게임 시간을 늘리기 위한 타이머
+	FTimerHandle GameDateTimeTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameTime")
+	float GameTimeInterval;
+
 
 protected:
 	// Called when the game starts or when spawned

@@ -124,7 +124,7 @@ void UBaseAnimInstance::PlayAttackMontage()
 		FString abilityName = TEXT("AbilityAOE");
 		//FString abilityName = TEXT("BaseAttack_") + AbilitySuffix;
 
-		auto objectSubsystem= UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UObjectSubsystem>();
+		auto objectSubsystem= GEngine->GetEngineSubsystem<UObjectSubsystem>();
 		auto sheetDataSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<USheetDataSubsystem>();
 		auto ability = Cast<AAbilityBase>(objectSubsystem->Spawn(abilityName, FVector(0, 0, 0), FRotator(0, 0, 0)));
 

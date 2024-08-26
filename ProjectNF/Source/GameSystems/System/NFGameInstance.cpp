@@ -50,6 +50,20 @@ UNFGameInstance* UNFGameInstance::GetNFGameInstance()
 	return gameinst;
 }
 
+void UNFGameInstance::Init()
+{
+	Super::Init();
+
+
+	//엔진 서브시스템이 initialize되는 동안은 content 폴더에 접근이 불가능함.
+	//게임 인스턴스 시작시 시도하면 정상적으로 동작함. 
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
+	if (IsValid(objectSubsystem))
+	{
+		objectSubsystem->LoadAllBlueprints();
+	}
+}
+
 void UNFGameInstance::Save()
 {
 
@@ -71,10 +85,15 @@ void UNFGameInstance::Save()
 	//세이브에 플레이어 이름을 넣는다.
 	saveGame->PlayerName = PlayerName;
 
+	/*
 	//인벤토리 데이터 세이브
 	SaveInventory(saveGame);
 
+	//작물 정보 세이브
 	SaveFarmlandTile(saveGame);
+	*/
+
+	SaveGameInfo(saveGame);
 
 	FString slotName = TEXT("Save") + FString::FromInt(SaveSlotNumber);
 
@@ -117,81 +136,108 @@ void UNFGameInstance::Load(int32 SlotNumber)
 	//GameInstance를 init한 후 Loading.
 	InitNFGameInstance();
 
-	//인벤토리 Load
-	LoadInventory(saveGame);
-
-	LoadFarmlandTile(saveGame);
+	LoadGameInfo(saveGame);
 }
 
-void UNFGameInstance::SaveInventory(UNFSaveGame* SaveGame)
+
+
+void UNFGameInstance::SaveGameInfo(UNFSaveGame* SaveGame)
 {
-	//Inventory의 데이터를 전부 읽고 savegame에 인벤토리 정보를 저장함.
+	auto gameInfoSubsystem = GetSubsystem<UGameInfoSubsystem>();
 
-	auto& inventories = GetSubsystem<UInventorySubsystem>()->GetAllInventories();
-
-	SaveGame->InventorySave.Empty();
-
-	for (auto& inventory : inventories)
+	//게임 시간
 	{
-		FInventorySaveData inventorySave;
-		inventorySave.InventoryID = inventory.Key;
-		inventorySave.Items = inventory.Value->GetAllItems();
+		auto currentGameTime = gameInfoSubsystem->GetCurrentGameTime();
+		SaveGame->CurrentGameTime = currentGameTime;
+	}
+	
+	//farm 작물 정보
+	{
+		//보관된 FarmlandTile의 데이터를 SaveGame에 저장함
 
-		SaveGame->InventorySave.Add(inventorySave);
+		auto& farmlandTileMap = gameInfoSubsystem->GetCropMap();
+
+		TArray<FCropSaveData> saveArray;
+
+		for (auto& i : farmlandTileMap)
+		{
+			FGrid& grid = i.Key;
+			FCropData& cropData = i.Value;
+
+			FCropSaveData cropSaveData;
+
+			cropSaveData.CropData = cropData;
+			cropSaveData.GridPosition = grid;
+
+			saveArray.Add(cropSaveData);
+		}
+
+		SaveGame->CropSave = saveArray;
 	}
 
-}
-
-void UNFGameInstance::LoadInventory(UNFSaveGame* SaveGame)
-{
-	//savegame의 인벤토리 정보를 얻어 inventory manager를 세팅함.
-
-	auto& inventorySave = SaveGame->InventorySave;
-
-	GetSubsystem<UInventorySubsystem>()->LoadInventories(inventorySave);
-
-
-}
-
-void UNFGameInstance::SaveFarmlandTile(UNFSaveGame* SaveGame)
-{
-	//GridManager에 저장된 FarmlandTile의 데이터를 SaveGame에 저장함
-
-	auto& farmlandTileMap = 
-		GetSubsystem<UGameInfoSubsystem>()->GetCropMap();
-
-	TArray<FCropSaveData> saveArray;
-
-	for (auto& i : farmlandTileMap)
+	//인벤토리
 	{
-		FGrid& grid = i.Key;
-		FCropData& cropData = i.Value;
+		//Inventory의 데이터를 전부 읽고 savegame에 인벤토리 정보를 저장함.
 
-		FCropSaveData cropSaveData;
+		auto& inventories = GetSubsystem<UInventorySubsystem>()->GetAllInventories();
 
-		cropSaveData.CropData = cropData;
-		cropSaveData.GridPosition = grid;
+		SaveGame->InventorySave.Empty();
 
-		saveArray.Add(cropSaveData);
+		for (auto& inventory : inventories)
+		{
+			FInventorySaveData inventorySave;
+			inventorySave.InventoryID = inventory.Key;
+			inventorySave.Items = inventory.Value->GetAllItems();
+
+			SaveGame->InventorySave.Add(inventorySave);
+		}
 	}
 
-	SaveGame->CropSave = saveArray;
+	//Money
+	{
+		int money = gameInfoSubsystem->GetMoney();
+		SaveGame->Money = money;
+	}
 }
 
-void UNFGameInstance::LoadFarmlandTile(UNFSaveGame* SaveGame)
+void UNFGameInstance::LoadGameInfo(UNFSaveGame* SaveGame)
 {
-	//SaveGame에 저장된 데이터를 GridManager로 옮김.
 
-	auto& farmlandTiles = SaveGame->CropSave;
+	auto gameInfoSubsystem = GetSubsystem<UGameInfoSubsystem>();
 
-	TMap<FGrid, FCropData> farmlandTileMap;
-
-	for (auto& i : farmlandTiles)
+	//게임 시간
 	{
-		farmlandTileMap.Add(i.GridPosition, i.CropData);
+		gameInfoSubsystem->SetCurrentGameTime(SaveGame->CurrentGameTime);
 	}
 
-	GetSubsystem<UGameInfoSubsystem>()->SetCropMap(farmlandTileMap);
+	//Farm 작물 정보
+	{
+		//SaveGame에 저장된 데이터를 실제 게임에 옮김.
+		auto& farmlandTiles = SaveGame->CropSave;
+
+		TMap<FGrid, FCropData> farmlandTileMap;
+
+		for (auto& i : farmlandTiles)
+		{
+			farmlandTileMap.Add(i.GridPosition, i.CropData);
+		}
+
+		gameInfoSubsystem->SetCropMap(farmlandTileMap);
+	}
+
+	//인벤토리
+	{
+		//세이브의 인벤토리 데이터를 실제 게임으로 옮김.
+
+		auto& inventorySave = SaveGame->InventorySave;
+		GetSubsystem<UInventorySubsystem>()->LoadInventories(inventorySave);
+	}
+
+	//Money
+	{
+		gameInfoSubsystem->SetMoney(SaveGame->Money);
+	}
+
 }
 
 void UNFGameInstance::InitManagers()

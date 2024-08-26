@@ -10,6 +10,9 @@ AGridSetup::AGridSetup()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
+	SetRootComponent(Scene);
+
 	GridVisual = CreateDefaultSubobject<UGridVisualComponent>(TEXT("GridVisual"));
 	GridVisual->SetupAttachment(GetRootComponent());
 

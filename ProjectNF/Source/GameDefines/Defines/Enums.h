@@ -142,3 +142,22 @@ enum class ELanguage : uint8
 	Korean UMETA(DisplayName = "Korean"),
 	English UMETA(DisplayName = "English")
 };
+
+UENUM(BlueprintType)
+enum class EShopItemType : uint8
+{
+	INF UMETA(DisplayName = "INF"), //stock이 무한대로 취급
+	LIMITED UMETA(DisplayName = "LIMITED") //stock에 제한이 있음.
+};
+
+UENUM(BlueprintType)
+enum class EDayType : uint8
+{
+	SUNDAY = 0 UMETA(DisplayName = "SUNDAY"),
+	MONDAY UMETA(DisplayName = "MONDAY"),
+	TUESDAY UMETA(DisplayName = "TUESDAY"),
+	WEDNESDAY UMETA(DisplayName = "WEDNESDAY"),
+	THURSDAY UMETA(DisplayName = "THURSDAY"),
+	FRIDAY UMETA(DisplayName = "FRIDAY"),
+	SATURDAY UMETA(DisplayName = "SATURDAY")
+};

@@ -1,20 +1,20 @@
 # 목차
 
-1. [ProjectNF](#projectnf)
-2. [DebugHelper](#debughelper)
-3. [GameInstance](#gameinstance)
-4. [Subsystems](#Subsystems)
-5. [Managers](#managers) // 삭제예정
-6. [SheetDataSubsystem](#sheetdatasubsystem)
-7. [GridSubsystem](#gridsubsystem)
-8. [InventorySubsystem](#inventorysubsystem)
-9. [ObjectSubsystem](#objectsubsystem)
-10. [ObjectPoolSubsystem](#objectpoolsubsystem)
-11. [ObjectPool](#objectpool)
-12. [PuzzleSubsystem](#puzzlesubsystem)
-13. [Modules](#modules)
-14. [델리게이트 패턴](#델리게이트-패턴)
-15. [ETC](#ETC)
+- [ProjectNF](#projectnf)
+- [DebugHelper](#debughelper)
+- [GameInstance](#gameinstance)
+- [Subsystems](#Subsystems)
+	- [Managers](#managers) // 삭제예정
+	- [SheetDataSubsystem](#sheetdatasubsystem)
+	- [GridSubsystem](#gridsubsystem)
+	- [InventorySubsystem](#inventorysubsystem)
+	- [ObjectSubsystem](#objectsubsystem)
+	- [ObjectPoolSubsystem](#objectpoolsubsystem)
+		- [ObjectPool](#objectpool)
+	- [PuzzleSubsystem](#puzzlesubsystem)
+- [Modules](#modules)
+	- [델리게이트 패턴](#델리게이트-패턴)
+- [ETC](#ETC)
 
 # ProjectNF
 

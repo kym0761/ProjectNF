@@ -4,7 +4,8 @@
 #include "GridSubsystem.h"
 #include "DebugHelper.h"
 #include "Kismet/KismetSystemLibrary.h"
-
+#include "ObjectSubsystem.h"
+#include "Grid/GridSetup.h"
 UGridSubsystem::UGridSubsystem()
 {
 }
@@ -12,11 +13,27 @@ UGridSubsystem::UGridSubsystem()
 void UGridSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
 }
 
 void UGridSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
+
+}
+
+void UGridSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+
+	//!! World가 준비되는 시간이 Initialize 이후로 보임.
+	// 
+	//GridSubsystem이 준비가 됐다면 해당 레벨에 GridSetup 설치
+	//gridsetup이 있어야 맵에 grid 칸 보이는 효과가 나올 수 있음.
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
+
+	GridSetupRef = Cast<AGridSetup>(
+		objectSubsystem->Spawn(TEXT("GridSetup"), FVector(0.0f, 0.0f, 50000.0f), FRotator::ZeroRotator));
 }
 
 FGrid UGridSubsystem::WorldToGrid(const FVector& WorldLocation) const

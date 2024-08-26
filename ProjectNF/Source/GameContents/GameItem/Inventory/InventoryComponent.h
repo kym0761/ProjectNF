@@ -23,12 +23,6 @@ public:
 	// Sets default values for this component's properties
 	UInventoryComponent();
 
-	//인벤토리 생성 및 접근을 위한 ID
-	//1) 캐릭터는 캐릭터 이름을 ID로 한다
-	//2) 아이템 창고는 설치할 때 ItemNumberID를 ID로 한다..?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	FString InventoryID;
-
 	FRequestTryGetInventory RequestTryGetInventory;
 
 protected:
@@ -48,6 +42,13 @@ public:
 	//FOnInventoryItemsChanged OnInventoryItemsChanged;
 
 protected:
+
+	//인벤토리 생성 및 접근을 위한 ID
+	//1) 캐릭터는 캐릭터 이름을 ID로 한다
+	//2) 아이템 창고는 설치할 때 ItemNumberID를 ID로 한다..?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	FString InventoryID;
+
 
 	//실제 Inventory Ref
 	//GameInstance -> InventoryManager에 존재함.

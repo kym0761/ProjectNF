@@ -52,6 +52,16 @@ public:
 		Category = "GameDateTime|Convert")
 	static FString Conv_GameDateTimeToString(FGameDateTime InGameDateTime);
 
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "GetDayType (GameDateTime)",
+		CompactNodeTitle = "->", BlueprintAutocast),
+		Category = "GameDateTime|Convert")
+	static EDayType Conv_GameDateTimeToDayType(FGameDateTime InGameDateTime);
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "GetSumDay (GameDateTime)",
+		CompactNodeTitle = "->", BlueprintAutocast),
+		Category = "GameDateTime|Convert")
+	static int32 Conv_GameDateTimeToSumDay(FGameDateTime InGameDateTime);
+
 	UFUNCTION(BlueprintPure, Category = "GameDateTime|Get")
 	static int32 GetYear(FGameDateTime InGameDateTime);
 
@@ -73,5 +83,7 @@ public:
 	static FGameDateTime GetNoon();
 	UFUNCTION(BlueprintPure, Category = "GameDateTime|Get")
 	static FGameDateTime GetEvening();
+
+
 
 };

@@ -35,8 +35,10 @@ protected:
 	UPROPERTY()
 	TMap<FGrid, FCropData> CropMap;
 
-	//게임 언어 정보?
-	ELanguage GameLanguage;
+
+	//인게임 현재 시간
+	UPROPERTY()
+	FGameDateTime CurrentGameTime;
 
 public:
 
@@ -48,6 +50,14 @@ public:
 	UFUNCTION()
 	void RemoveCropInfo(AFarmlandTile* TargetFarmlandTile);
 
-	ELanguage GetGameLanguage() const;
 
+	void SetCurrentGameTime(FGameDateTime DateTimeVal);
+	
+	//일단 UI에서 접근하기 위해
+	UFUNCTION(BlueprintCallable)
+	FGameDateTime GetCurrentGameTime() const;
+	
+	void SetMoney(int32 MoneyVal);
+	UFUNCTION(BlueprintCallable)
+	int32 GetMoney() const;
 };

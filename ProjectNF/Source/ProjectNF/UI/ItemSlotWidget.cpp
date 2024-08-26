@@ -28,7 +28,7 @@ void UItemSlotWidget::NativeConstruct()
 
 	//생성시 Tooltip 위젯을 생성 및 설정한다.
 	//아직 사용하지 않으므로 캐스트할 필요 없음.
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 
 	auto itemTooltip =
 		objectSubsystem->CreateWidgetBlueprint(TEXT("ItemTooltip"), GetOwningPlayer());
@@ -93,7 +93,7 @@ void UItemSlotWidget::DragFunction(const FGeometry& InGeometry, const FPointerEv
 		return;
 	}
 
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 
 	//drag display
 	TObjectPtr<UItemSlotWidget> dragDisplay = Cast<UItemSlotWidget>(
@@ -167,7 +167,7 @@ bool UItemSlotWidget::UseItem()
 
 	FItemSlotData itemSlot = *inventoryObj->GetInventoryItem(InventorySlotNumber);
 
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
 
 	FItemSheetData itemSheetData = sheetDataSubsystem->GetItemData(itemSlot.ItemName);

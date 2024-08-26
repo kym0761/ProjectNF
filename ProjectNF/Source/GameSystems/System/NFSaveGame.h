@@ -33,4 +33,13 @@ public:
 	UPROPERTY()
 	TArray<FCropSaveData> CropSave;
 
+	//게임 플레이어의 돈
+	UPROPERTY()
+	int32 Money;
+
+	//게임의 시간
+	UPROPERTY()
+	FGameDateTime CurrentGameTime;
+
+
 };

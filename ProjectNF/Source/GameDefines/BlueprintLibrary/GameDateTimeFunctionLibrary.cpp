@@ -38,6 +38,16 @@ FString UGameDateTimeFunctionLibrary::Conv_GameDateTimeToString(FGameDateTime In
     return InGameDateTime.ToString();
 }
 
+EDayType UGameDateTimeFunctionLibrary::Conv_GameDateTimeToDayType(FGameDateTime InGameDateTime)
+{
+    return InGameDateTime.GetDayType();
+}
+
+int32 UGameDateTimeFunctionLibrary::Conv_GameDateTimeToSumDay(FGameDateTime InGameDateTime)
+{
+    return InGameDateTime.GetSumDay();
+}
+
 int32 UGameDateTimeFunctionLibrary::GetYear(FGameDateTime InGameDateTime)
 {
     return InGameDateTime.Year;

@@ -41,9 +41,15 @@ protected:
 	UPROPERTY()
 	int32 SaveSlotNumber;
 
+	//config 같은 데에서 게임 Language를 저장하도록 해야하는 느낌이 든다.
+	UPROPERTY()
+	ELanguage GameLanguage;
+
 public:
 
 	static UNFGameInstance* GetNFGameInstance();
+
+	virtual void Init() override;
 
 #pragma region SaveGameFunction
 
@@ -57,11 +63,12 @@ public:
 
 protected:
 
-	void SaveInventory(UNFSaveGame* SaveGame);
-	void LoadInventory(UNFSaveGame* SaveGame);
+	/*게임에 대한 정보를 저장 or 로드한다*/
+	//데이터에 따라 다른 subsystem에 접근하여 게임 정보를 저장할 수 있음
+	//자세한 건 코드를 보고 참고
 
-	void SaveFarmlandTile(UNFSaveGame* SaveGame);
-	void LoadFarmlandTile(UNFSaveGame* SaveGame);
+	void SaveGameInfo(UNFSaveGame* SaveGame);
+	void LoadGameInfo(UNFSaveGame* SaveGame);
 
 #pragma endregion
 

@@ -3,17 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/EngineSubsystem.h"
+#include "Subsystems/WorldSubsystem.h"
 #include "Defines/Data.h"
 #include "GridSubsystem.generated.h"
 
+class AGridSetup;
+
 /**
- * Grid는 게임인스턴스와 별개로 동작해도 될 것 같기에 EngineSubsystem
- * 왜 별개냐면, Grid시스템은 World가 존재해야한다. 게임인스턴스는 기본적으로 월드가 transient이므로 실제 월드의 오브젝트가 아님
- * 엔진서브시스템으로 관리하면 world값이 그대로 존재함
+ * Grid는 GameInstance와 별개로 동작해도 될 것 같기에 UWorldSubsystem
+ * 왜 별개냐면, Grid시스템은 World가 존재해야 의미가 있음.
+ * GameInstance는 기본적으로 월드가 transient이므로 실제 월드의 오브젝트가 아님
  */
+
+//WorldSubsystem으로 변경?
+//Grid는 월드가 바뀔때마다 Setting이 필요할 수 있음
+//예시) GridSetup을 Spawn한다라던지
+
 UCLASS()
-class GAMECONTENTS_API UGridSubsystem : public UEngineSubsystem
+class GAMECONTENTS_API UGridSubsystem : public UWorldSubsystem //public UEngineSubsystem //public UWorldSubsystem
 {
 	GENERATED_BODY()
 	
@@ -25,6 +32,8 @@ public:
 
 	virtual void Deinitialize() override;
 
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
@@ -34,6 +43,9 @@ protected:
 	//TODO : 이 정보는 게임 플레이 정보기 때문에 다른 곳에서 저장해야할 필요가 있음.
 	UPROPERTY()
 	TMap<FGrid, FCropData> CropMap;
+
+	UPROPERTY()
+	TObjectPtr<AGridSetup> GridSetupRef;
 
 public:
 

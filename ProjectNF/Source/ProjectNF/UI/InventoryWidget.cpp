@@ -26,7 +26,7 @@ void UInventoryWidget::NativeConstruct()
 		return;
 	}
 
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 	InventoryGridPanel->ClearChildren();
 	
 	int32 inventorySize = InventoryComponentRef->GetInventoryObjectRef()->GetInventorySize();

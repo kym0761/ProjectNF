@@ -26,7 +26,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FMyDebug::Print(DEBUG_TEXT("Inventory Component BeginPlay()"));
+	//FMyDebug::Print(DEBUG_TEXT("Inventory Component BeginPlay()"));
 
 }
 

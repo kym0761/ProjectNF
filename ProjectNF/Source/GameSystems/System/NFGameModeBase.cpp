@@ -20,7 +20,7 @@
 
 ANFGameModeBase::ANFGameModeBase()
 {
-
+	GameTimeInterval = 0.1f;
 }
 
 void ANFGameModeBase::BeginPlay()
@@ -35,6 +35,16 @@ void ANFGameModeBase::BeginPlay()
 
 	//GEngine->GetEngineSubsystem<U>
 	//UNFGameInstance::RestartLinkManager();
+	auto gameInfoSubsystem = GetGameInstance()->GetSubsystem<UGameInfoSubsystem>();
+	
+	GetWorldTimerManager().SetTimer(GameDateTimeTimer, 
+		[gameInfoSubsystem]()
+		{
+			auto currentTime = gameInfoSubsystem->GetCurrentGameTime();
+			currentTime += FGameDateTime(0, 0, 0, 0, 1);
+			gameInfoSubsystem->SetCurrentGameTime(currentTime);
+		},
+	 GameTimeInterval, true);
 
 }
 
@@ -50,8 +60,12 @@ void ANFGameModeBase::CreateAllSavedCrop()
 	//FMyDebug::Print(DEBUG_TEXT("Crop Load to Unreal Map"));
 
 	auto gameinfoSubsystem = GetGameInstance()->GetSubsystem<UGameInfoSubsystem>();
-	auto gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	
+	auto gridSubsystem = //GEngine->GetEngineSubsystem<UGridSubsystem>();
+		GetWorld()->GetSubsystem<UGridSubsystem>();
+
+
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
 	auto& cropMap = gameinfoSubsystem->GetCropMap();
 
@@ -63,13 +77,22 @@ void ANFGameModeBase::CreateAllSavedCrop()
 		AFarmlandTile* farmtile =
 			Cast<AFarmlandTile>(objectSubsystem->Spawn(TEXT("FarmlandTile"), gridSubsystem->GridToWorld(grid)));
 
-		//farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-		farmtile->RequestCropSheetData.BindUObject(sheetDataSubsystem, &USheetDataSubsystem::GetCropData);
-		//작물 아이템을 Spawn 요청하는 기능 Bind
-		farmtile->RequestSpawnItemPickup.BindUObject(objectSubsystem,&UObjectSubsystem::Spawn);
+		if (!IsValid(farmtile))
+		{
+			FMyDebug::Print(DEBUG_TEXT("farmtile invalid...."));
+			continue;
+		}
 
-		farmtile->RequestUpdateCropData.BindUObject(gameinfoSubsystem,&UGameInfoSubsystem::UpdateCropInfo);
-		farmtile->RequestRemoveCropData.BindUObject(gameinfoSubsystem, &UGameInfoSubsystem::RemoveCropInfo);
+		//TODO : 이 기능은 ObjectSubsystem으로 갔음.
+		//확인 후 삭제
+
+		////farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
+		//farmtile->RequestCropSheetData.BindUObject(sheetDataSubsystem, &USheetDataSubsystem::GetCropData);
+		////작물 아이템을 Spawn 요청하는 기능 Bind
+		//farmtile->RequestSpawnItemPickup.BindUObject(objectSubsystem,&UObjectSubsystem::Spawn);
+
+		//farmtile->RequestUpdateCropData.BindUObject(gameinfoSubsystem,&UGameInfoSubsystem::UpdateCropInfo);
+		//farmtile->RequestRemoveCropData.BindUObject(gameinfoSubsystem, &UGameInfoSubsystem::RemoveCropInfo);
 
 		//! GridManager의 정보가 우선이므로, 
 		//! Farmtile을 생성했을 때 이 farmtile의 정보로 gridManager를 세팅하려는 시도를 하면 안됨.
@@ -84,7 +107,7 @@ void ANFGameModeBase::SetExistItemsInMap()
 	//맵에 미리 존재하는 액터들은 ObjectManager로 생성된 것이 아니기 때문에 GameMode에서 처리해준다.
 
 	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
-	auto objectSubsystem = GetGameInstance()->GetSubsystem<UObjectSubsystem>();
+	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 	auto inventorySubsystem = GetGameInstance()->GetSubsystem<UInventorySubsystem>();
 
 	TArray<AActor*> actors;

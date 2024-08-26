@@ -9,12 +9,14 @@
 
 UGameInfoSubsystem::UGameInfoSubsystem()
 {
-	GameLanguage = ELanguage::English;
 }
 
 void UGameInfoSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	//시간 초기값 : 0년 3월 1일 6시 0분
+	CurrentGameTime = FGameDateTime(0, 3, 1, 6, 0);
 }
 
 void UGameInfoSubsystem::Deinitialize()
@@ -40,7 +42,7 @@ void UGameInfoSubsystem::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 		return;
 	}
 
-	UGridSubsystem* gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
+	UGridSubsystem* gridSubsystem = GEngine->GetCurrentPlayWorld()->GetSubsystem<UGridSubsystem>();
 
 	FGrid grid = gridSubsystem->WorldToGrid(TargetFarmlandTile->GetActorLocation());
 
@@ -66,7 +68,8 @@ void UGameInfoSubsystem::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
 		return;
 	}
 
-	UGridSubsystem* gridSubsystem = GEngine->GetEngineSubsystem<UGridSubsystem>();
+	UGridSubsystem* gridSubsystem = // GEngine->GetEngineSubsystem<UGridSubsystem>();
+		GEngine->GetCurrentPlayWorld()->GetSubsystem<UGridSubsystem>();
 
 	FGrid grid = gridSubsystem->WorldToGrid(TargetFarmlandTile->GetActorLocation());
 	FCropData cropData = TargetFarmlandTile->GetCropData();
@@ -82,7 +85,22 @@ void UGameInfoSubsystem::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
 	}
 }
 
-ELanguage UGameInfoSubsystem::GetGameLanguage() const
+void UGameInfoSubsystem::SetCurrentGameTime(FGameDateTime DateTimeVal)
 {
-	return GameLanguage;
+	CurrentGameTime = DateTimeVal;
+}
+
+FGameDateTime UGameInfoSubsystem::GetCurrentGameTime() const
+{
+	return CurrentGameTime;
+}
+
+void UGameInfoSubsystem::SetMoney(int32 MoneyVal)
+{
+	Money = MoneyVal;
+}
+
+int32 UGameInfoSubsystem::GetMoney() const
+{
+	return Money;
 }

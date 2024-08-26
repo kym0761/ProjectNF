@@ -8,6 +8,7 @@
 #include "GridSetup.generated.h"
 
 class UGridVisualComponent;
+class USceneComponent;
 
 UCLASS()
 class GAMECONTENTS_API AGridSetup : public AActor
@@ -25,6 +26,9 @@ public:
 
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
+	TObjectPtr<USceneComponent> Scene;
 
 	//Grid 표시할 InstancedMesh
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Grid", Meta = (AllowPrivateAccess = true))
