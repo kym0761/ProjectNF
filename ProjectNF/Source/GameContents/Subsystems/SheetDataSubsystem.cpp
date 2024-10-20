@@ -45,7 +45,7 @@ void USheetDataSubsystem::Deinitialize()
 void USheetDataSubsystem::LoadDataTables(TArray<TObjectPtr<UDataTable>>& TargetDataTables, const TArray<FName>& FolderPaths)
 {
 	//DataTable은 굳이 template로 만들지 않아도 된다. 어차피 UDataTable로 똑같기 때문.
-	//LoadDataTables보다 IncludeSheetDataToMap이 더 복잡하다.
+	//LoadDataTables보다 IncludeSheetDataToMap에서 구조체에 맞게 template를 써야한다.
 
 	FAssetRegistryModule& assetRegistryModule
 		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
