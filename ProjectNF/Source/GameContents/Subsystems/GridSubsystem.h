@@ -20,7 +20,7 @@ class AGridSetup;
 //예시) GridSetup을 Spawn한다라던지
 
 UCLASS()
-class GAMECONTENTS_API UGridSubsystem : public UWorldSubsystem //public UEngineSubsystem //public UWorldSubsystem
+class GAMECONTENTS_API UGridSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 	
@@ -55,15 +55,5 @@ public:
 	FVector GridToWorld(const FGrid& Grid) const;
 
 	bool IsSomethingExistOnGrid(const FGrid& Grid) const;
-
-	/*여기 부터는 게임 플레이 정보라 옮길 예정*/
-
-	//void SetCropMap(const TMap<FGrid, FCropData>& SavedMap);
-	//TMap<FGrid, FCropData>& GetCropMap();
-
-	//UFUNCTION()
-	//void UpdateCropInfo(AFarmlandTile* TargetFarmlandTile);
-	//UFUNCTION()
-	//void RemoveCropInfo(AFarmlandTile* TargetFarmlandTile);
 
 };

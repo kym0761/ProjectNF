@@ -280,18 +280,8 @@ void ABaseCharacter::UseFarmTool()
 	}
 
 
-	////farmtile에 CropData와 Spawn을 요청하는 기능을 bind해야한다.
-	//farmtile->RequestCropSheetData.BindStatic(&UNFGameInstance::GetCropData);
-	////작물 아이템을 Spawn 요청하는 기능 Bind
-	//farmtile->RequestSpawnItemPickup.BindStatic(&UNFGameInstance::Spawn);
-
-	//farmtile->RequestUpdateCropData.BindStatic(&UNFGameInstance::UpdateCropInfo);
-	//farmtile->RequestRemoveCropData.BindStatic(&UNFGameInstance::RemoveCropInfo);
-
-	//캐릭터에 의해 farmtile 생성시 gridmanager에 최초 반영
+	//캐릭터에 의해 farmtile 생성시 cropdata 생성 최초 실행
 	farmtile->RequestUpdateCropData.ExecuteIfBound(farmtile);
-
-	//farmtile->TestFunction(&UNFGameInstance::GetItemData);
 
 }
 
@@ -305,8 +295,6 @@ void ABaseCharacter::DoWhat()
 
 void ABaseCharacter::DoPlanting()
 {
-
-
 	FHitResult hit;
 
 	//farmPos에서 아래로 2000 내려가는 지점으로 trace
@@ -328,12 +316,10 @@ void ABaseCharacter::DoPlanting()
 		return;
 	}
 
-	auto gridSubsystem = //GEngine->GetEngineSubsystem<UGridSubsystem>();
-	GetWorld()->GetSubsystem<UGridSubsystem>();
+	UGridSubsystem* gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
 	
 	FGrid grid = gridSubsystem->WorldToGrid(hit.Location);
-
-	auto farmtile = Cast<AFarmlandTile>(hit.GetActor());
+	AFarmlandTile* farmtile = Cast<AFarmlandTile>(hit.GetActor());
 
 	if (!IsValid(farmtile))
 	{
@@ -353,7 +339,6 @@ void ABaseCharacter::DoPlanting()
 	//farmtile의 정보를 set해준다.
 	//임시로 Crop01 데이터를 넣어준다.
 	auto cropData = FCropData();
-
 	{
 		cropData.bWatered = false;
 		cropData.CropName = "Crop01";
@@ -361,9 +346,7 @@ void ABaseCharacter::DoPlanting()
 	}
 	
 	farmtile->SetInfo(cropData);
-
 	FMyDebug::Print(DEBUG_TEXT("Crop Planting OK"));
-
 
 }
 

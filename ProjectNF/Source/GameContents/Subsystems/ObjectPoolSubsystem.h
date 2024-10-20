@@ -45,6 +45,6 @@ public:
 	void DespawnToPool(AActor* PoolableActor);
 
 
-	//void ClearObjectPooling();
+	void ClearObjectPooling();
 
 };

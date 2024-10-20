@@ -12,12 +12,6 @@
 class UNiagaraSystem;
 class UNiagaraComponent;
 
-//ObjectManager에 존재하는 델리게이트와 기능은 같은데, 중복할 수 없기에 2를 붙임
-//ObjectManager를 삭제한 뒤에 이름을 변경하여 사용할 것.
-// TODO : 현재 ObjectPoolSubsystem에 직접 접근하여 오브젝트 풀에 Spawn을 요청하므로, 이 델리게이트는 필요없음. 후에 삭제할 것.
-DECLARE_DELEGATE_RetVal_FourParams(AActor*, FRequestObjectPoolSpawn2, UObject*, UClass*, const FVector&, const FRotator&);
-DECLARE_DELEGATE_OneParam(FRequestObjectPoolDespawn2, AActor*);
-
 /**
  * 
  */
@@ -33,13 +27,6 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	virtual void Deinitialize() override;
-
-public:
-
-	/*ObjectPoolManager와 연동하여 ObjectPool가능한 액터들을 Spawn & Despawn할 때 사용한다.*/
-	FRequestObjectPoolSpawn2 RequestObjectPoolSpawn;
-	FRequestObjectPoolDespawn2 RequestObjectPoolDespawn;
-
 
 #pragma region BlueprintsLoad
 
@@ -105,7 +92,7 @@ template<typename T>
 void UObjectSubsystem::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, UClass* TargetClass, const TArray<FName>& FolderPaths, const FString& PrefixToRemove)
 {
 
-	FMyDebug::Print(DEBUG_VATEXT(TEXT("loading path : %s"), *FolderPaths[0].ToString()));
+	//FMyDebug::Print(DEBUG_VATEXT(TEXT("loading path : %s"), *FolderPaths[0].ToString()));
 
 	FAssetRegistryModule& assetRegistryModule
 		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
@@ -135,8 +122,9 @@ void UObjectSubsystem::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, 
 		//FMyDebug::Print(DEBUG_VATEXT(TEXT("asset path : %s"), *path));
 
 #if WITH_EDITOR
-		//실제 빌드된 패키지에서는 _C가 자동으로 붙기 때문에 이 기능은 에디터에서만 동작해야한다.
-		path = path + TEXT("_C"); //BP인식을 하려면 _C 붙여야함.
+		//BP인식을 하려면 _C 붙여야함.
+		//실제 빌드된 패키지에서는 path 값에 _C가 자동으로 붙기 때문에 이 기능은 에디터에서만 동작해야한다.
+		path = path + TEXT("_C");
 #endif
 
 		UClass* findClass = StaticLoadClass(TargetClass, nullptr, *path);
@@ -154,7 +142,7 @@ void UObjectSubsystem::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, 
 
 		//찾은 클래스가 Target Class인지 확인
 
-			//BP_ 빼고 key로 만들어 Map에 넣음.
+		//BP_ 빼고 key로 만들어 Map에 넣음.
 		name.RemoveFromStart(PrefixToRemove);
 
 		//빌드된 패키지에서는 블루프린트 이름에 _C가 자동으로 붙는다.
@@ -172,22 +160,23 @@ void UObjectSubsystem::LoadBlueprints(TMap<FString, TSubclassOf<T>>& TargetMap, 
 
 	}
 
-	////// 제대로 읽었는지 확인.
-	////for (auto& i : TargetMap)
-	////{
-	////	if (IsValid(i.Value))
-	////	{
-	////		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
-	////	}
-	////	else
-	////	{
-	////		FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
-	////	}
-	////}
+	/*
+	// 제대로 읽었는지 확인.
+	for (auto& i : TargetMap)
+	{
+		if (IsValid(i.Value))
+		{
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s, %s"), *i.Key, *i.Value->GetName()));
+		}
+		else
+		{
+			FMyDebug::Print(DEBUG_VATEXT(TEXT("%s , nullptr"), *i.Key));
+		}
+	}
 
-	//FMyDebug::Print(TEXT("=============Load Blueprints END============="));
-	//FMyDebug::Print(TEXT("============================================="));
-
+	FMyDebug::Print(TEXT("=============Load Blueprints END============="));
+	FMyDebug::Print(TEXT("============================================="));
+	*/
 
 
 }

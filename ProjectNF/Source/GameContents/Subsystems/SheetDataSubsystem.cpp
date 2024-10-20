@@ -12,6 +12,8 @@ void USheetDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
+	//각 정보를 담은 Sheet 경로를 미리 세팅하고 Load하면 사용에 용이하다.
+
 	TArray<FName> itemDataTablePath;
 	itemDataTablePath.Add(TEXT("/Game/DataTables/ItemDataTables"));
 	LoadDataTables(ItemDataTables, itemDataTablePath);
@@ -28,7 +30,7 @@ void USheetDataSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	languageDataTablePath.Add(TEXT("/Game/DataTables/LanguageDataTables"));
 	LoadDataTables(LanguageSheetTables, languageDataTablePath);
 
-
+	//DataTable 정보를 TMap에 저장하여 "이름" 값을 통해 해당 정보를 접근할 수 있도록 함.
 	IncludeSheetDataToMap<FItemSheetData>(ItemSheetDataMap, ItemDataTables);
 	IncludeSheetDataToMap<FCropSheetData>(CropSheetDataMap, CropSheetTables);
 	IncludeSheetDataToMap<FAbilitySheetData>(AbilitySheetDataMap, AbilitySheetTables);
@@ -42,6 +44,9 @@ void USheetDataSubsystem::Deinitialize()
 
 void USheetDataSubsystem::LoadDataTables(TArray<TObjectPtr<UDataTable>>& TargetDataTables, const TArray<FName>& FolderPaths)
 {
+	//DataTable은 굳이 template로 만들지 않아도 된다. 어차피 UDataTable로 똑같기 때문.
+	//LoadDataTables보다 IncludeSheetDataToMap이 더 복잡하다.
+
 	FAssetRegistryModule& assetRegistryModule
 		= FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 

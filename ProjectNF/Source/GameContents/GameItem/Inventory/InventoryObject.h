@@ -91,9 +91,11 @@ public:
 	TArray<FItemSlotData>& GetAllItems();
 	//인벤토리 Size
 	int32 GetInventorySize() const;
-
+	//예약된 인벤토리 공간을 스킵하고 실제로 인벤토리 기능이 동작할 수 있는 위치 시작지점
 	int32 GetFreeInventoryStart() const;
 
+	//From 인벤토리와 To 인벤토리의 특정 위치의 인벤토리 정보를 서로 바꿈
+	//From과 To가 같은 인벤토리일 수도 있음.
 	static bool SwapItemBetweenInventory(TObjectPtr<UInventoryObject> FromInventory, const int32 FromIndex, TObjectPtr<UInventoryObject> ToInventory, const int32 ToIndex);
 
 };

@@ -164,14 +164,12 @@ AActor* UObjectSubsystem::Spawn(FString ToSpawnClassName, const FVector& Locatio
 
 void UObjectSubsystem::BindingActor(AActor* TargetActor)
 {
-	//GameContents에 있는 액터들의 Delegate를 바인딩하여 의존성을 최대한 낮추는 것을 목표로 만들어진 함수.
+	//GameContents에 있는 액터들의 Delegate를 미리 바인딩하여 의존성을 최대한 낮추는 것을 목표로 만들어진 함수.
 	//액터가 무엇인지 확인하고 Cast하여 Delegate에 바인딩한다.
 
-	//? : ObjectPool 한 액터에 제대로 동작하는지?
-
-	//예시로.. TBaseStaticDelegateInstance<FItemSheetData(const FName&), FDefaultDelegateUserPolicy>::FFuncPtr
-	//를 사용하여 static 함수를 넘길 수도 있긴 한데, 코드가 복잡해질 수 있는 가능성이 있어
-	//Object를 Spawn할 때만 GameInstance에 접근하여 static 함수를 바인드하도록 한다.
+	//각 서브시스템의 기능을 미리 Delegate에 연동하면, 필요할 때마다 서브시스템을 접근하지 않고 기능 사용 가능함.
+	//과거엔 GameInstance의 static함수를 만들고 Bind했다. 예시로..-> TBaseStaticDelegateInstance<FItemSheetData(const FName&), FDefaultDelegateUserPolicy>::FFuncPtr
+	//를 사용하여 static 함수를 넘길 수도 있긴 한데, 코드가 복잡해질 수 있는 가능성이 있어 변경함.
 
 	if (!IsValid(TargetActor))
 	{
@@ -179,12 +177,13 @@ void UObjectSubsystem::BindingActor(AActor* TargetActor)
 		return;
 	}
 
-	if (!GWorld)
+	if (!IsValid(GWorld))
 	{
 		FMyDebug::Print(DEBUG_TEXT("GWorld Invalid."));
 		return;
 	}
 
+	//gameInstance의 서브시스템을 접근하는 것은 딱히 어떤 GameInstance를 사용해도 상관이 없음.
 	auto gameinstance = TargetActor->GetWorld()->GetGameInstance();
 
 	auto sheetDataSubsystem = gameinstance->GetSubsystem<USheetDataSubsystem>();
@@ -224,15 +223,21 @@ void UObjectSubsystem::BindingActor(AActor* TargetActor)
 			abilityBase->RequestDespawnAbility.BindUObject(this, &UObjectSubsystem::Despawn);
 		}
 	}
+	else if (IsValid(TargetActor))
+	{
+		FMyDebug::Print(DEBUG_TEXT("No Needed."));
+	}
 	else
 	{
-		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed or No Needed."));
+		FMyDebug::Print(DEBUG_TEXT("Binding Actor Failed."));
 	}
 }
 
 UUserWidget* UObjectSubsystem::CreateWidgetBlueprint(FString ToCreateWidgetName, APlayerController* WidgetOwner)
 {
-	auto widgetClass = WidgetBlueprintMap[ToCreateWidgetName];
+	//WidgetBP 이름을 알고 있다면, 코드를 통해 언제든 WidgetBlueprint로 만든 UI를 띄울 수 있다.
+
+	TSubclassOf<UUserWidget> widgetClass = WidgetBlueprintMap[ToCreateWidgetName];
 	UUserWidget* widget = CreateWidget<UUserWidget>(WidgetOwner, widgetClass);
 
 	return widget;
@@ -240,34 +245,31 @@ UUserWidget* UObjectSubsystem::CreateWidgetBlueprint(FString ToCreateWidgetName,
 
 void UObjectSubsystem::Despawn(AActor* DespawnTarget)
 {
-	if (!GEngine)
+	if (!IsValid(GEngine))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return;
 	}
 	
-	UWorld* world = //GEngine->GetCurrentPlayWorld();
-		GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
+	UWorld* world = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
 	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No World."));
 		return;
 	}
 
+	//Despawn할 Actor가 ObjectPool로 관리되고 있었다면? ObjectPoolSubsystem에게 Despawn을 넘긴다.
 	if (DespawnTarget->GetClass()->ImplementsInterface(UObjectPoolable::StaticClass()))
 	{
 		UObjectPoolSubsystem* objectPoolSubsys = world->GetSubsystem<UObjectPoolSubsystem>();
-		if (IsValid(objectPoolSubsys))
-		{
-			objectPoolSubsys->DespawnToPool(DespawnTarget);
-		}
-		else
+		if (!IsValid(objectPoolSubsys))
 		{
 			FMyDebug::Print(DEBUG_TEXT("objectPoolSubsys is Invalid."));
 		}
-
+		
+		objectPoolSubsys->DespawnToPool(DespawnTarget);
 	}
-	else
+	else //ObjectPool에서 관리되지 않는 Actor이므로 그냥 없앤다.
 	{
 		DespawnTarget->Destroy();
 	}
@@ -275,27 +277,30 @@ void UObjectSubsystem::Despawn(AActor* DespawnTarget)
 
 UNiagaraComponent* UObjectSubsystem::SpawnNiagaraSystem(FString ToSpawnNiagaraName, const FVector& Location, const FRotator& Rotation)
 {
-	if (!GEngine)
+	//Niagara이름만 알고 있다면, 원하는 위치에 이펙트를 Spawn할 수 있음.
+
+	if (!IsValid(GEngine))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No GEngine."));
 		return nullptr;
 	}
 
-	UWorld* world = //GEngine->GetCurrentPlayWorld();
-		GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
-
+	UWorld* world = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
 	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("No World."));
 		return nullptr;
 	}
 
+	//없는 Niagara임
 	if (!NiagaraSystemMap.Contains(ToSpawnNiagaraName))
 	{
 		FMyDebug::Print(DEBUG_VATEXT(TEXT("Invalid Niagara Name. -> %s"), *ToSpawnNiagaraName));
 		return nullptr;
 	}
 
+	//Niagara는 Actor나 Widget 블루프린트와 다르게
+	//TSubclassOf가 아닌, TObjectPtr로 관리됨.
 	auto toSpawn = NiagaraSystemMap[ToSpawnNiagaraName];
 
 	return UNiagaraFunctionLibrary::SpawnSystemAtLocation(world, NiagaraSystemMap[ToSpawnNiagaraName], Location, Rotation);

@@ -9,6 +9,8 @@
 #include "SheetDataSubsystem.generated.h"
 
 /**
+ * SheetDataSubsystem은 아이템, 작물, 기술 정보를 Sheet(DataTable)로 만들어 놓은 것을
+ * 게임 플레이에서 사용되기 전에 자동으로 불러오는 기능을 담당한다.
  * 
  */
 UCLASS()

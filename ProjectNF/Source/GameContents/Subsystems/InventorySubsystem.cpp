@@ -48,11 +48,11 @@ UInventoryObject* UInventorySubsystem::TryGetInventory(FString InventoryOwner)
 		inventory->RequestItemSheetData.BindUObject(sheetDataSubsystem, &USheetDataSubsystem::GetItemData);
 
 		InventoryMap.Add(InventoryOwner, inventory);
-		FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Created -> InventoryOwner : %s"), *InventoryOwner));
+		//FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Created -> InventoryOwner : %s"), *InventoryOwner));
 	}
 	else
 	{
-		FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Exist! -> InventoryOwner : %s"), *InventoryOwner));
+		//FMyDebug::Print(DEBUG_VATEXT(TEXT("Inventory Exist! -> InventoryOwner : %s"), *InventoryOwner));
 	}
 
 	return InventoryMap[InventoryOwner];
@@ -60,23 +60,25 @@ UInventoryObject* UInventorySubsystem::TryGetInventory(FString InventoryOwner)
 
 bool UInventorySubsystem::AddItemToTargetInventory(AActor* InventoryOwner, const FItemSlotData& SlotData)
 {
-		//인벤토리를 찾고, 인벤토리에 아이템을 넣는다.
-	
-		auto inventoryComponent = InventoryOwner->FindComponentByClass<UInventoryComponent>();
-	
-		if (!IsValid(inventoryComponent))
-		{
-			FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
-			return false;
-		}
-	
-		bool bAdded = inventoryComponent->AddItemToInventory(SlotData);
-	
-		return bAdded;
+	//인벤토리를 찾고, 인벤토리에 아이템을 넣는다.
+
+	auto inventoryComponent = InventoryOwner->FindComponentByClass<UInventoryComponent>();
+
+	if (!IsValid(inventoryComponent))
+	{
+		FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
+		return false;
+	}
+
+	bool bAdded = inventoryComponent->AddItemToInventory(SlotData);
+
+	return bAdded;
 }
 
 void UInventorySubsystem::LoadInventories(const TArray<FInventorySaveData>& InventorySaveData)
 {
+	//저장된 인벤토리 아이템 정보를 불러오기
+
 	auto sheetDataSubsystem = GetGameInstance()->GetSubsystem<USheetDataSubsystem>();
 
 	for (auto& data : InventorySaveData)
@@ -96,21 +98,3 @@ TMap<FString, UInventoryObject*>& UInventorySubsystem::GetAllInventories()
 {
 	return InventoryMap;
 }
-
-
-//bool UNFGameInstance::AddItemToTargetInventory(AActor* InventoryOwner, const FItemSlotData& SlotData)
-//{
-//	//인벤토리를 찾고, 인벤토리에 아이템을 넣는다.
-//
-//	auto inventoryComponent = InventoryOwner->FindComponentByClass<UInventoryComponent>();
-//
-//	if (!IsValid(inventoryComponent))
-//	{
-//		FMyDebug::Print(DEBUG_TEXT("No Inventory comp."));
-//		return false;
-//	}
-//
-//	bool bAdded = inventoryComponent->AddItemToInventory(SlotData);
-//
-//	return bAdded;
-//}

@@ -29,7 +29,8 @@ void UGridSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	//!! World가 준비되는 시간이 Initialize 이후로 보임.
 	// 
 	//GridSubsystem이 준비가 됐다면 해당 레벨에 GridSetup 설치
-	//gridsetup이 있어야 맵에 grid 칸 보이는 효과가 나올 수 있음.
+	//gridsetup이 있어야 Grid 관련 기능이 정상적으로 동작할 수 있다.
+	//예시) 칸 보이는 효과, 오브젝트 배치
 	auto objectSubsystem = GEngine->GetEngineSubsystem<UObjectSubsystem>();
 
 	GridSetupRef = Cast<AGridSetup>(
@@ -62,48 +63,49 @@ bool UGridSubsystem::IsSomethingExistOnGrid(const FGrid& Grid) const
 		FMyDebug::Print(DEBUG_TEXT("GEngine is Invalid."));
 	}
 
-	// ?? : EngineSubsystem은 GetWorld()가 어떨까? -> 답 : 플레이어의 월드다.
+	// ?? : EngineSubsystem의 GetWorld()가 어떨까? -> 답 : 플레이어의 월드다.
 	//GetCurrentPlayWorld()는 Outer와 상관없이 현재 게임의 World를 얻을 수 있다.
 	auto world = //GEngine->GetCurrentPlayWorld();
 	GetWorld();
 
-	if (IsValid(world))
-	{
-		FVector gridToWorld = GridToWorld(Grid);
-		FVector start = gridToWorld + FVector::UpVector * 10000;
-		FVector end = gridToWorld + FVector::DownVector * 10000;
-
-		FHitResult hit;
-
-		TArray<AActor*> ignores;
-
-		bool hitResult = UKismetSystemLibrary::SphereTraceSingle(
-			world,
-			start,
-			end,
-			CellSize / 3, //gridsize의 1/2~1/3으로 세팅하는 것이 좋다.
-			UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1), //프로젝트 세팅의 trace채널 1
-			false,
-			ignores,
-			EDrawDebugTrace::ForDuration,
-			hit,
-			true,
-			FLinearColor::Red,
-			FLinearColor::Green,
-			3.0f
-		);
-
-		if (hitResult)
-		{
-			FMyDebug::Print(DEBUG_VATEXT(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
-			return true;
-		}
-
-	}
-	else
+	if (!IsValid(world))
 	{
 		FMyDebug::Print(DEBUG_TEXT("world is nullptr"));
+		return false;
 	}
+
+	//맵의 어느 지점의 Grid의 GridObject가 존재하는지 확인하는 법?
+	//Grid 지점을 worldLocation으로 바꾼 뒤에, 위에서부터(10000 위) 아래로(-10000 아래)로 Sphere trace를 한다.
+	FVector gridToWorld = GridToWorld(Grid);
+	FVector start = gridToWorld + FVector::UpVector * 10000;
+	FVector end = gridToWorld + FVector::DownVector * 10000;
+
+	FHitResult hit;
+
+	TArray<AActor*> ignores;//넣을 만한게 있는지는 모르지만 추후 필요하면 사용하기
+
+	bool hitResult = UKismetSystemLibrary::SphereTraceSingle(
+		world,
+		start,
+		end,
+		CellSize / 3, //gridsize의 1/2~1/3으로 세팅하는 것이 좋다.
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1), //프로젝트 세팅의 trace채널 1
+		false,
+		ignores,
+		EDrawDebugTrace::ForDuration,
+		hit,
+		true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		3.0f
+	);
+
+	if (hitResult)
+	{
+		FMyDebug::Print(DEBUG_VATEXT(TEXT("on grid : %s"), *hit.GetActor()->GetName()));
+		return true;
+	}
+
 
 	return false;
 }

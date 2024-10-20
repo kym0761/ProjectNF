@@ -11,7 +11,8 @@
 class AFarmlandTile;
 
 /**
- * 
+ * 게임 플레이에 관한 정보를 저장하고 사용하기 위해 필요한 서브시스템
+ * 플레이어가 게임을 하는 동안 정보가 계속 유지되어야 하므로 GameInstanceSubsystem을 사용함
  */
 UCLASS()
 class GAMECONTENTS_API UGameInfoSubsystem : public UGameInstanceSubsystem
@@ -27,14 +28,13 @@ public:
 
 protected:
 
-	/*게임 관련 재화 정보?*/
+	/*게임 관련 재화 정보를 적어둘 위치*/
 	UPROPERTY()
 	int32 Money;
 
 	//게임 내 농작물 키울때마다 업데이트가 될 farmlandtile의 정보를 보관하는 TMap
 	UPROPERTY()
 	TMap<FGrid, FCropData> CropMap;
-
 
 	//인게임 현재 시간
 	UPROPERTY()

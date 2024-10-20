@@ -36,6 +36,9 @@ TMap<FGrid, FCropData>& UGameInfoSubsystem::GetCropMap()
 
 void UGameInfoSubsystem::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 {
+	//맵에 작물 타일이 생성되거나 작물 정보가 업데이트 될 때마다
+	//GameInfoSubsystem에도 반영되어야 할 필요가 있음.
+
 	if (!IsValid(TargetFarmlandTile))
 	{
 		FMyDebug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
@@ -45,7 +48,6 @@ void UGameInfoSubsystem::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 	UGridSubsystem* gridSubsystem = GEngine->GetCurrentPlayWorld()->GetSubsystem<UGridSubsystem>();
 
 	FGrid grid = gridSubsystem->WorldToGrid(TargetFarmlandTile->GetActorLocation());
-
 	FCropData cropData = TargetFarmlandTile->GetCropData();
 
 	if (CropMap.Contains(grid))
@@ -62,14 +64,15 @@ void UGameInfoSubsystem::UpdateCropInfo(AFarmlandTile* TargetFarmlandTile)
 
 void UGameInfoSubsystem::RemoveCropInfo(AFarmlandTile* TargetFarmlandTile)
 {
+	//작물 정보가 삭제될 때, GameInfoSubsystem에도 반영이 되어야함.
+
 	if (!IsValid(TargetFarmlandTile))
 	{
 		FMyDebug::Print(DEBUG_TEXT("FarmlandTile is Invalid."));
 		return;
 	}
 
-	UGridSubsystem* gridSubsystem = // GEngine->GetEngineSubsystem<UGridSubsystem>();
-		GEngine->GetCurrentPlayWorld()->GetSubsystem<UGridSubsystem>();
+	UGridSubsystem* gridSubsystem =	GEngine->GetCurrentPlayWorld()->GetSubsystem<UGridSubsystem>();
 
 	FGrid grid = gridSubsystem->WorldToGrid(TargetFarmlandTile->GetActorLocation());
 	FCropData cropData = TargetFarmlandTile->GetCropData();

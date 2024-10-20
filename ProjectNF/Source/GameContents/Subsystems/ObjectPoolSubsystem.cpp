@@ -20,10 +20,14 @@ void UObjectPoolSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 
+	////지금 필요없어서 비활성화
+	//ClearObjectPooling();
 }
 
 AActor* UObjectPoolSubsystem::SpawnInPool(UObject* WorldContext, UClass* PoolableBP, const FVector& Location, const FRotator& Rotation)
 {
+	AActor* poolableActor = nullptr;
+
 	//ObjectPoolable 인터페이스 체크
 	bool bCheckObjectPoolable = PoolableBP->GetDefaultObject()->Implements<UObjectPoolable>();
 	if (!bCheckObjectPoolable)
@@ -33,19 +37,17 @@ AActor* UObjectPoolSubsystem::SpawnInPool(UObject* WorldContext, UClass* Poolabl
 	}
 
 	//블루프린트 타입을 포함한 Class가 무엇인지 확인
-	auto classKey = PoolableBP->GetDefaultObject()->GetClass();
+	UClass* classKey = PoolableBP->GetDefaultObject()->GetClass();
 
 	//해당 클래스 타입의 Pool Chunk가 존재하지 않는다면, PoolChunk 생성
 	if (!ObjectPoolMap.Contains(classKey))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("no Pool Chunk. make Pool Chunk To Spawn"));
-		auto poolChunk = NewObject<UPoolChunk>(this);
+		UPoolChunk* poolChunk = NewObject<UPoolChunk>(this);
 		ObjectPoolMap.Add(classKey, poolChunk);
 	}
 
 	auto& objectPoolQueue = ObjectPoolMap[classKey]->GetPoolObjectQueue();
-	AActor* poolableActor = nullptr;
-
 
 	//PoolChunk가 비었다면 그냥 새로 생성
 	if (objectPoolQueue.IsEmpty())
@@ -53,22 +55,27 @@ AActor* UObjectPoolSubsystem::SpawnInPool(UObject* WorldContext, UClass* Poolabl
 		//충돌을 무시하고 무조건 spawn함
 		FActorSpawnParameters spawnParam;
 		spawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 		poolableActor = WorldContext->GetWorld()->SpawnActor<AActor>(PoolableBP, Location, Rotation, spawnParam);
+	
+		//FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has not a PoolableActor. spawn new"));
 	}
 	else //PoolChunk에 비활성화 Actor가 있다면, 해당 Chunk에서 하나 꺼내 사용한다.
 	{
-		FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 		IObjectPoolable* ObjectPoolable = nullptr;
 		objectPoolQueue.Dequeue(ObjectPoolable);
+
+		poolableActor = Cast<AActor>(ObjectPoolable);
+		if (!IsValid(poolableActor))
+		{
+			//Cast 실패?
+			return nullptr;
+		}
 
 		//PoolActor 활성화
 		//위치 설정
 		//Visibility 활성
 		//Collision 활성
 		//Movement Component가 있을 시 활성화
-		poolableActor = Cast<AActor>(ObjectPoolable);
 		poolableActor->SetActorLocationAndRotation(Location, Rotation);
 		poolableActor->SetActorHiddenInGame(false);
 		poolableActor->SetActorEnableCollision(true);
@@ -78,10 +85,12 @@ AActor* UObjectPoolSubsystem::SpawnInPool(UObject* WorldContext, UClass* Poolabl
 		{
 			movement->Activate();
 		}
+
+		//FMyDebug::Print(DEBUG_TEXT("Pool Chunk Has PoolableActors."));
 	}
 
-	//pool 오브젝트의 beginplay를 대신한다.
-	//실제로 else 코드 쪽에서 꺼내 사용한 오브젝트는 beginplay가 동작안함.
+	//pool 오브젝트의 Actor::BeginPlay()를 대신한다.
+	//ObjectPooling을 사용한 Actor는 Spawn될 때 BeginPlay() 동작하지 않기 때문에 따로 구현
 	IObjectPoolable::Execute_PoolBeginPlay(poolableActor);
 
 	return poolableActor;
@@ -111,7 +120,6 @@ void UObjectPoolSubsystem::DespawnToPool(AActor* PoolableActor)
 	ObjectPoolMap[classkey]->GetPoolObjectQueue().Enqueue(objectPoolable);
 
 	//Pool에 넣은 것은 안보이게 한다.
-	//보이지 않게 한다
 	//닿지 않을 위치로 이동시킨다.
 	//collision을 끈다.
 	//movement component가 있다면 비활성화한다.
@@ -130,31 +138,24 @@ void UObjectPoolSubsystem::DespawnToPool(AActor* PoolableActor)
 	FMyDebug::Print(DEBUG_TEXT("ObjectPoolable Actor Despawned."));
 }
 
-//void UObjectPoolSubsystem::ClearObjectPooling()
-//{
-//	//ObjectPool에 있는 액터들은 비활성화 상태긴해도 World가 사라지기 전에는 계속 존재함
-//	//만약 World를 변경하지 않는 상태에서 ObjectPoolMap을 비워도 오브젝트들이 사라지지 않을 수도 있음. Clear를 따로 만듬.
-//
-//	for (auto pi : ObjectPoolMap)
-//	{
-//		UPoolChunk* chunk = pi.Value;
-//
-//		auto& queue = chunk->GetPoolObjectQueue();
-//
-//		while (!queue.IsEmpty())
-//		{
-//			IObjectPoolable* poolable = nullptr;
-//			queue.Dequeue(poolable);
-//
-//			auto actor = Cast<AActor>(poolable);
-//			if (IsValid(actor))
-//			{
-//				actor->Destroy();
-//			}
-//		}
-//
-//	}
-//
-//	//!! : chunk가 필요하면 이 부분 변경할 것
-//	ObjectPoolMap.Empty();
-//}
+void UObjectPoolSubsystem::ClearObjectPooling()
+{
+	//오브젝트 풀 전체를 비우는 기능
+
+	//ObjectPool에 있는 액터들은 사용자(개발자)에 의도대로 비활성화 상태이므로, Level이 바뀌지 않는 이상 계속 유지됨.
+	
+	//Level이 바뀌면서 -> ObjectPoolSubsystem 삭제 -> Chunk 삭제 -> 오브젝트(Actor) 삭제
+	//가 일어나서 알아서 삭제는 되겠지만, 일단 과거에 만들어놓았던 방식은 내가 일일이 삭제해야 했음.
+	//지금은 일단 필요는 없지만, 혹시나 가비지 컬렉션 문제가 여기서 일어난다면 이를 활성화하기.
+	
+	//Chunk 안의 오브젝트 Ref 삭제 & Chunk Ref 삭제만 하면 언리얼 가비지 컬렉션에 의해 알아서 삭제될 것으로 예상함.
+	for (auto pi : ObjectPoolMap)
+	{
+		UPoolChunk* chunk = pi.Value;
+
+		TQueue<IObjectPoolable*>& queue = chunk->GetPoolObjectQueue();
+		queue.Empty();
+	}
+
+	ObjectPoolMap.Empty();
+}

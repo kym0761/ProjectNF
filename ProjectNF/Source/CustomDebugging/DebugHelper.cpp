@@ -2,6 +2,8 @@
 
 #include "DebugHelper.h"
 
+//기본값은 true로, 게임 전체의 debug Text를 비활성화하고 싶다면 false로 바꿀 것.
+//혹은 SetBoolDebugPlay() 사용할 것
 bool FMyDebug::bDebugPlay = true;
 
 void FMyDebug::Print(const FString& Msg, const FColor& Color, int32 InKey)

@@ -54,6 +54,7 @@ public:
 	//외부 코드에서 bDebugPlay를 바꿀려면 이 코드로 바꿀 것.
 	//예시) GameMode에 bool 변수를 따로 만들어 Beginplay()에서 bDebugPlay를 bool 변수 값으로 변경하면
 	//에디터 인게임 내에서 디버그가 활성/비활성된다.
+	//만든 이유 : true -> false / false -> true 바꿀 때마다 이 값 사용하는 코드를 다시 빌드해야함. 그 상황 방지용도다.
 	static void SetBoolDebugPlay(bool Val);
 
 };
