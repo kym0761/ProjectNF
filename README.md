@@ -3,8 +3,7 @@
 - [ProjectNF](#projectnf)
 - [DebugHelper](#debughelper)
 - [GameInstance](#gameinstance)
-	- [Managers](#managers) // 삭제예정
-- [Subsystems](#Subsystems)
+- [Subsystems](#subsystems)
 	- [SheetDataSubsystem](#sheetdatasubsystem)
 	- [GridSubsystem](#gridsubsystem)
 	- [InventorySubsystem](#inventorysubsystem)
@@ -14,19 +13,15 @@
 	- [PuzzleSubsystem](#puzzlesubsystem)
 - [Modules](#modules)
 	- [델리게이트 패턴](#델리게이트-패턴)
-- [ETC](#ETC)
+- [ETC](#etc)
 
 # ProjectNF
 
-NF는 New Farm의 줄임말입니다.
+예전에 만들었던 농장 게임 시스템은 사용한 코드들이 관리가 힘들고 확장이 어려워지는 문제가 있어
 
-예전에 만들었던 농장 경영 시스템은 사용한 코드들이 관리가 힘들고 확장이 어려워지는 문제가 발생하여
+관리하기 쉽고 확장이 용이하도록 프로젝트의 코드를 리메이크하는 것을 목표로 했습니다.
 
-관리하기 쉽고 확장이 용이하도록 디자인 패턴을 적용하여 프로젝트의 코드를 리메이크하는 것을 목표로 잡았으며
-
-다른 프로젝트에서도 간편하게 사용할 수 있도록 일종의 툴 혹은 프레임워크화 하려는 시도로 제작하는 프로젝트입니다.
-
-주의 : 이 깃허브 리포지토리에는 에셋이 들어가있지 않습니다. 사용하고 있는 임시 에셋의 용량이 큰 관계로 코드 위주로만 깃허브에 커밋하고 있어, 리포지토리를 다운받아서 빌드해도 프로젝트는 실행되지 않을 것입니다.
+주의 : 이 깃허브 리포지토리에는 에셋이 들어가있지 않습니다. 사용하고 있는 임시 에셋의 용량이 큰 관계로 contents 폴더를 커밋 예외에 넣어, 리포지토리를 다운받아도 에셋이 없는 관계로 프로젝트는 실행되지 않을 것입니다.
 
 # DebugHelper
 
@@ -81,27 +76,9 @@ FMyDebug::Print(DEBUG_VATEXT(TEXT("test log : %s, %s"), *str1, *str2));
 
 추후 바뀔 가능성이 있습니다.
 
-## Managers
-
-게임의 주요한 기능을 Manager 단위로 묶어 관리하기 위해 싱글톤 클래스로서 게임인스턴스에 매니저가 포함됐었습니다.
-
-이 기능은 초기에 UObject를 기반으로 만들었는데, UObject기반으로 만든 뒤 GameInstance에 붙이면서 싱글톤으로서 동작하게 되어있었습니다.
-
-그러나 몇몇 기능은 GameInstance와 거리가 먼 기능인데도 GameInstance에 의해 관리되며, 점점 GameInstance에 대해서 기능이 동작하게 만들면서 GameInstance의 기능이 비대해질 가능성이 커졌습니다.
-
-```
-예시 : ObjectPool은 오브젝트가 존재할 수 있는 Level이 유효할 때까지만 동작이 가능해야함. 이 기능이 GameInstance에서 관리되다 보니 Level이 바뀌어 Actor의 수명이 끝난 상황에 유효하지 않을 오브젝트를 계속 보유하고 있는 문제점을 가짐
-
-예시2 : Grid는 GetWorld()가 정상적으로 접근이 가능해야 실제로 사용이 가능함. 그러나 GameInstance는 transient 월드에 속하는 오브젝트라 GetWorld()가 실제 플레이어의 World와 다르므로 우회하여 접근할 필요가 있었음. 
-```
-
-언리얼 엔진의 서브시스템이라는 기능이 제가 의도한대로 매니저 클래스로서 동작가능한 언리얼 엔진의 기능임을 조사하여 알게된 뒤에 매니저 클래스들을 전부 서브시스템에 맞게 다시 만드는 작업을 하였기에, Manager 클래스들은 전부 Deprecated된 클래스가 됐습니다.
-
-이 매니저 클래스는 삭제될 예정이며, 매니저 클래스를 사용하여 정상적으로 동작하는 프로젝트 기록은 Branch로 Manager_UObject로 아카이브화되어, 코드가 필요하다면 따로 확인이 가능합니다.
-
 # Subsystems
 
-언리얼 엔진에서 제공하는 Subsystem으로 싱글톤으로서 동작하는 매니저 클래스를 대체합니다.
+언리얼 엔진에서 제공하는 Subsystem으로 싱글톤 매니저처럼 동작합니다.
 
 ## SheetDataSubsystem
 
@@ -158,7 +135,7 @@ gridSubsystem->WorldToGrid( FVector(100.0f,500.0f,0) );
 
 InventorySubsystem은 GameInstance가 유효한 동안 접근이 가능하고 계속 데이터를 저장하고 관리할 수 있습니다.
 
-인벤토리를 관리하는 방식을 예를 들면, 플레이어의 캐릭터에겐 InventoryComponent가 존재하며, 이 컴포넌트는 InventoryID를 가지고 있습니다.
+예를 들어, 플레이어의 캐릭터에겐 InventoryComponent가 존재하며, 이 컴포넌트는 InventoryID를 가지고 있습니다.
 
 InventoryID 값으로 매니저의 InventoryObject를 확인하여, 존재하지 않으면 새로운 인벤토리를 만든 뒤 접근을 허용하며, 존재하는 InventoryObject가 있다면 생성을 스킵하고 접근을 허용합니다.
 
@@ -308,7 +285,7 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 
 특히 언리얼 엔진에서는 순환 의존성을 피하도록 권고하고 있으므로, 모듈 간의 순환 의존성이 생기면 고치라는 경고 메시지가 나타납니다.
 
-이를 고치기 위해 언리얼 엔진에서 제공하는 델리게이트를 사용할 수 있습니다.
+이를 고치기 위해 언리얼 엔진에서 제공하는 델리게이트를 사용했습니다.
 
 <img src="ExplainImages/DelegatePattern02.png" width="75%">
 
@@ -316,13 +293,13 @@ MainModule(ProjectNF) - 플레이어 캐릭터나 UI 등을 포함한 메인 모
 
 그러나 UNFGameInstance::GetItemData()를 사용하기 위해서는, GameContents 모듈이 GameSystem 모듈을 Dependency 모듈로서 참조해야 사용이 가능합니다. 
 
-문제는 이미 GameModule에서는 GameContents를 Dependency 모듈로서 참조하고 있고, 서로 참조를 하면 순환 의존성이 발생할 수 있습니다.
+이미 GameModule에서는 GameContents를 Dependency 모듈로서 참조하고 있고, 서로 참조를 하면 순환 의존성이 발생할 수 있습니다.
 
 이를 해결하는 방법은 위의 스크린샷처럼 ItemPickup에서 델리게이트를 선언하고, GameSystem에서 해당 객체를 처음 생성시 델리게이트에 아이템 정보를 얻는 static 함수를 등록하는 것입니다.
 
 <img src="ExplainImages/DelegatePattern03.png" width="75%">
 
-ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 싱글톤 클래스의 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄여 사용할 수 있습니다.
+ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인지 확인 후, 오브젝트의 델리게이트에 싱글톤 클래스의 static 함수를 등록해주는 기능을 포함합니다. 이런 방식을 사용해 모듈간의 순환 의존성을 줄였습니다.
 
 # ETC
 
@@ -357,7 +334,7 @@ ObjectManager에서는 오브젝트를 생성된 뒤에 해당 오브젝트인�
 이런 식으로 퍼즐을 만들어 트리거를 동작시키고, 동작에 맞춰 던전의 문을 열거나 하는 방식으로 던전의 기믹을 만들 수 있으며, 이를 통해 다양한 던전을 만들어 낼 수 있을 것입니다.
 
 
-## 아이템 & 인벤토리 시스템
+## 아이템, 인벤토리 시스템
 
 <img src="ExplainImages/ETC02.png" width="50%">
 
